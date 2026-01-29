@@ -11,6 +11,28 @@ type ListHallsParams = {
   price_max?: number;
 };
 
+type HallWithStudio = Prisma.HallGetPayload<{
+  include: {
+    studio: {
+      select: {
+        id: true;
+        name_i18n: true;
+        address_i18n: true;
+        district_key: true;
+        cover_images: true;
+      };
+    };
+  };
+}>;
+
+export type HallListItem = Omit<HallWithStudio, "studio"> & {
+  name: string;
+  studio: HallWithStudio["studio"] & {
+    name: string;
+    address: string;
+  };
+};
+
 type I18nObject = Record<string, unknown> | null | undefined;
 
 export function getI18n(obj: I18nObject, locale: Locale): string {
@@ -64,15 +86,26 @@ export async function listHalls(params: ListHallsParams) {
   });
 
   const query = params.q?.trim().toLowerCase();
-  if (!query) {
-    return halls;
-  }
+  const filtered = query
+    ? halls.filter((hall) => {
+        const hallName = getI18n(hall.name_i18n as I18nObject, params.locale).toLowerCase();
+        const studioName = getI18n(
+          hall.studio?.name_i18n as I18nObject,
+          params.locale
+        ).toLowerCase();
+        return hallName.includes(query) || studioName.includes(query);
+      })
+    : halls;
 
-  return halls.filter((hall) => {
-    const hallName = getI18n(hall.name_i18n as I18nObject, params.locale).toLowerCase();
-    const studioName = getI18n(hall.studio?.name_i18n as I18nObject, params.locale).toLowerCase();
-    return hallName.includes(query) || studioName.includes(query);
-  });
+  return filtered.map((hall) => ({
+    ...hall,
+    name: getI18n(hall.name_i18n as I18nObject, params.locale),
+    studio: {
+      ...hall.studio,
+      name: getI18n(hall.studio?.name_i18n as I18nObject, params.locale),
+      address: getI18n(hall.studio?.address_i18n as I18nObject, params.locale),
+    },
+  }));
 }
 
 export async function getStudioById(id: string, locale: Locale) {
