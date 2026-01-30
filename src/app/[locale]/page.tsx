@@ -12,8 +12,8 @@ const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
 type SearchParams = Record<string, string | string[] | undefined>;
 
 type Props = {
-  params: Promise<{ locale: string }>;
-  searchParams: Promise<SearchParams>;
+  params: { locale: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 function parseCsvParam(value?: string | string[]) {
@@ -46,12 +46,12 @@ function getStringsFromJson(value: unknown) {
 }
 
 export default async function CatalogPage({ params, searchParams }: Props) {
-  const { locale } = await params;
+  const { locale } = params;
   if (!isLocale(locale)) {
     notFound();
   }
 
-  const query = await searchParams;
+  const query = searchParams ?? {};
   const q = Array.isArray(query.q) ? query.q[0] : query.q;
   const district_keys = parseCsvParam(query.districts).filter((key): key is keyof typeof DISTRICTS =>
     districtKeys.includes(key as keyof typeof DISTRICTS)
