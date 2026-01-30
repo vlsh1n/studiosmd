@@ -48,7 +48,7 @@ export async function listHalls(params: ListHallsParams) {
   const where: Prisma.HallWhereInput = {};
 
   if (params.tags && params.tags.length > 0) {
-    where.tags = { hasSome: params.tags };
+    where.tags = { hasEvery: params.tags };
   }
 
   if (typeof params.price_min === "number" || typeof params.price_max === "number") {
