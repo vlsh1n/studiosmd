@@ -1,4 +1,4 @@
-import { PrismaClient, DistrictKey } from "@prisma/client";
+import { PrismaClient, DistrictKey, Daylight, VideoFriendly } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -8,6 +8,10 @@ type HallSeed = {
   name_i18n: Record<LocaleKey, string>;
   images: string[];
   size_m2?: number;
+  minimum_hours: number;
+  weekend_price?: number;
+  daylight: Daylight;
+  video_friendly: VideoFriendly;
   tags: string[];
   price_per_hour: number;
 };
@@ -55,6 +59,10 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/aurora/hall-bright-2.jpg",
         ],
         size_m2: 70,
+        minimum_hours: 2,
+        weekend_price: 900,
+        daylight: Daylight.yes,
+        video_friendly: VideoFriendly.limited,
         tags: ["bright", "daylight", "portrait", "catalog", "big"],
         price_per_hour: 700,
       },
@@ -69,6 +77,9 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/aurora/hall-loft-2.jpg",
         ],
         size_m2: 55,
+        minimum_hours: 1,
+        daylight: Daylight.no,
+        video_friendly: VideoFriendly.yes,
         tags: ["loft", "dark", "interior", "video"],
         price_per_hour: 550,
       },
@@ -107,6 +118,10 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/lumi/hall-minimal-2.jpg",
         ],
         size_m2: 40,
+        minimum_hours: 1,
+        weekend_price: 520,
+        daylight: Daylight.limited,
+        video_friendly: VideoFriendly.no,
         tags: ["minimal", "bright", "interior", "small"],
         price_per_hour: 420,
       },
@@ -121,6 +136,10 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/lumi/hall-cyclo-2.jpg",
         ],
         size_m2: 65,
+        minimum_hours: 3,
+        weekend_price: 1000,
+        daylight: Daylight.yes,
+        video_friendly: VideoFriendly.yes,
         tags: ["cyclorama", "catalog", "video", "big"],
         price_per_hour: 800,
       },
@@ -159,6 +178,9 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/central/hall-interior-2.jpg",
         ],
         size_m2: 50,
+        minimum_hours: 2,
+        daylight: Daylight.no,
+        video_friendly: VideoFriendly.limited,
         tags: ["interior", "dark", "portrait", "small"],
         price_per_hour: 480,
       },
@@ -173,6 +195,10 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/central/hall-daylight-2.jpg",
         ],
         size_m2: 90,
+        minimum_hours: 2,
+        weekend_price: 1150,
+        daylight: Daylight.yes,
+        video_friendly: VideoFriendly.limited,
         tags: ["daylight", "bright", "catalog", "big"],
         price_per_hour: 900,
       },
@@ -211,6 +237,9 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/loftic/hall-dark-2.jpg",
         ],
         size_m2: 60,
+        minimum_hours: 3,
+        daylight: Daylight.no,
+        video_friendly: VideoFriendly.yes,
         tags: ["loft", "dark", "video", "interior"],
         price_per_hour: 600,
       },
@@ -225,6 +254,10 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/loftic/hall-minimal-2.jpg",
         ],
         size_m2: 45,
+        minimum_hours: 1,
+        weekend_price: 600,
+        daylight: Daylight.limited,
+        video_friendly: VideoFriendly.no,
         tags: ["minimal", "bright", "portrait", "small"],
         price_per_hour: 450,
       },
@@ -263,6 +296,9 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/north/hall-portrait-2.jpg",
         ],
         size_m2: 35,
+        minimum_hours: 1,
+        daylight: Daylight.limited,
+        video_friendly: VideoFriendly.no,
         tags: ["portrait", "interior", "small"],
         price_per_hour: 380,
       },
@@ -277,6 +313,9 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/north/hall-video-2.jpg",
         ],
         size_m2: 85,
+        minimum_hours: 2,
+        daylight: Daylight.yes,
+        video_friendly: VideoFriendly.yes,
         tags: ["video", "catalog", "daylight", "big"],
         price_per_hour: 850,
       },
