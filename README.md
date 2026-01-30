@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StudiosMD
 
-## Getting Started
+Catalog of photo studio halls in Chisinau.
 
-First, run the development server:
+## Requirements
+- Node.js 20+ (LTS recommended)
+- npm 9+
 
+## Local setup
 ```bash
+npm i
+npm run prisma:generate
+
+# Use migrate dev for local development (creates/updates migration history)
+# or run deploy-style migrations if you want to mirror production.
+# Local dev:
+npx prisma migrate dev
+# Production-like:
+npm run db:migrate
+
+# Seed data (WARNING: may overwrite data)
+npm run db:seed
+
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Production
+```bash
+npm run build
+npm start
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Prisma notes
+- `prisma migrate dev` is for local development. It creates new migrations and applies them to your local database.
+- `prisma migrate deploy` is for production. It applies existing migrations without creating new ones.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Routes
+- `/` -> `/ru`
+- `/ru`
+- `/ro`
+- `/en`
+- `/{locale}/studios/[id]`
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Railway deploy
+- Environment variables:
+  - `DATABASE_URL` (required)
+  - `NEXT_PUBLIC_SITE_URL` (optional)
+- Build command: `npm run build`
+- Start command: `npm start`
+- Migrations: run `npm run db:migrate` during deploy (or manually)
+- Seed: run `npm run db:seed` only when you need demo data (it may overwrite data)
