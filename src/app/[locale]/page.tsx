@@ -180,6 +180,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
               (tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag
             );
 
+            const hallId = encodeURIComponent(hall.id);
+            const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
+
             return (
               <article
                 key={hall.id}
@@ -196,7 +199,11 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                     <div className="h-24 w-32 rounded bg-gray-100" />
                   )}
                   <div className="space-y-1">
-                    <h2 className="text-lg font-semibold text-gray-900">{hall.name}</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      <Link href={hallHref} className="underline">
+                        {hall.name}
+                      </Link>
+                    </h2>
                     <div className="text-sm text-gray-600">
                       {hall.studio.name} · {DISTRICTS[hall.studio.district_key][locale]}
                     </div>
@@ -212,12 +219,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                     </span>
                   ))}
                 </div>
-                <Link
-                  href={`/${locale}/studios/${hall.studio.id}`}
-                  className="text-sm font-medium text-gray-900 underline"
-                >
-                  {hall.studio.name}
-                </Link>
+                <div className="text-xs text-gray-600">{hall.studio.name}</div>
               </article>
             );
           })
