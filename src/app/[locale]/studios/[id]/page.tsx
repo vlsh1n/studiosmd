@@ -5,7 +5,8 @@ import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale } from "@/i18n";
 
 type Props = {
-  params: Promise<{ locale: string; id: string }>;
+  params: { locale: string; id: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 type Contacts = Record<string, unknown> | null | undefined;
@@ -28,7 +29,7 @@ function getContact(contacts: Contacts, key: string) {
 }
 
 export default async function StudioPage({ params }: Props) {
-  const { locale, id } = await params;
+  const { locale, id } = params;
   if (!isLocale(locale)) {
     notFound();
   }
