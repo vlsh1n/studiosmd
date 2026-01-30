@@ -3,6 +3,7 @@ import { getStudioById } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale } from "@/i18n";
+import HallFocus from "@/components/HallFocus";
 
 type Props = {
   params: { locale: string; id: string };
@@ -71,6 +72,7 @@ export default async function StudioPage({ params }: Props) {
         </section>
       )}
 
+      <HallFocus />
       <section className="space-y-4">
         <div className="text-lg font-semibold text-gray-900">{UI_STRINGS.tags_title[locale]}</div>
         <div className="grid gap-4 md:grid-cols-2">
