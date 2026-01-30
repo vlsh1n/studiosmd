@@ -1,10 +1,29 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, DistrictKey } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const studios = [
+type LocaleKey = "ru" | "ro" | "en";
+
+type HallSeed = {
+  name_i18n: Record<LocaleKey, string>;
+  images: string[];
+  size_m2?: number;
+  tags: string[];
+  price_per_hour: number;
+};
+
+type StudioSeed = {
+  district_key: DistrictKey;
+  name_i18n: Record<LocaleKey, string>;
+  address_i18n: Record<LocaleKey, string>;
+  cover_images: string[];
+  contacts: Record<string, string>;
+  halls: HallSeed[];
+};
+
+const studios: StudioSeed[] = [
   {
-    district_key: "botanica",
+    district_key: DistrictKey.botanica,
     name_i18n: {
       ru: "Студия Aurora",
       ro: "Studio Aurora",
@@ -56,7 +75,7 @@ const studios = [
     ],
   },
   {
-    district_key: "ciocana",
+    district_key: DistrictKey.ciocana,
     name_i18n: {
       ru: "Студия Lumi",
       ro: "Studio Lumi",
@@ -108,7 +127,7 @@ const studios = [
     ],
   },
   {
-    district_key: "centru",
+    district_key: DistrictKey.centru,
     name_i18n: {
       ru: "Студия Central",
       ro: "Studio Central",
@@ -160,7 +179,7 @@ const studios = [
     ],
   },
   {
-    district_key: "buiucani",
+    district_key: DistrictKey.buiucani,
     name_i18n: {
       ru: "Студия Loftic",
       ro: "Studio Loftic",
@@ -212,7 +231,7 @@ const studios = [
     ],
   },
   {
-    district_key: "riscani",
+    district_key: DistrictKey.riscani,
     name_i18n: {
       ru: "Студия North",
       ro: "Studio Nord",
@@ -266,6 +285,15 @@ const studios = [
 ];
 
 async function main() {
+  const districtKeyValues = new Set(Object.values(DistrictKey));
+  const invalidDistrictKeys = studios
+    .map((studio) => studio.district_key)
+    .filter((value) => !districtKeyValues.has(value));
+
+  if (invalidDistrictKeys.length > 0) {
+    throw new Error(`Invalid district_key values: ${invalidDistrictKeys.join(", ")}`);
+  }
+
   await prisma.hall.deleteMany();
   await prisma.studio.deleteMany();
 
