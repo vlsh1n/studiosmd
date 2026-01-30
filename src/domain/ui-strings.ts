@@ -38,6 +38,26 @@ export const UI_STRINGS: UiStrings = {
     ro: "Resetare",
     en: "Reset",
   },
+  min_label: {
+    ru: "мин",
+    ro: "min",
+    en: "min",
+  },
+  weekend_label: {
+    ru: "выходные",
+    ro: "weekend",
+    en: "weekend",
+  },
+  daylight_short_label: {
+    ru: "дневной свет",
+    ro: "lumină naturală",
+    en: "daylight",
+  },
+  video_short_label: {
+    ru: "видео",
+    ro: "video",
+    en: "video",
+  },
   no_results: {
     ru: "Ничего не найдено",
     ro: "Nu s-a găsit nimic",

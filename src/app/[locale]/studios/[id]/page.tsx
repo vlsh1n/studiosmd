@@ -94,12 +94,16 @@ export default async function StudioPage({ params }: Props) {
                     {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
                   </div>
                   <div className="flex flex-wrap gap-2 text-xs text-gray-600">
-                    <span>min {hall.minimum_hours}h</span>
+                    <span>
+                      {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
+                    </span>
                     {typeof hall.weekend_price === "number" && (
-                      <span>weekend {hall.weekend_price}</span>
+                      <span>
+                        {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
+                      </span>
                     )}
                     <span>
-                      day{" "}
+                      {UI_STRINGS.daylight_short_label[locale]}{" "}
                       {hall.daylight === "yes"
                         ? "✓"
                         : hall.daylight === "limited"
@@ -107,7 +111,7 @@ export default async function StudioPage({ params }: Props) {
                           : "—"}
                     </span>
                     <span>
-                      video{" "}
+                      {UI_STRINGS.video_short_label[locale]}{" "}
                       {hall.video_friendly === "yes"
                         ? "✓"
                         : hall.video_friendly === "limited"
