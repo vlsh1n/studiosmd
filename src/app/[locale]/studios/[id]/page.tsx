@@ -30,7 +30,7 @@ function getContact(contacts: Contacts, key: string) {
 }
 
 export default async function StudioPage({ params }: Props) {
-  const { locale, id } = params;
+  const { locale, id } = await params;
   if (!isLocale(locale)) {
     notFound();
   }

@@ -46,12 +46,12 @@ function getStringsFromJson(value: unknown) {
 }
 
 export default async function CatalogPage({ params, searchParams }: Props) {
-  const { locale } = params;
+  const { locale } = await params;
   if (!isLocale(locale)) {
     notFound();
   }
 
-  const query = searchParams ?? {};
+  const query = (await searchParams) ?? {};
   const q = Array.isArray(query.q) ? query.q[0] : query.q;
   const district_keys = parseCsvParam(query.districts).filter((key): key is keyof typeof DISTRICTS =>
     districtKeys.includes(key as keyof typeof DISTRICTS)
