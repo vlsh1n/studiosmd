@@ -21,6 +21,18 @@ enum DistrictKey {
   riscani
 }
 
+enum Daylight {
+  no
+  limited
+  yes
+}
+
+enum VideoFriendly {
+  no
+  limited
+  yes
+}
+
 model Studio {
   id           String      @id @default(cuid())
   name_i18n    Json
@@ -37,6 +49,10 @@ model Hall {
   name_i18n      Json
   images         Json
   size_m2        Int?
+  minimum_hours  Int      @default(1)
+  weekend_price  Int?
+  daylight       Daylight @default(no)
+  video_friendly VideoFriendly @default(no)
   tags           String[]
   price_per_hour Int
 
