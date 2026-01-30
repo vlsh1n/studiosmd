@@ -210,6 +210,28 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                     <div className="text-sm font-semibold text-gray-900">
                       {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
                     </div>
+                    <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                      <span>min {hall.minimum_hours}h</span>
+                      {typeof hall.weekend_price === "number" && (
+                        <span>weekend {hall.weekend_price}</span>
+                      )}
+                      <span>
+                        day{" "}
+                        {hall.daylight === "yes"
+                          ? "✓"
+                          : hall.daylight === "limited"
+                            ? "~"
+                            : "—"}
+                      </span>
+                      <span>
+                        video{" "}
+                        {hall.video_friendly === "yes"
+                          ? "✓"
+                          : hall.video_friendly === "limited"
+                            ? "~"
+                            : "—"}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-2 text-xs text-gray-600">
