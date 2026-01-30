@@ -5,16 +5,42 @@ import { isLocale, t } from "@/i18n";
 
 type Props = {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
-export const metadata: Metadata = {
-  title: "StudiosMD",
-  description: "Studios catalog",
-};
+const SEO_COPY = {
+  ru: {
+    title: "StudiosMD — фотостудии Кишинёв",
+    description:
+      "Каталог залов фотостудий в Кишинёве: цены, теги, дневной свет, условия.",
+  },
+  ro: {
+    title: "StudiosMD — studiouri foto Chișinău",
+    description:
+      "Catalog de săli de studio foto în Chișinău: prețuri, taguri, lumină naturală, condiții.",
+  },
+  en: {
+    title: "StudiosMD — photo studios Chisinau",
+    description: "Catalog of photo studio rooms in Chisinau: pricing, tags, daylight, terms.",
+  },
+} as const;
 
-export default function LocaleLayout({ children, params }: Props) {
-  const { locale } = params;
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const seo = SEO_COPY[locale as keyof typeof SEO_COPY] ?? SEO_COPY.en;
+
+  return {
+    title: seo.title,
+    description: seo.description,
+  };
+}
+
+export default async function LocaleLayout({ children, params }: Props) {
+  const { locale } = await params;
 
   if (!isLocale(locale)) {
     notFound();
