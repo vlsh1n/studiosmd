@@ -81,7 +81,11 @@ export default async function StudioPage({ params }: Props) {
             );
 
             return (
-              <article key={hall.id} className="space-y-3 rounded border border-gray-200 p-4">
+              <article
+                key={hall.id}
+                id={`hall-${hall.id}`}
+                className="space-y-3 rounded border border-gray-200 p-4"
+              >
                 <div className="space-y-1">
                   <h2 className="text-lg font-semibold text-gray-900">{hall.name}</h2>
                   <div className="text-sm font-semibold text-gray-900">
