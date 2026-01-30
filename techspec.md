@@ -59,6 +59,10 @@ Locales: `ru`, `ro`, `en`.
 - UI‑строки для каталога/студии и facts‑лейблов (min/weekend/daylight/video).
 - Контент из БД (`name_i18n`, `address_i18n`) разворачивается в `hall.name`, `studio.name`, `studio.address`.
 
+### 2.4 App Router params/searchParams (важно для dev)
+- В server components для страниц `params` и `searchParams` приходят как `Promise`.
+- Доступ должен быть через `await` (`const { locale } = await params;`, `const query = (await searchParams) ?? {};`) иначе в dev будет warning `sync-dynamic-apis`.
+
 ---
 
 ## 3) Модель данных (Prisma / Postgres)
