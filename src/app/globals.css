@@ -70,6 +70,8 @@
 @layer components {
   .page {
     width: min(72rem, 100%);
+    max-width: 100%;
+    min-width: 0;
     margin: 0 auto;
     padding: clamp(1.25rem, 3vw, 2.5rem);
     display: flex;
@@ -78,6 +80,9 @@
   }
 
   .panel {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
@@ -87,6 +92,9 @@
   }
 
   .card {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     background: #ffffff;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
@@ -150,5 +158,18 @@
     display: flex;
     flex-direction: column;
     gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+}
+
+@layer base {
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  svg,
+  canvas {
+    max-width: 100%;
   }
 }

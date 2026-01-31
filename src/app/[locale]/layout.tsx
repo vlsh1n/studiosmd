@@ -49,11 +49,11 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <div className="page">
       <div className="panel p-5 sm:p-7">
-        <header className="flex items-center justify-between gap-4">
-          <div className="text-lg font-semibold text-black">
+        <header className="flex flex-wrap items-center justify-between gap-4">
+          <div className="min-w-0 text-lg font-semibold text-black">
             {t(locale, "projectName")}
           </div>
-          <div className="pill">
+          <div className="pill shrink-0 max-w-full">
             <LocaleSwitcher locale={locale} />
           </div>
         </header>
