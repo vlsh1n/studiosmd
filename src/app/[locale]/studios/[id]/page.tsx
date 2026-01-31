@@ -46,13 +46,15 @@ export default async function StudioPage({ params }: Props) {
   const telegram = getContact(studio.contacts as Contacts, "telegram");
 
   return (
-    <div className="space-y-8">
-      <section className="space-y-2">
-        <h1 className="text-2xl font-semibold text-gray-900">{studio.name}</h1>
-        <div className="text-sm text-gray-600">
-          {studio.address} · {DISTRICTS[studio.district_key][locale]}
+    <div className="stack">
+      <section className="card stack p-4">
+        <div className="stack gap-1">
+          <h1 className="text-2xl font-semibold text-gray-900">{studio.name}</h1>
+          <div className="text-sm muted">
+            {studio.address} · {DISTRICTS[studio.district_key][locale]}
+          </div>
         </div>
-        <div className="flex flex-wrap gap-3 text-sm text-gray-700">
+        <div className="flex flex-wrap gap-3 text-sm muted">
           {phone && <span>{phone}</span>}
           {instagram && <span>{instagram}</span>}
           {telegram && <span>{telegram}</span>}
@@ -60,7 +62,8 @@ export default async function StudioPage({ params }: Props) {
       </section>
 
       {coverImages.length > 0 && (
-        <section className="grid gap-3 sm:grid-cols-2">
+        <section className="card p-4">
+          <div className="grid gap-3 sm:grid-cols-2">
           {coverImages.map((image) => (
             <img
               key={image}
@@ -69,13 +72,14 @@ export default async function StudioPage({ params }: Props) {
               className="h-48 w-full rounded object-cover"
             />
           ))}
+          </div>
         </section>
       )}
 
       <HallFocus />
-      <section className="space-y-4">
+      <section className="stack">
         <div className="text-lg font-semibold text-gray-900">{UI_STRINGS.tags_title[locale]}</div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {studio.halls.map((hall) => {
             const images = getImageList(hall.images as JsonArray);
             const tags = hall.tags.map(
@@ -86,14 +90,14 @@ export default async function StudioPage({ params }: Props) {
               <article
                 key={hall.id}
                 id={`hall-${hall.id}`}
-                className="space-y-3 rounded border border-gray-200 p-4"
+                className="card stack p-5"
               >
-                <div className="space-y-1">
+                <div className="stack gap-1">
                   <h2 className="text-lg font-semibold text-gray-900">{hall.name}</h2>
                   <div className="text-sm font-semibold text-gray-900">
                     {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
                   </div>
-                  <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                  <div className="flex flex-wrap gap-2 text-xs muted">
                     <span>
                       {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
                     </span>
@@ -132,9 +136,9 @@ export default async function StudioPage({ params }: Props) {
                     ))}
                   </div>
                 )}
-                <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
-                    <span key={tag} className="rounded bg-gray-100 px-2 py-1">
+                    <span key={tag} className="pill text-xs">
                       {tag}
                     </span>
                   ))}
