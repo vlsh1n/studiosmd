@@ -47,14 +47,18 @@ export default async function LocaleLayout({ children, params }: Props) {
   }
 
   return (
-    <div className="min-h-screen">
-      <header className="mx-auto flex w-full max-w-5xl items-center justify-between px-6 py-6">
-        <div className="text-lg font-semibold text-black">
-          {t(locale, "projectName")}
-        </div>
-        <LocaleSwitcher locale={locale} />
-      </header>
-      <main className="mx-auto w-full max-w-5xl px-6 pb-16">{children}</main>
+    <div className="page">
+      <div className="panel p-5 sm:p-7">
+        <header className="flex items-center justify-between gap-4">
+          <div className="text-lg font-semibold text-black">
+            {t(locale, "projectName")}
+          </div>
+          <div className="pill">
+            <LocaleSwitcher locale={locale} />
+          </div>
+        </header>
+        <main className="stack pt-6">{children}</main>
+      </div>
     </div>
   );
 }
