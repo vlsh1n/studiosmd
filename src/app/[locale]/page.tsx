@@ -72,30 +72,30 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   })) as HallListItem[];
 
   return (
-    <div className="space-y-8">
-      <form className="space-y-6" method="get">
-        <div className="space-y-2">
+    <div className="stack">
+      <form className="stack" method="get">
+        <div className="card p-4">
           <input
             type="search"
             name="q"
             placeholder={UI_STRINGS.search_placeholder[locale]}
             defaultValue={q ?? ""}
-            className="w-full rounded border border-gray-200 px-3 py-2 text-sm"
+            className="input"
           />
         </div>
 
-        <div className="space-y-6 rounded border border-gray-200 p-4">
+        <div className="card stack p-5">
           <div className="text-sm font-semibold text-gray-900">
             {UI_STRINGS.filters_title[locale]}
           </div>
 
-          <div className="space-y-3">
-            <div className="text-xs font-semibold uppercase text-gray-500">
+          <div className="stack">
+            <div className="text-xs font-semibold uppercase muted">
               {UI_STRINGS.districts_title[locale]}
             </div>
             <div className="grid gap-2 md:grid-cols-2">
               {districtKeys.map((key) => (
-                <label key={key} className="flex items-center gap-2 text-sm">
+                <label key={key} className="flex items-center gap-2 text-sm muted">
                   <input
                     type="checkbox"
                     name="districts"
@@ -109,13 +109,13 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="text-xs font-semibold uppercase text-gray-500">
+          <div className="stack">
+            <div className="text-xs font-semibold uppercase muted">
               {UI_STRINGS.tags_title[locale]}
             </div>
             <div className="grid gap-2 md:grid-cols-3">
               {tagKeys.map((key) => (
-                <label key={key} className="flex items-center gap-2 text-sm">
+                <label key={key} className="flex items-center gap-2 text-sm muted">
                   <input
                     type="checkbox"
                     name="tags"
@@ -129,8 +129,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          <div className="space-y-3">
-            <div className="text-xs font-semibold uppercase text-gray-500">
+          <div className="stack">
+            <div className="text-xs font-semibold uppercase muted">
               {UI_STRINGS.price_title[locale]}
             </div>
             <div className="flex flex-wrap gap-2">
@@ -139,38 +139,32 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 name="priceMin"
                 placeholder="Min"
                 defaultValue={price_min?.toString() ?? ""}
-                className="w-28 rounded border border-gray-200 px-3 py-2 text-sm"
+                className="input w-28"
               />
               <input
                 type="number"
                 name="priceMax"
                 placeholder="Max"
                 defaultValue={price_max?.toString() ?? ""}
-                className="w-28 rounded border border-gray-200 px-3 py-2 text-sm"
+                className="input w-28"
               />
             </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <button
-              type="submit"
-              className="rounded bg-black px-4 py-2 text-sm font-semibold text-white"
-            >
+            <button type="submit" className="btn btn-primary">
               {UI_STRINGS.apply[locale]}
             </button>
-            <Link
-              href={`/${locale}`}
-              className="rounded border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700"
-            >
+            <Link href={`/${locale}`} className="btn">
               {UI_STRINGS.reset[locale]}
             </Link>
           </div>
         </div>
       </form>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {halls.length === 0 ? (
-          <div className="text-sm text-gray-500">{UI_STRINGS.no_results[locale]}</div>
+          <div className="text-sm muted">{UI_STRINGS.no_results[locale]}</div>
         ) : (
           halls.map((hall) => {
             const hallImage = getImageFromJson(hall.images);
@@ -184,11 +178,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
 
             return (
-              <article
-                key={hall.id}
-                className="flex flex-col gap-3 rounded border border-gray-200 p-4"
-              >
-                <div className="flex gap-3">
+              <article key={hall.id} className="card stack p-5">
+                <div className="flex gap-4">
                   {image ? (
                     <img
                       src={image}
@@ -204,13 +195,13 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                         {hall.name}
                       </Link>
                     </h2>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm muted">
                       {hall.studio.name} · {DISTRICTS[hall.studio.district_key][locale]}
                     </div>
                     <div className="text-sm font-semibold text-gray-900">
                       {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
                     </div>
-                    <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                    <div className="flex flex-wrap gap-2 text-xs muted">
                       <span>
                         {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
                       </span>
@@ -238,14 +229,14 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+                <div className="flex flex-wrap gap-2">
                   {tagLabels.map((tag) => (
-                    <span key={tag} className="rounded bg-gray-100 px-2 py-1">
+                    <span key={tag} className="pill text-xs">
                       {tag}
                     </span>
                   ))}
                 </div>
-                <div className="text-xs text-gray-600">{hall.studio.name}</div>
+                <div className="text-xs muted">{hall.studio.name}</div>
               </article>
             );
           })
