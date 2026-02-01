@@ -15,6 +15,8 @@
 - **MVP‑поля Hall добавлены**: `minimum_hours`, `weekend_price`, `daylight`, `video_friendly`.
 - **SEO metadata локализована** в `src/app/[locale]/layout.tsx` через `generateMetadata`.
 - **Root html lang** сейчас фиксирован на `ru` (без динамики).
+- **UI foundation**: milky‑тема, noise overlay, семантические классы (`.page/.panel/.card/.pill/.btn/.input/.muted/.stack`), focus‑visible outline.
+- **Locale layout shell**: `.page` + `.panel`, header с `LocaleSwitcher` в pill‑обёртке.
 
 ---
 
@@ -62,6 +64,10 @@ Locales: `ru`, `ro`, `en`.
 ### 2.4 App Router params/searchParams (важно для dev)
 - В server components для страниц `params` и `searchParams` приходят как `Promise`.
 - Доступ должен быть через `await` (`const { locale } = await params;`, `const query = (await searchParams) ?? {};`) иначе в dev будет warning `sync-dynamic-apis`.
+
+### 2.5 Layout shell (UI)
+- `src/app/[locale]/layout.tsx` использует `.page` + `.panel`.
+- Header внутри панели: слева название, справа `LocaleSwitcher` в `.pill`.
 
 ---
 
@@ -164,7 +170,8 @@ JS‑фильтрация по локализованным названиям (
 - studio name (текст) + district
 - цена за час
 - facts‑блок: `min`, `weekend` (если задан), `daylight`, `video` + символы ✓/~ /—
-- список tag chips
+- список tag chips (стилизованы как `.pill`)
+- карточка оформлена как `.card` с `stack`‑отступами
 
 ### 7.2 Переход на студию (deep‑link)
 Ссылка с hall name ведёт на:
@@ -183,7 +190,8 @@ JS‑фильтрация по локализованным названиям (
   - `<article id="hall-<id>">`
   - name, price
   - facts‑блок (min/weekend/daylight/video)
-  - изображения, теги
+  - изображения, теги (теги как `.pill`)
+  - карточки залов оформлены как `.card` с `stack`‑отступами
 
 ---
 
@@ -231,6 +239,12 @@ README.md
 
 - Цена за час: `{hall.price_per_hour} {UI_STRINGS.per_hour[locale]}`
 - Facts‑лейблы локализованы через `UI_STRINGS`.
+
+### 11.1 UI foundation (globals.css)
+- Токены и семантические классы в `src/app/globals.css`: `.page/.panel/.card/.pill/.btn/.input/.muted/.stack`.
+- Noise overlay через `body::before`.
+- Focus‑visible оформлен через `outline` + `outline-offset`.
+- Защита от mobile overflow: `max-width/min-width` на `.page/.panel/.card` и `max-width` для media.
 
 ---
 
