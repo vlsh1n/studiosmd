@@ -59,6 +59,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const tags = parseCsvParam(query.tags).filter((key): key is keyof typeof TAGS =>
     tagKeys.includes(key as keyof typeof TAGS)
   );
+  const selectedTagLabels = tags.map((tag) => TAGS[tag]?.[locale] ?? tag);
   const price_min = parseNumberParam(query.priceMin);
   const price_max = parseNumberParam(query.priceMax);
 
@@ -109,11 +110,25 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          <div className="stack">
-            <div className="text-xs font-semibold uppercase muted">
-              {UI_STRINGS.tags_title[locale]}
-            </div>
-            <div className="grid gap-2 md:grid-cols-3">
+          <details className="stack">
+            <summary className="flex items-center justify-between gap-3 list-none">
+              <span className="text-xs font-semibold uppercase muted">
+                {UI_STRINGS.tags_title[locale]} ({selectedTagLabels.length})
+              </span>
+              <span className="flex min-w-0 items-center gap-2 overflow-hidden">
+                {selectedTagLabels.slice(0, 3).map((label) => (
+                  <span key={label} className="pill text-xs whitespace-nowrap">
+                    {label}
+                  </span>
+                ))}
+                {selectedTagLabels.length > 3 && (
+                  <span className="pill text-xs whitespace-nowrap">
+                    +{selectedTagLabels.length - 3}
+                  </span>
+                )}
+              </span>
+            </summary>
+            <div className="grid gap-2 pt-3 md:grid-cols-3">
               {tagKeys.map((key) => (
                 <label key={key} className="flex items-center gap-2 text-sm muted">
                   <input
@@ -127,7 +142,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 </label>
               ))}
             </div>
-          </div>
+          </details>
 
           <div className="stack">
             <div className="text-xs font-semibold uppercase muted">
