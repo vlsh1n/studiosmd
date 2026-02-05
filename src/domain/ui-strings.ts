@@ -33,6 +33,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Sortare",
     en: "Sort",
   },
+  sort_random: {
+    ru: "Случайно",
+    ro: "Aleator",
+    en: "Random",
+  },
   sort_price_asc: {
     ru: "Цена: по возрастанию",
     ro: "Preț: crescător",

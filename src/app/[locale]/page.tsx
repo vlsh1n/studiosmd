@@ -38,6 +38,15 @@ function getStringsFromJson(value: unknown) {
   return value.filter((item) => typeof item === "string") as string[];
 }
 
+function shuffleArray<T>(items: T[]): T[] {
+  const result = [...items];
+  for (let i = result.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
 export default async function CatalogPage({ params, searchParams }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) {
@@ -53,17 +62,19 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     tagKeys.includes(key as keyof typeof TAGS)
   );
   const selectedTagLabels = tags.map((tag) => TAGS[tag]?.[locale] ?? tag);
+  const rawSort = Array.isArray(query.sort) ? query.sort[0] : query.sort;
   const sort =
-    query.sort === "price_asc" || query.sort === "price_desc"
-      ? query.sort
-      : undefined;
+    rawSort === "price_asc" || rawSort === "price_desc" || rawSort === "random"
+      ? rawSort
+      : "random";
   const halls = (await listHalls({
     locale,
     q,
     district_keys,
     tags,
-    sort,
+    sort: sort === "random" ? undefined : sort,
   })) as HallListItem[];
+  const displayedHalls = sort === "random" ? shuffleArray(halls) : halls;
 
   return (
     <div className="stack">
@@ -157,7 +168,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             <div className="text-xs font-semibold uppercase muted">
               {UI_STRINGS.sort_label[locale]}
             </div>
-            <select name="sort" defaultValue={sort ?? "price_asc"} className="select">
+            <select name="sort" defaultValue={sort} className="select">
+              <option value="random">{UI_STRINGS.sort_random[locale]}</option>
               <option value="price_asc">{UI_STRINGS.sort_price_asc[locale]}</option>
               <option value="price_desc">{UI_STRINGS.sort_price_desc[locale]}</option>
             </select>
@@ -175,10 +187,10 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       </form>
 
       <div className="grid gap-6 md:grid-cols-2">
-        {halls.length === 0 ? (
+        {displayedHalls.length === 0 ? (
           <div className="text-sm muted">{UI_STRINGS.no_results[locale]}</div>
         ) : (
-          halls.map((hall) => {
+          displayedHalls.map((hall) => {
             const hallImage = getImageFromJson(hall.images);
             const studioImage = getImageFromJson(hall.studio.cover_images);
             const image = hallImage ?? studioImage;
