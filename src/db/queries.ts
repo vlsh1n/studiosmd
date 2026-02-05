@@ -9,6 +9,7 @@ type ListHallsParams = {
   tags?: string[];
   price_min?: number;
   price_max?: number;
+  sort?: "price_asc" | "price_desc";
 };
 
 type HallWithStudio = Prisma.HallGetPayload<{
@@ -81,7 +82,7 @@ export async function listHalls(params: ListHallsParams) {
       },
     },
     orderBy: {
-      price_per_hour: "asc",
+      price_per_hour: params.sort === "price_desc" ? "desc" : "asc",
     },
   });
 

@@ -60,6 +60,10 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     tagKeys.includes(key as keyof typeof TAGS)
   );
   const selectedTagLabels = tags.map((tag) => TAGS[tag]?.[locale] ?? tag);
+  const sort =
+    query.sort === "price_asc" || query.sort === "price_desc"
+      ? query.sort
+      : undefined;
   const price_min = parseNumberParam(query.priceMin);
   const price_max = parseNumberParam(query.priceMax);
 
@@ -70,6 +74,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     tags,
     price_min,
     price_max,
+    sort,
   })) as HallListItem[];
 
   return (
@@ -164,6 +169,14 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 className="input w-28"
               />
             </div>
+          </div>
+
+          <div className="stack">
+            <div className="text-xs font-semibold uppercase muted">Sort</div>
+            <select name="sort" defaultValue={sort ?? "price_asc"} className="select">
+              <option value="price_asc">Price: low to high</option>
+              <option value="price_desc">Price: high to low</option>
+            </select>
           </div>
 
           <div className="flex flex-wrap gap-2">
