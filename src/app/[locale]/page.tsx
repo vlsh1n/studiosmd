@@ -230,6 +230,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
                     </div>
                     <div className="flex flex-wrap gap-2 text-xs muted">
+                      {typeof hall.area_sqm === "number" && (
+                        <span>{hall.area_sqm} м²</span>
+                      )}
                       <span>
                         {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
                       </span>
@@ -265,6 +268,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                   ))}
                 </div>
                 <div className="text-xs muted">{hall.studio.name}</div>
+                <Link href={hallHref} className="btn btn-primary">
+                  Посмотреть
+                </Link>
               </article>
             );
           })
