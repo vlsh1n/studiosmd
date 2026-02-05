@@ -28,6 +28,21 @@ export const UI_STRINGS: UiStrings = {
     ro: "Parametri",
     en: "Parameters",
   },
+  sort_label: {
+    ru: "Сортировка",
+    ro: "Sortare",
+    en: "Sort",
+  },
+  sort_price_asc: {
+    ru: "Цена: по возрастанию",
+    ro: "Preț: crescător",
+    en: "Price: low to high",
+  },
+  sort_price_desc: {
+    ru: "Цена: по убыванию",
+    ro: "Preț: descrescător",
+    en: "Price: high to low",
+  },
   price_title: {
     ru: "Цена",
     ro: "Preț",

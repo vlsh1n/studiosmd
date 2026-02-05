@@ -163,6 +163,19 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 </label>
               ))}
             </div>
+            <div className="stack pt-3">
+              <div className="text-xs font-semibold uppercase muted">
+                {UI_STRINGS.sort_label[locale]}
+              </div>
+              <select
+                name="sort"
+                defaultValue={sort ?? "price_asc"}
+                className="select w-full"
+              >
+                <option value="price_asc">{UI_STRINGS.sort_price_asc[locale]}</option>
+                <option value="price_desc">{UI_STRINGS.sort_price_desc[locale]}</option>
+              </select>
+            </div>
           </details>
 
           <div className="stack">
@@ -185,14 +198,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 className="input w-28"
               />
             </div>
-          </div>
-
-          <div className="stack">
-            <div className="text-xs font-semibold uppercase muted">Sort</div>
-            <select name="sort" defaultValue={sort ?? "price_asc"} className="select">
-              <option value="price_asc">Price: low to high</option>
-              <option value="price_desc">Price: high to low</option>
-            </select>
           </div>
 
           <div className="flex flex-wrap gap-2">
