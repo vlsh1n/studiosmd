@@ -3,6 +3,7 @@ import { getStudioById } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale } from "@/i18n";
+import HallGalleryZoom from "@/app/[locale]/studios/[id]/HallGalleryZoom";
 import HallFocus from "@/components/HallFocus";
 
 type Props = {
@@ -130,16 +131,7 @@ export default async function StudioPage({ params }: Props) {
                   </div>
                 </div>
                 {images.length > 0 && (
-                  <div className="flex gap-2 overflow-x-auto">
-                    {images.slice(0, 3).map((image) => (
-                      <img
-                        key={image}
-                        src={image}
-                        alt={hall.name}
-                        className="h-24 w-32 rounded object-cover"
-                      />
-                    ))}
-                  </div>
+                  <HallGalleryZoom images={images} alt={hall.name} />
                 )}
                 <div className="flex flex-wrap gap-2">
                   {tags.map((tag) => (
