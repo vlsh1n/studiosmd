@@ -25,13 +25,6 @@ function parseCsvParam(value?: string | string[]) {
     .filter(Boolean);
 }
 
-function parseNumberParam(value?: string | string[]) {
-  const raw = Array.isArray(value) ? value[0] : value;
-  if (!raw) return undefined;
-  const parsed = Number(raw);
-  return Number.isFinite(parsed) ? parsed : undefined;
-}
-
 function getImageFromJson(value: unknown) {
   if (Array.isArray(value)) {
     const first = value.find((item) => typeof item === "string");
@@ -64,16 +57,11 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     query.sort === "price_asc" || query.sort === "price_desc"
       ? query.sort
       : undefined;
-  const price_min = parseNumberParam(query.priceMin);
-  const price_max = parseNumberParam(query.priceMax);
-
   const halls = (await listHalls({
     locale,
     q,
     district_keys,
     tags,
-    price_min,
-    price_max,
     sort,
   })) as HallListItem[];
 
@@ -163,41 +151,16 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 </label>
               ))}
             </div>
-            <div className="stack pt-3">
-              <div className="text-xs font-semibold uppercase muted">
-                {UI_STRINGS.sort_label[locale]}
-              </div>
-              <select
-                name="sort"
-                defaultValue={sort ?? "price_asc"}
-                className="select w-full"
-              >
-                <option value="price_asc">{UI_STRINGS.sort_price_asc[locale]}</option>
-                <option value="price_desc">{UI_STRINGS.sort_price_desc[locale]}</option>
-              </select>
-            </div>
           </details>
 
           <div className="stack">
             <div className="text-xs font-semibold uppercase muted">
-              {UI_STRINGS.price_title[locale]}
+              {UI_STRINGS.sort_label[locale]}
             </div>
-            <div className="flex flex-wrap gap-2">
-              <input
-                type="number"
-                name="priceMin"
-                placeholder="Min"
-                defaultValue={price_min?.toString() ?? ""}
-                className="input w-28"
-              />
-              <input
-                type="number"
-                name="priceMax"
-                placeholder="Max"
-                defaultValue={price_max?.toString() ?? ""}
-                className="input w-28"
-              />
-            </div>
+            <select name="sort" defaultValue={sort ?? "price_asc"} className="select">
+              <option value="price_asc">{UI_STRINGS.sort_price_asc[locale]}</option>
+              <option value="price_desc">{UI_STRINGS.sort_price_desc[locale]}</option>
+            </select>
           </div>
 
           <div className="flex flex-wrap gap-2">

@@ -7,8 +7,6 @@ type ListHallsParams = {
   q?: string;
   district_keys?: DistrictKey[];
   tags?: string[];
-  price_min?: number;
-  price_max?: number;
   sort?: "price_asc" | "price_desc";
 };
 
@@ -50,16 +48,6 @@ export async function listHalls(params: ListHallsParams) {
 
   if (params.tags && params.tags.length > 0) {
     where.tags = { hasEvery: params.tags };
-  }
-
-  if (typeof params.price_min === "number" || typeof params.price_max === "number") {
-    where.price_per_hour = {};
-    if (typeof params.price_min === "number") {
-      where.price_per_hour.gte = params.price_min;
-    }
-    if (typeof params.price_max === "number") {
-      where.price_per_hour.lte = params.price_max;
-    }
   }
 
   if (params.district_keys && params.district_keys.length > 0) {
