@@ -98,6 +98,9 @@ export default async function StudioPage({ params }: Props) {
                     {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
                   </div>
                   <div className="flex flex-wrap gap-2 text-xs muted">
+                    {typeof hall.area_sqm === "number" && (
+                      <span>{hall.area_sqm} м²</span>
+                    )}
                     <span>
                       {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
                     </span>
@@ -106,6 +109,8 @@ export default async function StudioPage({ params }: Props) {
                         {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
                       </span>
                     )}
+                    <span>реквизит {hall.props_available ? "✓" : "—"}</span>
+                    <span>оборудование {hall.equipment_available ? "✓" : "—"}</span>
                     <span>
                       {UI_STRINGS.daylight_short_label[locale]}{" "}
                       {hall.daylight === "yes"
