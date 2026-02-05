@@ -269,7 +269,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 </div>
                 <div className="text-xs muted">{hall.studio.name}</div>
                 <Link href={hallHref} className="btn btn-primary">
-                  Посмотреть
+                  {UI_STRINGS.view_hall_cta[locale]}
                 </Link>
               </article>
             );

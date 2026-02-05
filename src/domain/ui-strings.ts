@@ -58,6 +58,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "video",
     en: "video",
   },
+  view_hall_cta: {
+    ru: "Посмотреть",
+    ro: "Vezi",
+    en: "View",
+  },
   no_results: {
     ru: "Ничего не найдено",
     ro: "Nu s-a găsit nimic",
