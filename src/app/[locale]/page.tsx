@@ -115,10 +115,10 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          <details className="stack">
-            <summary className="flex items-center justify-between gap-3 list-none">
+          <details className="stack group">
+            <summary className="flex cursor-pointer items-center justify-between gap-3 py-1 list-none">
               <span className="text-xs font-semibold uppercase muted">
-                {UI_STRINGS.tags_title[locale]} ({selectedTagLabels.length})
+                {UI_STRINGS.filters_params_title[locale]} ({selectedTagLabels.length})
               </span>
               <span className="flex min-w-0 items-center gap-2 overflow-hidden">
                 {selectedTagLabels.slice(0, 3).map((label) => (
@@ -131,6 +131,22 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                     +{selectedTagLabels.length - 3}
                   </span>
                 )}
+              </span>
+              <span className="flex h-5 w-5 items-center justify-center text-gray-500 transition-transform group-open:rotate-180">
+                <svg
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  aria-hidden="true"
+                  className="h-4 w-4"
+                >
+                  <path
+                    d="M5 8l5 5 5-5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
               </span>
             </summary>
             <div className="grid gap-2 pt-3 md:grid-cols-3">

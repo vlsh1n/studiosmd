@@ -23,6 +23,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Etichete",
     en: "Tags",
   },
+  filters_params_title: {
+    ru: "Параметры",
+    ro: "Parametri",
+    en: "Parameters",
+  },
   price_title: {
     ru: "Цена",
     ro: "Preț",
