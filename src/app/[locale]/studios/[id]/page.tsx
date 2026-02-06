@@ -128,9 +128,6 @@ export default async function StudioPage({ params }: Props) {
                     {typeof hall.area_sqm === "number" && (
                       <span>{hall.area_sqm} м²</span>
                     )}
-                    <span>
-                      {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
-                    </span>
                     {typeof hall.weekend_price === "number" && (
                       <span>
                         {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}

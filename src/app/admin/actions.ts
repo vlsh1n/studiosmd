@@ -101,7 +101,6 @@ export async function createHallAction(formData: FormData) {
 
   const studioId = readString(formData, "studio_id");
   const weekendPrice = parsePositiveInt(readString(formData, "weekend_price"));
-  const minimumHours = parsePositiveInt(readString(formData, "minimum_hours"));
 
   const hallData: Record<string, unknown> = {
     studioId,
@@ -122,10 +121,6 @@ export async function createHallAction(formData: FormData) {
 
   if (weekendPrice) {
     hallData.weekend_price = weekendPrice;
-  }
-
-  if (minimumHours) {
-    hallData.minimum_hours = minimumHours;
   }
 
   await prisma.hall.create({ data: hallData as never });

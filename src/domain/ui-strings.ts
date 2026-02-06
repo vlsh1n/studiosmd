@@ -63,11 +63,6 @@ export const UI_STRINGS: UiStrings = {
     ro: "Resetare",
     en: "Reset",
   },
-  min_label: {
-    ru: "мин",
-    ro: "min",
-    en: "min",
-  },
   weekend_label: {
     ru: "выходные",
     ro: "weekend",

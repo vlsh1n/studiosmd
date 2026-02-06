@@ -207,7 +207,7 @@ export default async function AdminPage({ searchParams }: Props) {
               />
             </label>
 
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <label className="stack gap-1 text-sm">
                 <span>Price per hour</span>
                 <input name="price_per_hour" type="number" min={1} className="input" required />
@@ -215,10 +215,6 @@ export default async function AdminPage({ searchParams }: Props) {
               <label className="stack gap-1 text-sm">
                 <span>Weekend price (optional)</span>
                 <input name="weekend_price" type="number" min={1} className="input" />
-              </label>
-              <label className="stack gap-1 text-sm">
-                <span>Minimum hours (optional)</span>
-                <input name="minimum_hours" type="number" min={1} className="input" />
               </label>
             </div>
 
