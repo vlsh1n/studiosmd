@@ -7,6 +7,17 @@
   --text: #1c1a17;
   --muted: #6f6a63;
   --border: #e5ded4;
+  --glass-bg: rgba(255, 255, 255, 0.68);
+  --glass-bg-strong: rgba(247, 243, 237, 0.9);
+  --glass-bg-hover: rgba(255, 255, 255, 0.75);
+  --glass-input-bg: rgba(255, 255, 255, 0.62);
+  --glass-input-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.58);
+  --glass-shadow: 0 12px 34px rgba(20, 16, 10, 0.09);
+  --glass-shadow-lift: 0 16px 38px rgba(20, 16, 10, 0.12);
+  --glass-shadow-press: 0 8px 20px rgba(20, 16, 10, 0.1);
+  --glass-blur: 15px;
+  --glass-saturate: 145%;
 
   --radius-xl: 28px;
   --radius-lg: 18px;
@@ -58,6 +69,19 @@
     background-size: 160px 160px;
   }
 
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: radial-gradient(
+      72% 56% at 14% -6%,
+      rgba(255, 255, 255, 0.08),
+      transparent 72%
+    );
+  }
+
   body > * {
     position: relative;
     z-index: 1;
@@ -85,22 +109,26 @@
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur))
+      saturate(var(--glass-saturate));
   }
 
   .card {
     width: 100%;
     max-width: 100%;
     min-width: 0;
-    background: #ffffff;
-    border: 1px solid var(--border);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lift);
+    box-shadow: var(--glass-shadow-lift);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(var(--glass-blur))
+      saturate(var(--glass-saturate));
   }
 
   .pill {
@@ -121,11 +149,25 @@
     gap: 0.4rem;
     padding: 0.55rem 1.15rem;
     border-radius: 999px;
-    border: 1px solid var(--border);
-    background: var(--surface);
+    border: 1px solid var(--glass-border);
+    background: var(--glass-bg);
     color: var(--text);
-    box-shadow: var(--shadow-soft);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.8))
+      saturate(var(--glass-saturate));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.8))
+      saturate(var(--glass-saturate));
     transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  }
+
+  .btn:hover {
+    background: var(--glass-bg-hover);
+    box-shadow: var(--glass-shadow-lift);
+  }
+
+  .btn:active {
+    transform: translateY(1px);
+    box-shadow: var(--glass-shadow-press);
   }
 
   .btn-primary {
@@ -138,12 +180,15 @@
   .input,
   .select {
     width: 100%;
-    border: 1px solid var(--border);
+    border: 1px solid var(--glass-border);
     border-radius: var(--radius-lg);
-    background: var(--surface);
+    background: var(--glass-input-bg);
     padding: 0.6rem 0.9rem;
     color: var(--text);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.6)) saturate(132%);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.6))
+      saturate(132%);
   }
 
   .muted {
@@ -160,6 +205,20 @@
     display: flex;
     flex-direction: column;
     gap: clamp(0.75rem, 2vw, 1.25rem);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .panel,
+  .card,
+  .btn,
+  .pill {
+    background: var(--glass-bg-strong);
+  }
+
+  .input,
+  .select {
+    background: var(--glass-input-bg-strong);
   }
 }
 
