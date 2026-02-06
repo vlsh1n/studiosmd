@@ -103,7 +103,8 @@ export default async function StudioPage({ params }: Props) {
                 <div className="stack gap-1">
                   <h2 className="text-lg font-semibold text-gray-900">{hall.name}</h2>
                   <div className="text-sm font-semibold text-gray-900">
-                    {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
+                    {hall.price_per_hour}
+                    {"\u00A0"}MDL {UI_STRINGS.per_hour[locale]}
                   </div>
                   <div className="flex flex-wrap gap-2 text-xs muted">
                     {typeof hall.area_sqm === "number" && (
@@ -115,6 +116,7 @@ export default async function StudioPage({ params }: Props) {
                     {typeof hall.weekend_price === "number" && (
                       <span>
                         {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
+                        {"\u00A0"}MDL
                       </span>
                     )}
                     <span>

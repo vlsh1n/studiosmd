@@ -230,7 +230,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       {hall.studio.name} · {DISTRICTS[hall.studio.district_key][locale]}
                     </div>
                     <div className="text-sm font-semibold text-gray-900">
-                      {hall.price_per_hour} {UI_STRINGS.per_hour[locale]}
+                      {hall.price_per_hour}
+                      {"\u00A0"}MDL {UI_STRINGS.per_hour[locale]}
                     </div>
                     <div className="flex flex-wrap gap-2 text-xs muted">
                       {typeof hall.area_sqm === "number" && (
@@ -242,6 +243,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       {typeof hall.weekend_price === "number" && (
                         <span>
                           {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
+                          {"\u00A0"}MDL
                         </span>
                       )}
                       <span>
