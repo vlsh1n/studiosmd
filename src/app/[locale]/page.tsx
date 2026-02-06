@@ -47,6 +47,10 @@ function shuffleArray<T>(items: T[]): T[] {
   return result;
 }
 
+function factIcon(value: unknown) {
+  return value === true || value === "yes" ? "✅" : "❌";
+}
+
 export default async function CatalogPage({ params, searchParams }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) {
@@ -197,6 +201,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             const tagLabels = hall.tags.map(
               (tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag
             );
+            const hallRecord = hall as Record<string, unknown>;
+            const flashAvailable = hallRecord.flash_available === true;
+            const continuousAvailable = hallRecord.continuous_available === true;
 
             const hallId = encodeURIComponent(hall.id);
             const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
@@ -238,20 +245,22 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                         </span>
                       )}
                       <span>
-                        {UI_STRINGS.daylight_short_label[locale]}{" "}
-                        {hall.daylight === "yes"
-                          ? "✓"
-                          : hall.daylight === "limited"
-                            ? "~"
-                            : "—"}
+                        {UI_STRINGS.daylight_fact_label[locale]} {factIcon(hall.daylight)}
                       </span>
                       <span>
-                        {UI_STRINGS.video_short_label[locale]}{" "}
-                        {hall.video_friendly === "yes"
-                          ? "✓"
-                          : hall.video_friendly === "limited"
-                            ? "~"
-                            : "—"}
+                        {UI_STRINGS.video_allowed_label[locale]}{" "}
+                        {factIcon(hall.video_friendly)}
+                      </span>
+                      <span>
+                        {UI_STRINGS.furniture_label[locale]}{" "}
+                        {factIcon(hall.props_available)}
+                      </span>
+                      <span>
+                        {UI_STRINGS.flash_light_label[locale]} {factIcon(flashAvailable)}
+                      </span>
+                      <span>
+                        {UI_STRINGS.continuous_light_label[locale]}{" "}
+                        {factIcon(continuousAvailable)}
                       </span>
                     </div>
                   </div>

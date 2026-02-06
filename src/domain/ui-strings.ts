@@ -83,6 +83,31 @@ export const UI_STRINGS: UiStrings = {
     ro: "video",
     en: "video",
   },
+  daylight_fact_label: {
+    ru: "Дневной свет",
+    ro: "Lumină naturală",
+    en: "Daylight",
+  },
+  video_allowed_label: {
+    ru: "Можно ли снимать видео?",
+    ro: "Se poate filma video?",
+    en: "Can you shoot video?",
+  },
+  furniture_label: {
+    ru: "Мебель",
+    ro: "Mobilier",
+    en: "Furniture",
+  },
+  flash_light_label: {
+    ru: "Импульсный свет",
+    ro: "Lumină cu blitz",
+    en: "Flash light",
+  },
+  continuous_light_label: {
+    ru: "Постоянный свет",
+    ro: "Lumină continuă",
+    en: "Continuous light",
+  },
   view_hall_cta: {
     ru: "Посмотреть",
     ro: "Vezi",
