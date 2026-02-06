@@ -209,30 +209,33 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
 
             return (
-              <article key={hall.id} className="card stack p-5">
-                <div className="flex gap-4">
-                  {image ? (
-                    <img
-                      src={image}
-                      alt={hall.name}
-                      className="h-24 w-32 rounded object-cover"
-                    />
-                  ) : (
-                    <div className="h-24 w-32 rounded bg-gray-100" />
-                  )}
-                  <div className="space-y-1">
-                    <h2 className="text-lg font-semibold text-gray-900">
-                      <Link href={hallHref} className="underline">
-                        {hall.name}
-                      </Link>
-                    </h2>
-                    <div className="text-sm muted">
-                      {hall.studio.name} · {DISTRICTS[hall.studio.district_key][locale]}
+              <article key={hall.id} className="card p-4 sm:p-5">
+                <div className="stack gap-4 lg:grid lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
+                  <div className="h-48 w-full overflow-hidden rounded bg-gray-100 sm:h-52 lg:h-56">
+                    {image ? (
+                      <img
+                        src={image}
+                        alt={hall.name}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="stack gap-3 min-w-0">
+                    <div className="space-y-1">
+                      <h2 className="text-lg font-semibold text-gray-900">
+                        <Link href={hallHref} className="underline">
+                          {hall.name}
+                        </Link>
+                      </h2>
+                      <div className="text-sm muted">
+                        {hall.studio.name} · {DISTRICTS[hall.studio.district_key][locale]}
+                      </div>
+                      <div className="text-sm font-semibold text-gray-900">
+                        {hall.price_per_hour}
+                        {"\u00A0"}MDL {UI_STRINGS.per_hour[locale]}
+                      </div>
                     </div>
-                    <div className="text-sm font-semibold text-gray-900">
-                      {hall.price_per_hour}
-                      {"\u00A0"}MDL {UI_STRINGS.per_hour[locale]}
-                    </div>
+
                     <div className="flex flex-wrap gap-2 text-xs muted">
                       {typeof hall.area_sqm === "number" && (
                         <span>{hall.area_sqm} м²</span>
@@ -265,19 +268,22 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                         {factIcon(continuousAvailable)}
                       </span>
                     </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      {tagLabels.map((tag) => (
+                        <span key={tag} className="pill text-xs">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div>
+                      <Link href={hallHref} className="btn btn-primary">
+                        {UI_STRINGS.view_hall_cta[locale]}
+                      </Link>
+                    </div>
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {tagLabels.map((tag) => (
-                    <span key={tag} className="pill text-xs">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <div className="text-xs muted">{hall.studio.name}</div>
-                <Link href={hallHref} className="btn btn-primary">
-                  {UI_STRINGS.view_hall_cta[locale]}
-                </Link>
               </article>
             );
           })
