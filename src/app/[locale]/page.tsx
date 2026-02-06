@@ -236,45 +236,47 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       </div>
                     </div>
 
-                    <div className="flex flex-wrap gap-2 text-xs muted">
-                      {typeof hall.area_sqm === "number" && (
-                        <span>{hall.area_sqm} м²</span>
-                      )}
-                      <span>
-                        {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
-                      </span>
-                      {typeof hall.weekend_price === "number" && (
-                        <span>
-                          {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
-                          {"\u00A0"}MDL
-                        </span>
-                      )}
-                      <span>
-                        {UI_STRINGS.daylight_fact_label[locale]} {factIcon(hall.daylight)}
-                      </span>
-                      <span>
-                        {UI_STRINGS.video_allowed_label[locale]}{" "}
-                        {factIcon(hall.video_friendly)}
-                      </span>
-                      <span>
-                        {UI_STRINGS.furniture_label[locale]}{" "}
-                        {factIcon(hall.props_available)}
-                      </span>
-                      <span>
-                        {UI_STRINGS.flash_light_label[locale]} {factIcon(flashAvailable)}
-                      </span>
-                      <span>
-                        {UI_STRINGS.continuous_light_label[locale]}{" "}
-                        {factIcon(continuousAvailable)}
-                      </span>
-                    </div>
+                    <div className="stack gap-3 lg:grid lg:grid-cols-2 lg:gap-4">
+                      <div className="stack gap-1.5">
+                        {tagLabels.map((tag) => (
+                          <span key={tag} className="pill text-xs">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      {tagLabels.map((tag) => (
-                        <span key={tag} className="pill text-xs">
-                          {tag}
+                      <div className="stack gap-1.5 text-xs leading-tight muted">
+                        {typeof hall.area_sqm === "number" && (
+                          <span>{hall.area_sqm} м²</span>
+                        )}
+                        <span>
+                          {UI_STRINGS.min_label[locale]} {hall.minimum_hours}h
                         </span>
-                      ))}
+                        {typeof hall.weekend_price === "number" && (
+                          <span>
+                            {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
+                            {"\u00A0"}MDL
+                          </span>
+                        )}
+                        <span>
+                          {UI_STRINGS.daylight_fact_label[locale]} {factIcon(hall.daylight)}
+                        </span>
+                        <span>
+                          {UI_STRINGS.video_allowed_label[locale]}{" "}
+                          {factIcon(hall.video_friendly)}
+                        </span>
+                        <span>
+                          {UI_STRINGS.furniture_label[locale]}{" "}
+                          {factIcon(hall.props_available)}
+                        </span>
+                        <span>
+                          {UI_STRINGS.flash_light_label[locale]} {factIcon(flashAvailable)}
+                        </span>
+                        <span>
+                          {UI_STRINGS.continuous_light_label[locale]}{" "}
+                          {factIcon(continuousAvailable)}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="mt-auto pt-1">
