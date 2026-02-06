@@ -3,6 +3,7 @@
 import { Daylight, DistrictKey, VideoFriendly } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { prisma } from "@/db/prisma";
+import { TAGS } from "@/domain/dictionaries";
 
 function getEnvAdminToken() {
   const token = process.env.ADMIN_TOKEN?.trim();
@@ -25,13 +26,6 @@ function parseUrlList(value: string) {
     .split("\n")
     .map((item) => item.trim())
     .filter((item) => /^https?:\/\//i.test(item));
-}
-
-function parseTags(value: string) {
-  return value
-    .split(/[,\n]/)
-    .map((item) => item.trim().toLowerCase())
-    .filter(Boolean);
 }
 
 function parsePositiveInt(value: string) {
@@ -101,6 +95,13 @@ export async function createHallAction(formData: FormData) {
 
   const studioId = readString(formData, "studio_id");
   const weekendPrice = parsePositiveInt(readString(formData, "weekend_price"));
+  const allowedTags = new Set(Object.keys(TAGS));
+  const selectedTags = formData
+    .getAll("tags")
+    .map(String)
+    .map((value) => value.trim().toLowerCase())
+    .filter((value) => allowedTags.has(value));
+  const tags = Array.from(new Set(selectedTags));
 
   const hallData: Record<string, unknown> = {
     studioId,
@@ -116,7 +117,7 @@ export async function createHallAction(formData: FormData) {
     props_available: formData.get("props_available") === "on",
     flash_available: formData.get("flash_available") === "on",
     continuous_available: formData.get("continuous_available") === "on",
-    tags: parseTags(readString(formData, "tags")),
+    tags,
   };
 
   if (weekendPrice) {

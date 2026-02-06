@@ -1,5 +1,6 @@
 import { DistrictKey } from "@prisma/client";
 import { prisma } from "@/db/prisma";
+import { TAGS } from "@/domain/dictionaries";
 import { createHallAction, createStudioAction } from "./actions";
 
 type SearchParams = {
@@ -59,6 +60,9 @@ export default async function AdminPage({ searchParams }: Props) {
   });
 
   const districtValues = Object.values(DistrictKey);
+  const tagKeys = (Object.keys(TAGS) as Array<keyof typeof TAGS>).sort((a, b) =>
+    TAGS[a].ru.localeCompare(TAGS[b].ru, "ru")
+  );
 
   return (
     <div className="page">
@@ -250,10 +254,31 @@ export default async function AdminPage({ searchParams }: Props) {
               </label>
             </div>
 
-            <label className="stack gap-1 text-sm">
-              <span>Tags (CSV or one per line)</span>
-              <textarea name="tags" className="input min-h-24" placeholder={"bright, portrait\nvideo"} />
-            </label>
+            <div className="stack gap-2 text-sm">
+              <span>Tags</span>
+              <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
+                {tagKeys.map((key) => {
+                  const id = `hall-tag-${key}`;
+                  return (
+                    <div key={key} className="rounded border border-gray-200 bg-white p-2">
+                      <div className="flex items-start gap-2">
+                        <input
+                          id={id}
+                          type="checkbox"
+                          name="tags"
+                          value={key}
+                          className="mt-0.5 h-4 w-4"
+                        />
+                        <label htmlFor={id} className="flex cursor-pointer flex-col gap-0.5">
+                          <span className="text-sm text-gray-900">{TAGS[key].ru}</span>
+                          <span className="text-xs muted">{key}</span>
+                        </label>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
             <div>
               <button type="submit" className="btn btn-primary">
