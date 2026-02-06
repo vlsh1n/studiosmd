@@ -27,6 +27,61 @@ export const DISTRICTS = {
 } as const;
 
 export const TAGS = {
+  daylight: {
+    ru: "Дневной свет",
+    ro: "Lumina zilei",
+    en: "Daylight",
+  },
+  blackout: {
+    ru: "Блэкаут",
+    ro: "Blackout",
+    en: "Blackout",
+  },
+  portrait: {
+    ru: "Портрет",
+    ro: "Portret",
+    en: "Portrait",
+  },
+  fashion: {
+    ru: "Фэшн",
+    ro: "Fashion",
+    en: "Fashion",
+  },
+  content: {
+    ru: "Контент",
+    ro: "Continut",
+    en: "Content",
+  },
+  family: {
+    ru: "Семейная съёмка",
+    ro: "Sedinte de familie",
+    en: "Family",
+  },
+  product: {
+    ru: "Предметная съёмка",
+    ro: "Foto produs",
+    en: "Product",
+  },
+  minimal: {
+    ru: "Минимал",
+    ro: "Minimal",
+    en: "Minimal",
+  },
+  classic: {
+    ru: "Классика",
+    ro: "Clasic",
+    en: "Classic",
+  },
+  loft: {
+    ru: "Лофт",
+    ro: "Loft",
+    en: "Loft",
+  },
+  boho: {
+    ru: "Бохо",
+    ro: "Boho",
+    en: "Boho",
+  },
   bright: {
     ru: "Светлый",
     ro: "Luminos",
@@ -37,54 +92,29 @@ export const TAGS = {
     ro: "Intunecat",
     en: "Dark",
   },
-  loft: {
-    ru: "Лофт",
-    ro: "Loft",
-    en: "Loft",
-  },
-  minimal: {
-    ru: "Минимал",
-    ro: "Minimal",
-    en: "Minimal",
-  },
-  interior: {
-    ru: "Интерьер",
-    ro: "Interior",
-    en: "Interior",
+  pastel: {
+    ru: "Пастель",
+    ro: "Pastel",
+    en: "Pastel",
   },
   cyclorama: {
     ru: "Циклорама",
     ro: "Cyclorama",
     en: "Cyclorama",
   },
-  video: {
-    ru: "Видео",
-    ro: "Video",
-    en: "Video",
+  paper_backdrops: {
+    ru: "Бумажные фоны",
+    ro: "Fundaluri de hartie",
+    en: "Paper backdrops",
   },
-  catalog: {
-    ru: "Каталог",
-    ro: "Catalog",
-    en: "Catalog",
+  mirror: {
+    ru: "Зеркало",
+    ro: "Oglinda",
+    en: "Mirror",
   },
-  portrait: {
-    ru: "Портрет",
-    ro: "Portret",
-    en: "Portrait",
-  },
-  daylight: {
-    ru: "Дневной свет",
-    ro: "Lumina zilei",
-    en: "Daylight",
-  },
-  big: {
-    ru: "Большой",
-    ro: "Mare",
-    en: "Big",
-  },
-  small: {
-    ru: "Малый",
-    ro: "Mic",
-    en: "Small",
+  parking: {
+    ru: "Парковка",
+    ro: "Parcare",
+    en: "Parking",
   },
 } as const;
