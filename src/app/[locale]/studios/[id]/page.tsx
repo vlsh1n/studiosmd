@@ -3,7 +3,9 @@ import { getStudioById } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale } from "@/i18n";
-import HallGalleryZoom from "@/app/[locale]/studios/[id]/HallGalleryZoom";
+import HallCardList, {
+  type StudioHallCardItem,
+} from "@/app/[locale]/studios/[id]/HallCardList.client";
 import HallFocus from "@/components/HallFocus";
 
 type Props = {
@@ -54,6 +56,37 @@ export default async function StudioPage({ params }: Props) {
   const phone = getContact(studio.contacts as Contacts, "phone");
   const phoneHref = phone ? sanitizePhoneForTel(phone) : null;
   const instagram = getContact(studio.contacts as Contacts, "instagram");
+  const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
+    const images = getImageList(hall.images as JsonArray);
+    const tags = hall.tags.map((tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag);
+    const hallRecord = hall as Record<string, unknown>;
+    const flashAvailable = hallRecord.flash_available === true;
+    const continuousAvailable = hallRecord.continuous_available === true;
+
+    const factLines: string[] = [];
+    if (typeof hall.area_sqm === "number") {
+      factLines.push(`${hall.area_sqm} м²`);
+    }
+    if (typeof hall.weekend_price === "number") {
+      factLines.push(`${UI_STRINGS.weekend_label[locale]} ${hall.weekend_price}\u00A0MDL`);
+    }
+    factLines.push(`${UI_STRINGS.daylight_fact_label[locale]} ${factIcon(hall.daylight)}`);
+    factLines.push(`${UI_STRINGS.video_allowed_label[locale]} ${factIcon(hall.video_friendly)}`);
+    factLines.push(`${UI_STRINGS.furniture_label[locale]} ${factIcon(hall.props_available)}`);
+    factLines.push(`${UI_STRINGS.flash_light_label[locale]} ${factIcon(flashAvailable)}`);
+    factLines.push(
+      `${UI_STRINGS.continuous_light_label[locale]} ${factIcon(continuousAvailable)}`
+    );
+
+    return {
+      id: hall.id,
+      name: hall.name,
+      priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
+      factLines,
+      tags,
+      images,
+    };
+  });
 
   return (
     <div className="stack">
@@ -102,71 +135,7 @@ export default async function StudioPage({ params }: Props) {
       <HallFocus />
       <section className="stack">
         <div className="text-lg font-semibold text-gray-900">{UI_STRINGS.tags_title[locale]}</div>
-        <div className="grid gap-6 md:grid-cols-2">
-          {studio.halls.map((hall) => {
-            const images = getImageList(hall.images as JsonArray);
-            const tags = hall.tags.map(
-              (tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag
-            );
-            const hallRecord = hall as Record<string, unknown>;
-            const flashAvailable = hallRecord.flash_available === true;
-            const continuousAvailable = hallRecord.continuous_available === true;
-
-            return (
-              <article
-                key={hall.id}
-                id={`hall-${hall.id}`}
-                className="card stack p-5"
-              >
-                <div className="stack gap-1">
-                  <h2 className="text-lg font-semibold text-gray-900">{hall.name}</h2>
-                  <div className="text-sm font-semibold text-gray-900">
-                    {hall.price_per_hour}
-                    {"\u00A0"}MDL {UI_STRINGS.per_hour[locale]}
-                  </div>
-                  <div className="flex flex-wrap gap-2 text-xs muted">
-                    {typeof hall.area_sqm === "number" && (
-                      <span>{hall.area_sqm} м²</span>
-                    )}
-                    {typeof hall.weekend_price === "number" && (
-                      <span>
-                        {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
-                        {"\u00A0"}MDL
-                      </span>
-                    )}
-                    <span>
-                      {UI_STRINGS.daylight_fact_label[locale]} {factIcon(hall.daylight)}
-                    </span>
-                    <span>
-                      {UI_STRINGS.video_allowed_label[locale]}{" "}
-                      {factIcon(hall.video_friendly)}
-                    </span>
-                    <span>
-                      {UI_STRINGS.furniture_label[locale]} {factIcon(hall.props_available)}
-                    </span>
-                    <span>
-                      {UI_STRINGS.flash_light_label[locale]} {factIcon(flashAvailable)}
-                    </span>
-                    <span>
-                      {UI_STRINGS.continuous_light_label[locale]}{" "}
-                      {factIcon(continuousAvailable)}
-                    </span>
-                  </div>
-                </div>
-                {images.length > 0 && (
-                  <HallGalleryZoom images={images} alt={hall.name} />
-                )}
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag) => (
-                    <span key={tag} className="pill text-xs">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </article>
-            );
-          })}
-        </div>
+        <HallCardList halls={hallCards} />
       </section>
     </div>
   );
