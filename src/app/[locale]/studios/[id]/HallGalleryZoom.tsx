@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 type Props = {
@@ -20,6 +21,11 @@ export default function HallGalleryZoom({ images, alt }: Props) {
   const [modalIndex, setModalIndex] = useState(0);
   const maxIndex = images.length - 1;
   const hasMultiple = images.length > 1;
+  const prefersReducedMotion = useReducedMotion();
+  const overlayDuration = prefersReducedMotion ? 0 : 0.2;
+  const modalDuration = prefersReducedMotion ? 0 : 0.22;
+  const imageDuration = prefersReducedMotion ? 0 : 0.2;
+  const modalInitialScale = prefersReducedMotion ? 1 : 0.98;
 
   function scrollToInlineIndex(index: number, behavior: ScrollBehavior = "smooth") {
     const scroller = scrollerRef.current;
@@ -135,57 +141,74 @@ export default function HallGalleryZoom({ images, alt }: Props) {
         )}
       </div>
 
-      {isModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-black/85 p-3 sm:p-6"
-          onClick={closeModal}
-        >
-          <div
-            className="relative mx-auto flex h-full w-full max-w-6xl items-center justify-center"
-            onClick={(event) => event.stopPropagation()}
+      <AnimatePresence>
+        {isModalOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: overlayDuration, ease: "easeOut" }}
+            className="fixed inset-0 z-50 bg-black/85 p-3 sm:p-6"
+            onClick={closeModal}
           >
-            <button
-              type="button"
-              onClick={closeModal}
-              className="absolute right-2 top-2 z-10 h-9 w-9 rounded-full bg-black/55 text-xl text-white sm:right-4 sm:top-4"
-              aria-label="Close gallery"
+            <motion.div
+              initial={{ opacity: 0, scale: modalInitialScale }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: modalInitialScale }}
+              transition={{ duration: modalDuration, ease: "easeOut" }}
+              className="relative mx-auto flex h-full w-full max-w-6xl items-center justify-center"
+              onClick={(event) => event.stopPropagation()}
             >
-              ×
-            </button>
+              <button
+                type="button"
+                onClick={closeModal}
+                className="absolute right-2 top-2 z-10 h-9 w-9 rounded-full bg-black/55 text-xl text-white sm:right-4 sm:top-4"
+                aria-label="Close gallery"
+              >
+                ×
+              </button>
 
-            <button
-              type="button"
-              onClick={() => changeModalSlide(-1)}
-              disabled={!hasMultiple || modalIndex === 0}
-              className="absolute left-2 z-10 h-10 w-10 rounded-full bg-black/55 text-2xl text-white sm:left-4 disabled:opacity-40"
-              aria-label="Previous image"
-            >
-              ‹
-            </button>
-            <button
-              type="button"
-              onClick={() => changeModalSlide(1)}
-              disabled={!hasMultiple || modalIndex === maxIndex}
-              className="absolute right-2 z-10 h-10 w-10 rounded-full bg-black/55 text-2xl text-white sm:right-4 disabled:opacity-40"
-              aria-label="Next image"
-            >
-              ›
-            </button>
+              <button
+                type="button"
+                onClick={() => changeModalSlide(-1)}
+                disabled={!hasMultiple || modalIndex === 0}
+                className="absolute left-2 z-10 h-10 w-10 rounded-full bg-black/55 text-2xl text-white sm:left-4 disabled:opacity-40"
+                aria-label="Previous image"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={() => changeModalSlide(1)}
+                disabled={!hasMultiple || modalIndex === maxIndex}
+                className="absolute right-2 z-10 h-10 w-10 rounded-full bg-black/55 text-2xl text-white sm:right-4 disabled:opacity-40"
+                aria-label="Next image"
+              >
+                ›
+              </button>
 
-            <img
-              src={images[modalIndex]}
-              alt={alt}
-              className="max-h-full w-full rounded object-contain"
-            />
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.img
+                  key={modalIndex}
+                  src={images[modalIndex]}
+                  alt={alt}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: imageDuration, ease: "easeOut" }}
+                  className="max-h-full w-full rounded object-contain"
+                />
+              </AnimatePresence>
 
-            {hasMultiple && (
-              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-3 py-1 text-sm text-white">
-                {modalIndex + 1}/{images.length}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+              {hasMultiple && (
+                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-3 py-1 text-sm text-white">
+                  {modalIndex + 1}/{images.length}
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }
