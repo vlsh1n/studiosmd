@@ -1,28 +1,191 @@
 "use client";
 
-import Zoom from "react-medium-image-zoom";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
   images: string[];
   alt: string;
 };
 
+function clampIndex(value: number, maxIndex: number) {
+  return Math.min(Math.max(value, 0), maxIndex);
+}
+
 export default function HallGalleryZoom({ images, alt }: Props) {
   if (images.length === 0) return null;
 
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalIndex, setModalIndex] = useState(0);
+  const maxIndex = images.length - 1;
+  const hasMultiple = images.length > 1;
+
+  function scrollToInlineIndex(index: number, behavior: ScrollBehavior = "smooth") {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const width = scroller.clientWidth;
+    scroller.scrollTo({ left: index * width, behavior });
+  }
+
+  function changeInlineSlide(direction: -1 | 1) {
+    if (!hasMultiple) return;
+    const next = clampIndex(activeIndex + direction, maxIndex);
+    setActiveIndex(next);
+    scrollToInlineIndex(next);
+  }
+
+  function handleInlineScroll() {
+    const scroller = scrollerRef.current;
+    if (!scroller) return;
+    const width = scroller.clientWidth || 1;
+    const next = clampIndex(Math.round(scroller.scrollLeft / width), maxIndex);
+    if (next !== activeIndex) {
+      setActiveIndex(next);
+    }
+  }
+
+  function openModal(index: number) {
+    setModalIndex(index);
+    setIsModalOpen(true);
+  }
+
+  function closeModal() {
+    setIsModalOpen(false);
+  }
+
+  function changeModalSlide(direction: -1 | 1) {
+    if (!hasMultiple) return;
+    setModalIndex((current) => clampIndex(current + direction, maxIndex));
+  }
+
+  useEffect(() => {
+    if (!isModalOpen) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeModal();
+      } else if (event.key === "ArrowLeft") {
+        changeModalSlide(-1);
+      } else if (event.key === "ArrowRight") {
+        changeModalSlide(1);
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isModalOpen, hasMultiple, maxIndex]);
+
   return (
-    <div className="flex gap-2 overflow-x-auto">
-      {images.map((image) => (
-        <Zoom key={image}>
-          <img
-            src={image}
-            alt={alt}
-            loading="lazy"
-            decoding="async"
-            className="h-24 w-32 rounded object-cover"
-          />
-        </Zoom>
-      ))}
-    </div>
+    <>
+      <div className="relative">
+        <div
+          ref={scrollerRef}
+          onScroll={handleInlineScroll}
+          className="flex snap-x snap-mandatory overflow-x-auto rounded"
+        >
+          {images.map((image, index) => (
+            <button
+              key={`${image}-${index}`}
+              type="button"
+              onClick={() => openModal(index)}
+              className="h-56 min-w-full shrink-0 snap-start overflow-hidden rounded sm:h-64"
+            >
+              <img
+                src={image}
+                alt={alt}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover"
+              />
+            </button>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => changeInlineSlide(-1)}
+          disabled={!hasMultiple || activeIndex === 0}
+          className="absolute left-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white lg:flex disabled:opacity-40"
+          aria-label="Previous image"
+        >
+          ‹
+        </button>
+        <button
+          type="button"
+          onClick={() => changeInlineSlide(1)}
+          disabled={!hasMultiple || activeIndex === maxIndex}
+          className="absolute right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white lg:flex disabled:opacity-40"
+          aria-label="Next image"
+        >
+          ›
+        </button>
+
+        {hasMultiple && (
+          <div className="absolute bottom-2 right-2 rounded-full bg-black/55 px-2 py-1 text-xs text-white">
+            {activeIndex + 1}/{images.length}
+          </div>
+        )}
+      </div>
+
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/85 p-3 sm:p-6"
+          onClick={closeModal}
+        >
+          <div
+            className="relative mx-auto flex h-full w-full max-w-6xl items-center justify-center"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={closeModal}
+              className="absolute right-2 top-2 z-10 h-9 w-9 rounded-full bg-black/55 text-xl text-white sm:right-4 sm:top-4"
+              aria-label="Close gallery"
+            >
+              ×
+            </button>
+
+            <button
+              type="button"
+              onClick={() => changeModalSlide(-1)}
+              disabled={!hasMultiple || modalIndex === 0}
+              className="absolute left-2 z-10 h-10 w-10 rounded-full bg-black/55 text-2xl text-white sm:left-4 disabled:opacity-40"
+              aria-label="Previous image"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={() => changeModalSlide(1)}
+              disabled={!hasMultiple || modalIndex === maxIndex}
+              className="absolute right-2 z-10 h-10 w-10 rounded-full bg-black/55 text-2xl text-white sm:right-4 disabled:opacity-40"
+              aria-label="Next image"
+            >
+              ›
+            </button>
+
+            <img
+              src={images[modalIndex]}
+              alt={alt}
+              className="max-h-full w-full rounded object-contain"
+            />
+
+            {hasMultiple && (
+              <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-3 py-1 text-sm text-white">
+                {modalIndex + 1}/{images.length}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
