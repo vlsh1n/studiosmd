@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import HallGalleryZoom from "@/app/[locale]/studios/[id]/HallGalleryZoom";
 
@@ -86,11 +85,6 @@ export default function HallCardList({ halls }: Props) {
                 ))}
               </div>
 
-              <div className="mt-2">
-                <Link href={hall.ctaHref} className="btn btn-primary w-full sm:w-fit">
-                  {hall.ctaLabel}
-                </Link>
-              </div>
             </div>
           </div>
         </motion.article>
