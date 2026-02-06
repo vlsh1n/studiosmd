@@ -1,325 +1,248 @@
 # studiosmd — Technical Specification (Current State)
 
-Этот документ фиксирует фактическое состояние проекта **studiosmd** на уровне кода. Он описывает то, что реально реализовано в репозитории на сегодня.
+Документ фиксирует фактическое состояние репозитория **studiosmd** на сегодня.
+Актуализация выполнена по коду и текущим скриптам проекта.
 
 ---
 
-## 0) TL;DR архитектуры
+## 0) TL;DR
 
-- **Next.js App Router + TypeScript + Tailwind CSS (v4)**.
-- **Prisma ORM + PostgreSQL**.
-- **Мультиязычный роутинг**: locale — первый сегмент URL: `/ru`, `/ro`, `/en`.
-- **Каталог работает по Hall**, районы берутся из **Studio**.
-- **Deep‑link в студию на конкретный зал**: `?hallId=...#hall-...` + авто‑scroll + подсветка.
-- **Фильтр tags = AND (hasEvery)**.
-- **MVP‑поля Hall добавлены**: `minimum_hours`, `weekend_price`, `daylight`, `video_friendly`.
-- **SEO metadata локализована** в `src/app/[locale]/layout.tsx` через `generateMetadata`.
-- **Root html lang** сейчас фиксирован на `ru` (без динамики).
-- **UI foundation**: milky‑тема, noise overlay, семантические классы (`.page/.panel/.card/.pill/.btn/.input/.muted/.stack`), focus‑visible outline.
-- **Locale layout shell**: `.page` + `.panel`, header с `LocaleSwitcher` в pill‑обёртке.
+- Стек: **Next.js 16 (App Router) + TypeScript + Tailwind CSS v4 + Prisma + PostgreSQL**.
+- Локали в URL: `ru`, `ro`, `en`.
+- Каталог работает на сущности **Hall** (залы), с привязкой к **Studio**.
+- Фильтры каталога: `q`, `districts`, `tags`, `sort`.
+- `tags` фильтруются по логике **AND** (`hasEvery`).
+- Сортировка: `random` (перемешивание на странице), `price_asc`, `price_desc`.
+- Deep-link на конкретный зал реализован: `?hallId=...#hall-...` + авто-scroll + временная подсветка.
+- Lightbox для галереи залов реализован через `react-medium-image-zoom`.
+- Корневой `<html lang>` динамический: значение приходит из middleware через `x-locale`.
+- Проект уже задеплоен на **Railway** (операционный факт), деплой-процедура отражена в README.
 
 ---
 
-## 1) Стек и окружение
+## 1) Stack и окружение
 
-### 1.1 Стек (текущий)
-- Next.js App Router + TypeScript + Tailwind CSS 4.
-- Prisma + PostgreSQL.
+### 1.1 Технологии
+- `next@16.1.6`
+- `react@19.2.3`, `react-dom@19.2.3`
+- `@prisma/client@6.19.2`, `prisma@6.19.2`
+- `tailwindcss@4`
+- Доп. UI-зависимость: `react-medium-image-zoom`
 
 ### 1.2 Переменные окружения
-- `.env` локальный (игнорируется).
-- `.env.example` в репозитории.
-- Обязательная переменная: `DATABASE_URL`.
-- Опционально: `NEXT_PUBLIC_SITE_URL`.
+Файл `.env.example`:
+- `DATABASE_URL` (required)
+- `NEXT_PUBLIC_SITE_URL` (optional)
+- `NEXT_PUBLIC_KOFI_URL` (optional)
 
-### 1.3 Команды (актуальные)
+### 1.3 Команды
 - `npm run dev`
 - `npm run build`
 - `npm start`
 - `npm run prisma:generate`
-- `npm run db:migrate` (migrate deploy)
+- `npm run db:migrate` (`prisma migrate deploy`)
 - `npm run db:seed`
-- `npx prisma migrate dev` (локальная разработка)
 
 ---
 
-## 2) Роутинг, i18n и локализованный контент
+## 2) Роутинг, i18n, metadata
 
-### 2.1 URL‑структура
-- `/` → редирект на `/ru`.
-- `/[locale]/` — каталог залов.
+### 2.1 Роуты
+- `/` — landing с hero, language pills и CTA.
+- `/[locale]` — каталог залов.
 - `/[locale]/studios/[id]` — страница студии.
 
-Locales: `ru`, `ro`, `en`.
+Поддерживаемые локали: `ru`, `ro`, `en`.
 
-### 2.2 Где лежат словари
-- Базовые словари: `src/i18n/{ru,ro,en}.ts`.
-- Реэкспорт и функции: `src/i18n/index.ts` (`t`, `isLocale`, `locales`).
-- UI строки: `src/domain/ui-strings.ts` (`UI_STRINGS[key][locale]`).
+### 2.2 Middleware и язык документа
+- `middleware.ts` читает первый сегмент пути.
+- Устанавливает request header `x-locale` (`ru` по умолчанию).
+- `src/app/layout.tsx` читает `x-locale` через `headers()` и ставит `<html lang={lang}>`.
 
-### 2.3 Что переводится сейчас
-- UI‑строки для каталога/студии и facts‑лейблов (min/weekend/daylight/video).
-- Контент из БД (`name_i18n`, `address_i18n`) разворачивается в `hall.name`, `studio.name`, `studio.address`.
+### 2.3 Локализация контента
+- Базовые словари: `src/i18n/ru.ts`, `src/i18n/ro.ts`, `src/i18n/en.ts`.
+- Общие UI строки: `src/domain/ui-strings.ts`.
+- Словари районов/тегов: `src/domain/dictionaries.ts`.
+- Поля из БД `name_i18n` / `address_i18n` разворачиваются в `src/db/queries.ts`.
 
-### 2.4 App Router params/searchParams (важно для dev)
-- В server components для страниц `params` и `searchParams` приходят как `Promise`.
-- Доступ должен быть через `await` (`const { locale } = await params;`, `const query = (await searchParams) ?? {};`) иначе в dev будет warning `sync-dynamic-apis`.
-
-### 2.5 Layout shell (UI)
-- `src/app/[locale]/layout.tsx` использует `.page` + `.panel`.
-- Header внутри панели: слева название, справа `LocaleSwitcher` в `.pill`.
+### 2.4 SEO
+- `src/app/layout.tsx`: базовый `metadata`.
+- `src/app/[locale]/layout.tsx`: локализованный `generateMetadata`.
 
 ---
 
 ## 3) Модель данных (Prisma / Postgres)
 
 ### 3.1 Сущности
-1) **Studio**
-2) **Hall**
+- `Studio`
+- `Hall`
 
-Одна студия → несколько залов.
+Связь: `Studio 1 -> N Hall`.
 
 ### 3.2 Enums
-- `DistrictKey`: `botanica`, `ciocana`, `centru`, `buiucani`, `riscani`
-- `Daylight`: `no`, `limited`, `yes`
-- `VideoFriendly`: `no`, `limited`, `yes`
+- `DistrictKey`: `botanica | ciocana | centru | buiucani | riscani`
+- `Daylight`: `no | limited | yes`
+- `VideoFriendly`: `no | limited | yes`
 
-### 3.3 Studio — поля
-- `id` (String, `cuid()`)
+### 3.3 Studio
+- `id` (`cuid`)
 - `name_i18n` (Json)
 - `address_i18n` (Json)
-- `district_key` (enum DistrictKey)
-- `cover_images` (Json — массив URL)
+- `district_key` (enum)
+- `cover_images` (Json)
 - `contacts` (Json)
-- relation: `halls` (Hall[])
+- `halls` (relation)
 
-### 3.4 Hall — поля
-- `id`
+### 3.4 Hall
+- `id` (`cuid`)
 - `studioId` (FK)
 - `name_i18n` (Json)
-- `images` (Json — массив URL)
+- `images` (Json)
 - `size_m2` (Int?)
+- `area_sqm` (Int?)
 - `minimum_hours` (Int, default 1)
 - `weekend_price` (Int?)
-- `daylight` (Daylight, default no)
-- `video_friendly` (VideoFriendly, default no)
+- `daylight` (Daylight, default `no`)
+- `video_friendly` (VideoFriendly, default `no`)
+- `props_available` (Boolean, default `false`)
+- `equipment_available` (Boolean, default `false`)
 - `tags` (String[])
 - `price_per_hour` (Int)
 
----
-
-## 4) Seed и словари
-
-### 4.1 Seed (факт)
-Seed создаёт:
-- 5 студий (по одному `district_key`)
-- 2 зала на студию (всего 10 залов)
-- RU/RO/EN для `name_i18n`, адреса в `address_i18n`
-- разнообразные `tags`, `price_per_hour`, `minimum_hours`, `weekend_price`, `daylight`, `video_friendly`
-
-Команда: `npm run db:seed` / `npx prisma db seed`.
-
-### 4.2 Словари ключей
-Файл: `src/domain/dictionaries.ts`
-- `DISTRICTS` (district_key → {ru, ro, en})
-- `TAGS` (tag_key → {ru, ro, en})
-
-Ключи TAGS (текущий набор):
-`bright, dark, loft, minimal, interior, cyclorama, video, catalog, portrait, daylight, big, small`
+### 3.5 Миграции в репозитории
+- `20260129201848_init`
+- `20260130172656_hall_mvp_fields`
+- `20260205191056_hall_mvp_facts`
 
 ---
 
-## 5) Слой данных (Prisma Client + queries)
+## 4) Seed-данные
 
-### 5.1 Prisma singleton
-Файл: `src/db/prisma.ts`
+`prisma/seed.ts`:
+- очищает `Hall` и `Studio` перед заполнением;
+- создаёт 5 студий;
+- создаёт по 2 зала на студию (итого 10 залов);
+- заполняет i18n-поля (`ru/ro/en`), контакты, теги, цены и hall-facts (`area_sqm`, `minimum_hours`, `weekend_price`, `daylight`, `video_friendly`, `props_available`, `equipment_available`).
 
-### 5.2 Запросы
+Запуск: `npm run db:seed`.
+
+---
+
+## 5) Data layer
+
 Файл: `src/db/queries.ts`
-- `listHalls({ locale, q, district_keys, tags, price_min, price_max })`
-- `getStudioById(id, locale)`
 
-`listHalls` делает выборку всех полей Hall (select не ограничен), `studio` подтягивается через include/select.
+### 5.1 listHalls
+Сигнатура:
+- `listHalls({ locale, q, district_keys, tags, sort })`
+
+Поведение:
+- фильтр по тегам: `hasEvery` (AND);
+- фильтр по районам: `studio.district_key in [...]`;
+- сортировка в БД: по `price_per_hour` (`asc`/`desc`);
+- `q` применяется post-query по `hall.name` и `studio.name` (уже локализованным);
+- возвращает hall + локализованные `name`, `studio.name`, `studio.address`.
+
+### 5.2 getStudioById
+- загружает студию и её залы;
+- сортирует залы по цене (`price_per_hour asc`);
+- локализует `name` и `address`.
 
 ---
 
-## 6) Фильтрация и поиск (серверно, по query string)
+## 6) Каталог (`/[locale]`)
 
-### 6.1 Параметры
+### 6.1 Query params
 - `q`
-- `districts` (множественный, CSV)
-- `tags` (множественный, CSV)
-- `priceMin`, `priceMax`
+- `districts` (CSV / multiple)
+- `tags` (CSV / multiple)
+- `sort` (`random | price_asc | price_desc`)
 
-### 6.2 Реализованные фильтры
-- District: `studio.district_key IN [...]`
-- Price range: `price_per_hour` между `priceMin` и `priceMax`
-- Tags: **AND логика** (`hasEvery`)
+### 6.2 UI и поведение
+- форма фильтров в `.card`;
+- секция тегов в `<details>` с отображением выбранных;
+- сортировка вынесена в `<select>`;
+- `random` реализован перемешиванием массива на странице (`shuffleArray`);
+- карточки залов показывают:
+  - изображение;
+  - имя зала (ссылка на deep-link);
+  - имя студии + район;
+  - цену в час;
+  - факты: `area_sqm` (если есть), `minimum_hours`, `weekend_price` (если есть), `daylight`, `video_friendly`;
+  - теги;
+  - CTA `view_hall_cta`.
 
-### 6.3 Поиск `q`
-JS‑фильтрация по локализованным названиям (`hall`/`studio`) после выборки из БД.
-
----
-
-## 7) Каталог: карточка и переходы
-
-### 7.1 Карточка результата (Hall card)
-Показывается:
-- изображение (hall image или cover студии)
-- hall name (ссылка)
-- studio name (текст) + district
-- цена за час
-- facts‑блок: `min`, `weekend` (если задан), `daylight`, `video` + символы ✓/~ /—
-- список tag chips (стилизованы как `.pill`)
-- карточка оформлена как `.card` с `stack`‑отступами
-
-### 7.2 Переход на студию (deep‑link)
-Ссылка с hall name ведёт на:
-`/[locale]/studios/[studioId]?hallId=<hallId>#hall-<hallId>`
-
-На странице студии есть авто‑scroll и подсветка через `HallFocus`.
+### 6.3 Deep-link
+Ссылка на зал:
+- `/{locale}/studios/{studioId}?hallId={hallId}#hall-{hallId}`
 
 ---
 
-## 8) Страница студии: блоки
+## 7) Страница студии (`/[locale]/studios/[id]`)
 
-- Header: name + address + district
-- Contacts: телефон / Instagram / Telegram (если есть)
-- Галерея cover images (если есть)
-- Секция залов:
-  - `<article id="hall-<id>">`
-  - name, price
-  - facts‑блок (min/weekend/daylight/video)
-  - изображения, теги (теги как `.pill`)
-  - карточки залов оформлены как `.card` с `stack`‑отступами
+- Заголовок: название, адрес, район.
+- Контакты: phone / instagram / telegram (если присутствуют).
+- Галерея обложек студии.
+- Список залов (`article#hall-{id}`) с:
+  - ценой;
+  - фактами (включая `area_sqm`, `props_available`, `equipment_available`, daylight/video);
+  - галереей фото зала c zoom/lightbox;
+  - тегами.
+- Подсветка и прокрутка до зала выполняется клиентским `HallFocus`.
 
 ---
 
-## 9) Компоненты
+## 8) Компоненты
 
 - `src/components/LocaleSwitcher.tsx`
-- `src/components/HallFocus.tsx` (client component: читает `hallId` из query, scroll + highlight)
+- `src/components/HallFocus.tsx`
+- `src/app/[locale]/studios/[id]/HallGalleryZoom.tsx`
 
 ---
 
-## 10) Структура проекта (факт)
+## 9) Стили и UI foundation
 
-```
-src/
-  app/
-    layout.tsx
-    [locale]/
-      layout.tsx
-      page.tsx
-      studios/
-        [id]/
-          page.tsx
-  components/
-    LocaleSwitcher.tsx
-    HallFocus.tsx
-  i18n/
-    {ru,ro,en}.ts
-    index.ts
-  domain/
-    dictionaries.ts
-    ui-strings.ts
-  db/
-    prisma.ts
-    queries.ts
-prisma/
-  schema.prisma
-  seed.ts
-README.md
-.env.example
-```
+Файл: `src/app/globals.css`
+
+- Семантические классы: `.page`, `.panel`, `.card`, `.pill`, `.btn`, `.btn-primary`, `.input`, `.select`, `.muted`, `.stack`.
+- Milky-тема с мягкими тенями.
+- Noise overlay на `body::before`.
+- Общий `focus-visible` outline.
+- Импорт стилей zoom-компонента: `react-medium-image-zoom/dist/styles.css`.
 
 ---
 
-## 11) Форматирование цен и фактов
+## 10) Деплой и Railway
 
-- Цена за час: `{hall.price_per_hour} {UI_STRINGS.per_hour[locale]}`
-- Facts‑лейблы локализованы через `UI_STRINGS`.
+Текущее состояние:
+- Проект уже задеплоен на Railway.
 
-### 11.1 UI foundation (globals.css)
-- Токены и семантические классы в `src/app/globals.css`: `.page/.panel/.card/.pill/.btn/.input/.muted/.stack`.
-- Noise overlay через `body::before`.
-- Focus‑visible оформлен через `outline` + `outline-offset`.
-- Защита от mobile overflow: `max-width/min-width` на `.page/.panel/.card` и `max-width` для media.
+Зафиксированный процесс (по README и скриптам):
+- Build: `npm run build`
+- Start: `npm start`
+- Migration step: `npm run db:migrate`
+- Seed (опционально, осторожно): `npm run db:seed`
 
----
-
-## 12) SEO
-
-- `src/app/layout.tsx` содержит статическое `metadata`.
-- `src/app/[locale]/layout.tsx` использует `generateMetadata` с локализованными title/description.
-- `<html lang>` в root layout сейчас фиксирован на `ru`.
+Примечание:
+- URL/ID Railway-сервиса не хранится в репозитории.
 
 ---
 
-## 13) Деплой
+## 11) Текущие ограничения / gaps
 
-В `README.md` есть инструкции:
-- переменные окружения (`DATABASE_URL`, optional `NEXT_PUBLIC_SITE_URL`)
-- команды build/start
-- migrate deploy + optional seed
-
----
-
-## 14) Definition of Done (факт)
-
-1) `npm run dev` — стартует.
-2) `/` редиректит на `/ru`.
-3) `npm run build` — проходит.
-4) `npm run db:seed` — заполняет БД, 5 студий и 10 залов.
-5) Каталог работает с фильтрами `q`, `districts`, `tags`, `priceMin/priceMax`.
-6) Deep‑link на зал работает (scroll + highlight).
+- Поиск `q` ограничен названиями залов и студий (без полнотекстового поиска по тегам/описаниям).
+- На странице студии подписи `реквизит` и `оборудование`, а также единицы `м²` / `h`, частично заданы напрямую и не полностью проходят через `UI_STRINGS`.
+- Админ-панели/CRUD-интерфейса нет.
+- Автотесты (unit/integration/e2e) не настроены.
 
 ---
 
-## 15) Оставшиеся gaps
+## 12) Definition of Done (текущее)
 
-- Нет фильтров по `daylight`/`video_friendly`.
-- Нет сортировки (в MVP планируется только price asc/desc).
-- В карточках каталога нет площади (м²) и CTA “Посмотреть”.
-- На странице зала нет фактов: площадь (м²), реквизит (да/нет), оборудование (да/нет).
-- Нет lightbox для фото залов.
-- Нет landing страницы `/` с hero + CTA + language pills.
-- В хедере нет Ko‑fi кнопки.
-- Теги на мобилке не сжаты в компактный UI (планируется compact UI без изменения логики AND).
-- Поиск `q` — только по названиям (это OK для MVP, но отличается от более “широкого” поиска).
-- `<html lang>` не привязан к текущей локали (фиксирован `ru`).
-- Нет админки.
-
----
-
-## 16) Roadmap (MVP → V1)
-
-### MVP до релиза (решения)
-- Фильтр по размеру **не делаем** (sizeMin/sizeMax отсутствуют).
-- Сортировка: только по цене (asc/desc).
-- Площадь (м²) показываем в карточках каталога и на странице студии/залов.
-- CTA “Посмотреть” в карточке каталога.
-- Факты зала в MVP: площадь, дневной свет, video‑friendly, цена/час, минимум часов, выходные, **реквизит (да/нет)**, **оборудование (да/нет)**.
-- Search только по названию зала/студии (без тегов/района).
-- Дизайн критичен даже в MVP (максимально близко к референсу).
-- Lightbox для фото залов: допускается максимум 1 лёгкая зависимость (без UI‑библиотек).
-- Landing `/`: hero + CTA “Искать студию” + language pills (простые ссылки на `/ru|/ro|/en`).
-- Home link: “StudiosMD” ведёт на `/{locale}`, не на `/`.
-- HTML `lang` должен соответствовать текущей локали.
-- Теги: UI компактнее на мобилке, логика AND сохраняется.
-
-### V1 после релиза
-- Базовая админка/CRUD без регистрации (доступ по env).
-- Управление студиями/залами/фото/фактами.
-- Списки реквизита/оборудования + “подробнее” (pop‑up).
-- SEO‑расширения (structured data, per‑page metadata).
-
----
-
-## 17) Product decisions (зафиксировано)
-
-- Ko‑fi как кнопка доната в хедере.
-- Landing `/` обязателен: hero + CTA + language pills (ссылки на `/ru|/ro|/en`).
-- Home link: клик по “StudiosMD” ведёт на `/{locale}`.
-- Lightbox допускает максимум 1 зависимость, только для этой функции.
-- Реквизит/оборудование в MVP — только boolean (да/нет), без списков.
+1. `npm run dev` стартует приложение.
+2. `npm run build` проходит успешно.
+3. Landing доступен на `/`.
+4. Каталог доступен на `/ru`, `/ro`, `/en`.
+5. Фильтрация `q/districts/tags/sort` работает.
+6. Deep-link на конкретный зал работает (scroll + highlight).
+7. Галерея зала поддерживает zoom/lightbox.
