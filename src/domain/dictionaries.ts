@@ -37,6 +37,16 @@ export const TAGS = {
     ro: "Blackout",
     en: "Blackout",
   },
+  sunny_morning: {
+    ru: "Солнечно утром",
+    ro: "Soare dimineața",
+    en: "Sunny mornings",
+  },
+  sunny_evening: {
+    ru: "Солнечно вечером",
+    ro: "Soare seara",
+    en: "Sunny evenings",
+  },
   portrait: {
     ru: "Портрет",
     ro: "Portret",
@@ -102,6 +112,16 @@ export const TAGS = {
     ro: "Cyclorama",
     en: "Cyclorama",
   },
+  colored_walls: {
+    ru: "Цветные стены",
+    ro: "Pereți colorați",
+    en: "Colored walls",
+  },
+  texture_walls: {
+    ru: "Текстурные стены",
+    ro: "Pereți texturați",
+    en: "Textured walls",
+  },
   paper_backdrops: {
     ru: "Бумажные фоны",
     ro: "Fundaluri de hartie",
@@ -112,9 +132,39 @@ export const TAGS = {
     ro: "Oglinda",
     en: "Mirror",
   },
+  small: {
+    ru: "Небольшой зал",
+    ro: "Sală mică",
+    en: "Small",
+  },
+  spacious: {
+    ru: "Просторно",
+    ro: "Spațios",
+    en: "Spacious",
+  },
+  high_ceiling: {
+    ru: "Высокие потолки",
+    ro: "Tavan înalt",
+    en: "High ceilings",
+  },
   parking: {
     ru: "Парковка",
     ro: "Parcare",
     en: "Parking",
+  },
+  easy_access: {
+    ru: "Легко добраться",
+    ro: "Acces ușor",
+    en: "Easy access",
+  },
+  changing_room: {
+    ru: "Гримерка/переодевание",
+    ro: "Cameră de schimb",
+    en: "Changing area",
+  },
+  shower: {
+    ru: "Душ",
+    ro: "Duș",
+    en: "Shower",
   },
 } as const;
