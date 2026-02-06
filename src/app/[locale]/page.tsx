@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { listHalls } from "@/db/queries";
 import type { HallListItem } from "@/db/queries";
+import HallCardList, { type HallCardItem } from "@/app/[locale]/HallCardList.client";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, Locale } from "@/i18n";
@@ -79,6 +80,55 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     sort: sort === "random" ? undefined : sort,
   })) as HallListItem[];
   const displayedHalls = sort === "random" ? shuffleArray(halls) : halls;
+  const cardItems: HallCardItem[] = displayedHalls.map((hall) => {
+    const hallImage = getImageFromJson(hall.images);
+    const studioImage = getImageFromJson(hall.studio.cover_images);
+    const image = hallImage ?? studioImage;
+    const tagLabels = hall.tags.map(
+      (tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag
+    );
+    const hallRecord = hall as Record<string, unknown>;
+    const flashAvailable = hallRecord.flash_available === true;
+    const continuousAvailable = hallRecord.continuous_available === true;
+
+    const hallId = encodeURIComponent(hall.id);
+    const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
+
+    const factLines: string[] = [];
+    if (typeof hall.area_sqm === "number") {
+      factLines.push(`${hall.area_sqm} м²`);
+    }
+    if (typeof hall.weekend_price === "number") {
+      factLines.push(
+        `${UI_STRINGS.weekend_label[locale]} ${hall.weekend_price}\u00A0MDL`
+      );
+    }
+    factLines.push(`${UI_STRINGS.daylight_fact_label[locale]} ${factIcon(hall.daylight)}`);
+    factLines.push(
+      `${UI_STRINGS.video_allowed_label[locale]} ${factIcon(hall.video_friendly)}`
+    );
+    factLines.push(
+      `${UI_STRINGS.furniture_label[locale]} ${factIcon(hall.props_available)}`
+    );
+    factLines.push(
+      `${UI_STRINGS.flash_light_label[locale]} ${factIcon(flashAvailable)}`
+    );
+    factLines.push(
+      `${UI_STRINGS.continuous_light_label[locale]} ${factIcon(continuousAvailable)}`
+    );
+
+    return {
+      id: hall.id,
+      name: hall.name,
+      image,
+      hallHref,
+      studioLine: `${hall.studio.name} · ${DISTRICTS[hall.studio.district_key][locale]}`,
+      priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
+      tagLabels,
+      factLines,
+      ctaLabel: UI_STRINGS.view_hall_cta[locale],
+    };
+  });
 
   return (
     <div className="stack">
@@ -194,98 +244,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         {displayedHalls.length === 0 ? (
           <div className="text-sm muted">{UI_STRINGS.no_results[locale]}</div>
         ) : (
-          displayedHalls.map((hall) => {
-            const hallImage = getImageFromJson(hall.images);
-            const studioImage = getImageFromJson(hall.studio.cover_images);
-            const image = hallImage ?? studioImage;
-            const tagLabels = hall.tags.map(
-              (tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag
-            );
-            const hallRecord = hall as Record<string, unknown>;
-            const flashAvailable = hallRecord.flash_available === true;
-            const continuousAvailable = hallRecord.continuous_available === true;
-
-            const hallId = encodeURIComponent(hall.id);
-            const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
-
-            return (
-              <article key={hall.id} className="card p-4 sm:p-5">
-                <div className="flex h-full flex-col gap-4">
-                  {image && (
-                    <div className="h-56 w-full overflow-hidden rounded sm:h-64 lg:h-72">
-                      <img
-                        src={image}
-                        alt={hall.name}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
-                  )}
-                  <div className="flex h-full min-w-0 flex-col gap-3">
-                    <div className="space-y-1">
-                      <h2 className="text-lg font-semibold text-gray-900">
-                        <Link href={hallHref} className="underline">
-                          {hall.name}
-                        </Link>
-                      </h2>
-                      <div className="text-sm muted">
-                        {hall.studio.name} · {DISTRICTS[hall.studio.district_key][locale]}
-                      </div>
-                      <div className="text-sm font-semibold text-gray-900">
-                        {hall.price_per_hour}
-                        {"\u00A0"}MDL {UI_STRINGS.per_hour[locale]}
-                      </div>
-                    </div>
-
-                    <div className="stack gap-3 lg:grid lg:grid-cols-2 lg:gap-4">
-                      <div className="stack gap-1.5">
-                        {tagLabels.map((tag) => (
-                          <span key={tag} className="pill text-xs">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-
-                      <div className="stack gap-1.5 text-xs leading-tight muted">
-                        {typeof hall.area_sqm === "number" && (
-                          <span>{hall.area_sqm} м²</span>
-                        )}
-                        {typeof hall.weekend_price === "number" && (
-                          <span>
-                            {UI_STRINGS.weekend_label[locale]} {hall.weekend_price}
-                            {"\u00A0"}MDL
-                          </span>
-                        )}
-                        <span>
-                          {UI_STRINGS.daylight_fact_label[locale]} {factIcon(hall.daylight)}
-                        </span>
-                        <span>
-                          {UI_STRINGS.video_allowed_label[locale]}{" "}
-                          {factIcon(hall.video_friendly)}
-                        </span>
-                        <span>
-                          {UI_STRINGS.furniture_label[locale]}{" "}
-                          {factIcon(hall.props_available)}
-                        </span>
-                        <span>
-                          {UI_STRINGS.flash_light_label[locale]} {factIcon(flashAvailable)}
-                        </span>
-                        <span>
-                          {UI_STRINGS.continuous_light_label[locale]}{" "}
-                          {factIcon(continuousAvailable)}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="mt-auto pt-1">
-                      <Link href={hallHref} className="btn btn-primary">
-                        {UI_STRINGS.view_hall_cta[locale]}
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            );
-          })
+          <HallCardList items={cardItems} />
         )}
       </div>
     </div>
