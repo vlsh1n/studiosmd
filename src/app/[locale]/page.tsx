@@ -190,7 +190,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         </div>
       </form>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid w-full max-w-3xl mx-auto gap-6">
         {displayedHalls.length === 0 ? (
           <div className="text-sm muted">{UI_STRINGS.no_results[locale]}</div>
         ) : (
@@ -210,17 +210,17 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
             return (
               <article key={hall.id} className="card p-4 sm:p-5">
-                <div className="stack gap-4 lg:grid lg:grid-cols-[18rem_minmax(0,1fr)] lg:items-start">
-                  <div className="h-48 w-full overflow-hidden rounded bg-gray-100 sm:h-52 lg:h-56">
-                    {image ? (
+                <div className="flex h-full flex-col gap-4">
+                  {image && (
+                    <div className="h-56 w-full overflow-hidden rounded sm:h-64 lg:h-72">
                       <img
                         src={image}
                         alt={hall.name}
                         className="h-full w-full object-cover"
                       />
-                    ) : null}
-                  </div>
-                  <div className="stack gap-3 min-w-0">
+                    </div>
+                  )}
+                  <div className="flex h-full min-w-0 flex-col gap-3">
                     <div className="space-y-1">
                       <h2 className="text-lg font-semibold text-gray-900">
                         <Link href={hallHref} className="underline">
@@ -277,7 +277,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       ))}
                     </div>
 
-                    <div>
+                    <div className="mt-auto pt-1">
                       <Link href={hallHref} className="btn btn-primary">
                         {UI_STRINGS.view_hall_cta[locale]}
                       </Link>
