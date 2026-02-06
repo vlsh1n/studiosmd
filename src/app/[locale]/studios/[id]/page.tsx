@@ -85,6 +85,8 @@ export default async function StudioPage({ params }: Props) {
       factLines,
       tags,
       images,
+      ctaHref: `/${locale}/studios/${studio.id}?hallId=${encodeURIComponent(hall.id)}`,
+      ctaLabel: UI_STRINGS.view_hall_cta[locale],
     };
   });
 
@@ -134,7 +136,6 @@ export default async function StudioPage({ params }: Props) {
 
       <HallFocus />
       <section className="stack">
-        <div className="text-lg font-semibold text-gray-900">{UI_STRINGS.tags_title[locale]}</div>
         <HallCardList halls={hallCards} />
       </section>
     </div>
