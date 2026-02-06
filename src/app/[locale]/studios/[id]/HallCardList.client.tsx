@@ -16,6 +16,14 @@ type Props = {
   halls: StudioHallCardItem[];
 };
 
+function splitFactLine(factLine: string) {
+  const match = factLine.match(/^(.*)\s([✅❌])$/u);
+  if (!match) {
+    return { label: factLine, status: null as string | null };
+  }
+  return { label: match[1], status: match[2] };
+}
+
 export default function HallCardList({ halls }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -38,24 +46,32 @@ export default function HallCardList({ halls }: Props) {
           style={shouldReduceMotion ? undefined : { willChange: "transform" }}
         >
           <div className="stack gap-1">
-            <h2 className="text-lg font-semibold text-gray-900">{hall.name}</h2>
-            <div className="text-sm font-semibold text-gray-900">{hall.priceLine}</div>
-            <div className="flex flex-wrap gap-2 text-xs muted">
-              {hall.factLines.map((fact) => (
-                <span key={fact}>{fact}</span>
+            <h2 className="text-base font-semibold text-gray-900 sm:text-lg">{hall.name}</h2>
+            <div className="text-sm font-medium text-gray-900 whitespace-nowrap">{hall.priceLine}</div>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs leading-tight muted sm:grid-cols-2">
+              {hall.factLines.map((fact, factIndex) => {
+                const { label, status } = splitFactLine(fact);
+                return (
+                  <div
+                    key={`${fact}-${factIndex}`}
+                    className="flex items-center justify-between gap-2"
+                  >
+                    <span>{label}</span>
+                    <span className="shrink-0">{status ?? ""}</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="mt-1 flex flex-wrap gap-2 pt-1">
+              {hall.tags.map((tag) => (
+                <span key={tag} className="pill text-xs">
+                  {tag}
+                </span>
               ))}
             </div>
           </div>
 
           {hall.images.length > 0 && <HallGalleryZoom images={hall.images} alt={hall.name} />}
-
-          <div className="flex flex-wrap gap-2">
-            {hall.tags.map((tag) => (
-              <span key={tag} className="pill text-xs">
-                {tag}
-              </span>
-            ))}
-          </div>
         </motion.article>
       ))}
     </div>
