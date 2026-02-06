@@ -99,10 +99,10 @@ export default function HallGalleryZoom({ images, alt }: Props) {
   return (
     <>
       <div className="relative">
-        <div className="overflow-hidden rounded" ref={emblaRef}>
+        <div className="w-full touch-pan-y overflow-hidden rounded" ref={emblaRef}>
           <div className="flex">
             {images.map((image, index) => (
-              <div key={`${image}-${index}`} className="flex-[0_0_100%]">
+              <div key={`${image}-${index}`} className="flex-none w-full">
                 <button
                   type="button"
                   onClick={() => openModal(index)}
