@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
+import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, t } from "@/i18n";
 
 type Props = {
@@ -66,7 +67,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                 rel="noreferrer noopener"
                 className="btn"
               >
-                Ko-fi
+                {UI_STRINGS.support_project[locale]}
               </a>
             )}
             <div className="pill shrink-0 max-w-full">
