@@ -23,8 +23,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
 
 @layer base {
@@ -37,8 +39,7 @@
     min-height: 100vh;
     background: var(--bg);
     color: var(--text);
-    font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
-      "Segoe UI", sans-serif;
+    font-family: var(--font-sans);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
