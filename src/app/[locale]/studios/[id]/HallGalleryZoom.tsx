@@ -1,7 +1,8 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 
 type Props = {
   images: string[];
@@ -15,39 +16,26 @@ function clampIndex(value: number, maxIndex: number) {
 export default function HallGalleryZoom({ images, alt }: Props) {
   if (images.length === 0) return null;
 
-  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
   const maxIndex = images.length - 1;
   const hasMultiple = images.length > 1;
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(hasMultiple);
   const prefersReducedMotion = useReducedMotion();
   const overlayDuration = prefersReducedMotion ? 0 : 0.2;
   const modalDuration = prefersReducedMotion ? 0 : 0.22;
   const imageDuration = prefersReducedMotion ? 0 : 0.2;
   const modalInitialScale = prefersReducedMotion ? 1 : 0.98;
 
-  function scrollToInlineIndex(index: number, behavior: ScrollBehavior = "smooth") {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    const width = scroller.clientWidth;
-    scroller.scrollTo({ left: index * width, behavior });
-  }
-
   function changeInlineSlide(direction: -1 | 1) {
-    if (!hasMultiple) return;
-    const next = clampIndex(activeIndex + direction, maxIndex);
-    setActiveIndex(next);
-    scrollToInlineIndex(next);
-  }
-
-  function handleInlineScroll() {
-    const scroller = scrollerRef.current;
-    if (!scroller) return;
-    const width = scroller.clientWidth || 1;
-    const next = clampIndex(Math.round(scroller.scrollLeft / width), maxIndex);
-    if (next !== activeIndex) {
-      setActiveIndex(next);
+    if (!emblaApi || !hasMultiple) return;
+    if (direction === -1) {
+      emblaApi.scrollPrev();
+    } else {
+      emblaApi.scrollNext();
     }
   }
 
@@ -89,50 +77,72 @@ export default function HallGalleryZoom({ images, alt }: Props) {
     };
   }, [isModalOpen, hasMultiple, maxIndex]);
 
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const syncEmblaState = () => {
+      setActiveIndex(emblaApi.selectedScrollSnap());
+      setCanScrollPrev(emblaApi.canScrollPrev());
+      setCanScrollNext(emblaApi.canScrollNext());
+    };
+
+    syncEmblaState();
+    emblaApi.on("select", syncEmblaState);
+    emblaApi.on("reInit", syncEmblaState);
+
+    return () => {
+      emblaApi.off("select", syncEmblaState);
+      emblaApi.off("reInit", syncEmblaState);
+    };
+  }, [emblaApi]);
+
   return (
     <>
       <div className="relative">
-        <div
-          ref={scrollerRef}
-          onScroll={handleInlineScroll}
-          className="flex snap-x snap-mandatory overflow-x-auto rounded"
-        >
-          {images.map((image, index) => (
-            <button
-              key={`${image}-${index}`}
-              type="button"
-              onClick={() => openModal(index)}
-              className="h-56 min-w-full shrink-0 snap-start overflow-hidden rounded sm:h-64"
-            >
-              <img
-                src={image}
-                alt={alt}
-                loading="lazy"
-                decoding="async"
-                className="h-full w-full object-cover"
-              />
-            </button>
-          ))}
+        <div className="overflow-hidden rounded" ref={emblaRef}>
+          <div className="flex">
+            {images.map((image, index) => (
+              <div key={`${image}-${index}`} className="flex-[0_0_100%]">
+                <button
+                  type="button"
+                  onClick={() => openModal(index)}
+                  className="h-56 w-full overflow-hidden rounded sm:h-64"
+                >
+                  <img
+                    src={image}
+                    alt={alt}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                  />
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() => changeInlineSlide(-1)}
-          disabled={!hasMultiple || activeIndex === 0}
-          className="absolute left-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white lg:flex disabled:opacity-40"
-          aria-label="Previous image"
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          onClick={() => changeInlineSlide(1)}
-          disabled={!hasMultiple || activeIndex === maxIndex}
-          className="absolute right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white lg:flex disabled:opacity-40"
-          aria-label="Next image"
-        >
-          ›
-        </button>
+        {hasMultiple && (
+          <>
+            <button
+              type="button"
+              onClick={() => changeInlineSlide(-1)}
+              disabled={!canScrollPrev}
+              className="absolute left-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white lg:flex disabled:opacity-40"
+              aria-label="Previous photo"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={() => changeInlineSlide(1)}
+              disabled={!canScrollNext}
+              className="absolute right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/55 text-white lg:flex disabled:opacity-40"
+              aria-label="Next photo"
+            >
+              ›
+            </button>
+          </>
+        )}
 
         {hasMultiple && (
           <div className="absolute bottom-2 right-2 rounded-full bg-black/55 px-2 py-1 text-xs text-white">
