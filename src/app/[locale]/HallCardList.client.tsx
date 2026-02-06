@@ -40,19 +40,19 @@ export default function HallCardList({ items }: Props) {
           style={shouldReduceMotion ? undefined : { willChange: "transform" }}
         >
           <div className="flex h-full flex-col gap-4">
-            {item.image && (
-              <motion.div
-                className="h-56 w-full overflow-hidden rounded sm:h-64 lg:h-72"
-                whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
-              >
+            <motion.div
+              className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]"
+              whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
+            >
+              {item.image && (
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="h-full w-full object-cover"
+                  className="absolute inset-0 h-full w-full object-cover object-center"
                 />
-              </motion.div>
-            )}
+              )}
+            </motion.div>
 
             <div className="flex h-full min-w-0 flex-col gap-3">
               <div className="space-y-1">

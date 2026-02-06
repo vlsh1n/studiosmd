@@ -106,14 +106,14 @@ export default function HallGalleryZoom({ images, alt }: Props) {
                 <button
                   type="button"
                   onClick={() => openModal(index)}
-                  className="h-56 w-full overflow-hidden rounded sm:h-64"
+                  className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]"
                 >
                   <img
                     src={image}
                     alt={alt}
                     loading="lazy"
                     decoding="async"
-                    className="h-full w-full object-cover"
+                    className="absolute inset-0 h-full w-full object-cover object-center"
                   />
                 </button>
               </div>
