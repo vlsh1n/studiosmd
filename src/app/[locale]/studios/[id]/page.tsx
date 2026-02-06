@@ -30,6 +30,10 @@ function getContact(contacts: Contacts, key: string) {
   return typeof value === "string" ? value : null;
 }
 
+function sanitizePhoneForTel(value: string) {
+  return value.replace(/[\s()-]/g, "");
+}
+
 function factIcon(value: unknown) {
   return value === true || value === "yes" ? "✅" : "❌";
 }
@@ -46,38 +50,52 @@ export default async function StudioPage({ params }: Props) {
   }
 
   const coverImages = getImageList(studio.cover_images as JsonArray);
+  const coverImage = coverImages[0];
   const phone = getContact(studio.contacts as Contacts, "phone");
+  const phoneHref = phone ? sanitizePhoneForTel(phone) : null;
   const instagram = getContact(studio.contacts as Contacts, "instagram");
-  const telegram = getContact(studio.contacts as Contacts, "telegram");
 
   return (
     <div className="stack">
-      <section className="card stack p-4">
-        <div className="stack gap-1">
-          <h1 className="text-2xl font-semibold text-gray-900">{studio.name}</h1>
-          <div className="text-sm muted">
-            {studio.address} · {DISTRICTS[studio.district_key][locale]}
+      <section className="card p-4 sm:p-5">
+        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
+          <div className="stack gap-2">
+            <h1 className="text-2xl font-semibold text-gray-900">{studio.name}</h1>
+            <span className="pill w-fit text-xs">
+              {DISTRICTS[studio.district_key][locale]}
+            </span>
+            <div className="text-sm muted">{studio.address}</div>
           </div>
-        </div>
-        <div className="flex flex-wrap gap-3 text-sm muted">
-          {phone && <span>{phone}</span>}
-          {instagram && <span>{instagram}</span>}
-          {telegram && <span>{telegram}</span>}
+          <div className="stack gap-2 sm:items-end">
+            {phone && phoneHref && (
+              <a
+                href={`tel:${phoneHref}`}
+                className="text-sm font-medium text-gray-900 underline underline-offset-2"
+              >
+                {phone}
+              </a>
+            )}
+            {instagram && (
+              <a
+                href={instagram}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="btn"
+              >
+                Instagram
+              </a>
+            )}
+          </div>
         </div>
       </section>
 
-      {coverImages.length > 0 && (
+      {coverImage && (
         <section className="card p-4">
-          <div className="grid gap-3 sm:grid-cols-2">
-          {coverImages.map((image) => (
-            <img
-              key={image}
-              src={image}
-              alt={studio.name}
-              className="h-48 w-full rounded object-cover"
-            />
-          ))}
-          </div>
+          <img
+            src={coverImage}
+            alt={studio.name}
+            className="h-56 w-full rounded object-cover sm:h-64"
+          />
         </section>
       )}
 
