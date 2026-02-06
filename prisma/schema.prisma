@@ -56,6 +56,8 @@ model Hall {
   video_friendly VideoFriendly @default(no)
   props_available Boolean @default(false)
   equipment_available Boolean @default(false)
+  flash_available Boolean @default(false)
+  continuous_available Boolean @default(false)
   tags           String[]
   price_per_hour Int
 

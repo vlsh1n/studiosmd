@@ -15,6 +15,8 @@ type HallSeed = {
   area_sqm: number;
   props_available: boolean;
   equipment_available: boolean;
+  flash_available: boolean;
+  continuous_available: boolean;
   tags: string[];
   price_per_hour: number;
 };
@@ -73,6 +75,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.limited,
         props_available: true,
         equipment_available: true,
+        flash_available: true,
+        continuous_available: false,
         tags: ["bright", "daylight", "portrait", "catalog", "big"],
         price_per_hour: 700,
       },
@@ -96,6 +100,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.yes,
         props_available: false,
         equipment_available: true,
+        flash_available: true,
+        continuous_available: true,
         tags: ["loft", "dark", "interior", "video"],
         price_per_hour: 550,
       },
@@ -144,6 +150,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.no,
         props_available: true,
         equipment_available: false,
+        flash_available: false,
+        continuous_available: false,
         tags: ["minimal", "bright", "interior", "small"],
         price_per_hour: 420,
       },
@@ -169,6 +177,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.yes,
         props_available: false,
         equipment_available: true,
+        flash_available: true,
+        continuous_available: true,
         tags: ["cyclorama", "catalog", "video", "big"],
         price_per_hour: 800,
       },
@@ -216,6 +226,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.limited,
         props_available: true,
         equipment_available: false,
+        flash_available: false,
+        continuous_available: false,
         tags: ["interior", "dark", "portrait", "small"],
         price_per_hour: 480,
       },
@@ -241,6 +253,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.limited,
         props_available: true,
         equipment_available: true,
+        flash_available: true,
+        continuous_available: false,
         tags: ["daylight", "bright", "catalog", "big"],
         price_per_hour: 900,
       },
@@ -288,6 +302,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.yes,
         props_available: false,
         equipment_available: true,
+        flash_available: true,
+        continuous_available: true,
         tags: ["loft", "dark", "video", "interior"],
         price_per_hour: 600,
       },
@@ -312,6 +328,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.no,
         props_available: true,
         equipment_available: false,
+        flash_available: false,
+        continuous_available: false,
         tags: ["minimal", "bright", "portrait", "small"],
         price_per_hour: 450,
       },
@@ -359,6 +377,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.no,
         props_available: false,
         equipment_available: false,
+        flash_available: false,
+        continuous_available: false,
         tags: ["portrait", "interior", "small"],
         price_per_hour: 380,
       },
@@ -383,6 +403,8 @@ const studios: StudioSeed[] = [
         video_friendly: VideoFriendly.yes,
         props_available: true,
         equipment_available: true,
+        flash_available: true,
+        continuous_available: true,
         tags: ["video", "catalog", "daylight", "big"],
         price_per_hour: 850,
       },
