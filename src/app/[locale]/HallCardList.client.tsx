@@ -9,6 +9,7 @@ export type HallCardItem = {
   image: string | null;
   hallHref: string;
   studioLine: string;
+  areaSqm?: number | null;
   priceLine: string;
   weekendPriceLine?: string | null;
   tagLabels: string[];
@@ -58,6 +59,11 @@ export default function HallCardList({ items, weekendLabel }: Props) {
         const visibleFacts = item.factLines
           .map((factLine) => splitFactLine(factLine))
           .filter((fact) => isAvailableFact(fact.status));
+        const metaParts = [item.studioLine];
+        if (typeof item.areaSqm === "number" && item.areaSqm > 0) {
+          metaParts.push(`${item.areaSqm} m\u00B2`);
+        }
+        const metaLine = metaParts.join(" • ");
 
         return (
           <motion.article
@@ -94,7 +100,7 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                       {item.name}
                     </Link>
                   </h2>
-                  <div className="text-sm muted">{item.studioLine}</div>
+                  <div className="text-sm muted">{metaLine}</div>
                   <div className="text-sm font-semibold text-gray-900">{item.priceLine}</div>
                   {item.weekendPriceLine && (
                     <div className="text-xs muted">

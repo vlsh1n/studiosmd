@@ -88,6 +88,7 @@ export async function listHalls(params: ListHallsParams) {
 
   return filtered.map((hall) => ({
     ...hall,
+    area_sqm: hall.area_sqm,
     name: getI18n(hall.name_i18n as I18nObject, params.locale),
     studio: {
       ...hall.studio,
