@@ -26,7 +26,7 @@ function splitFactLine(factLine: string) {
   const trueIcon = "\u2705";
   const falseIcon = "\u274C";
   const match = factLine.match(
-    new RegExp(`^(.*)\\s(${trueIcon}|${falseIcon}|yes|no|true|false|limited)$`, "iu")
+    new RegExp(`^(.*)\\s(${trueIcon}|${falseIcon}|yes|no|true|false)$`, "iu")
   );
   if (!match) {
     return { label: normalizeVideoLabel(factLine.trim()), status: null as string | null };

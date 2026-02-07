@@ -23,13 +23,11 @@ enum DistrictKey {
 
 enum Daylight {
   no
-  limited
   yes
 }
 
 enum VideoFriendly {
   no
-  limited
   yes
 }
 
