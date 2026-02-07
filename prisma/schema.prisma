@@ -50,12 +50,10 @@ model Hall {
   images         Json
   size_m2        Int?
   area_sqm       Int?
-  minimum_hours  Int      @default(1)
   weekend_price  Int?
   daylight       Daylight @default(no)
   video_friendly VideoFriendly @default(no)
   props_available Boolean @default(false)
-  equipment_available Boolean @default(false)
   flash_available Boolean @default(false)
   continuous_available Boolean @default(false)
   tags           String[]
