@@ -19,11 +19,31 @@ type Props = {
 };
 
 function splitFactLine(factLine: string) {
-  const match = factLine.match(/^(.*)\s([✅❌])$/u);
+  const trueIcon = "\u2705";
+  const falseIcon = "\u274C";
+  const match = factLine.match(
+    new RegExp(`^(.*)\\s(${trueIcon}|${falseIcon}|yes|no|true|false|limited)$`, "iu")
+  );
   if (!match) {
-    return { label: factLine, status: null as string | null };
+    return { label: normalizeVideoLabel(factLine.trim()), status: null as string | null };
   }
-  return { label: match[1], status: match[2] };
+  return { label: normalizeVideoLabel(match[1].trim()), status: match[2] };
+}
+
+function isAvailableFact(status: string | null) {
+  if (status === null) return true;
+  const falseIcon = "\u274C";
+  const normalized = status.toLowerCase();
+  return normalized !== falseIcon && normalized !== "false" && normalized !== "no";
+}
+
+function normalizeVideoLabel(label: string) {
+  const nextByLabel: Record<string, string> = {
+    "Можно ли снимать видео?": "подходит для съемки видео",
+    "Se poate filma video?": "potrivit pentru filmare video",
+    "Can you shoot video?": "video-friendly",
+  };
+  return nextByLabel[label] ?? label;
 }
 
 export default function HallCardList({ halls }: Props) {
@@ -31,7 +51,12 @@ export default function HallCardList({ halls }: Props) {
 
   return (
     <div className="grid w-full max-w-5xl mx-auto gap-6">
-      {halls.map((hall, index) => (
+      {halls.map((hall, index) => {
+        const visibleFacts = hall.factLines
+          .map((factLine) => splitFactLine(factLine))
+          .filter((fact) => isAvailableFact(fact.status));
+
+        return (
         <motion.article
           key={hall.id}
           id={`hall-${hall.id}`}
@@ -62,20 +87,18 @@ export default function HallCardList({ halls }: Props) {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs leading-tight muted">
-                {hall.factLines.map((fact, factIndex) => {
-                  const { label, status } = splitFactLine(fact);
-                  return (
+              {visibleFacts.length > 0 && (
+                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs leading-tight muted">
+                  {visibleFacts.map((fact, factIndex) => (
                     <div
-                      key={`${fact}-${factIndex}`}
+                      key={`${fact.label}-${factIndex}`}
                       className="flex items-center justify-between gap-2"
                     >
-                      <span>{label}</span>
-                      <span className="shrink-0">{status ?? ""}</span>
+                      <span>{fact.label}</span>
                     </div>
-                  );
-                })}
-              </div>
+                  ))}
+                </div>
+              )}
 
               <div className="inline-flex flex-wrap gap-2">
                 {hall.tags.map((tag) => (
@@ -88,7 +111,8 @@ export default function HallCardList({ halls }: Props) {
             </div>
           </div>
         </motion.article>
-      ))}
+        );
+      })}
     </div>
   );
 }
