@@ -10,6 +10,7 @@ export type HallCardItem = {
   hallHref: string;
   studioLine: string;
   priceLine: string;
+  weekendPriceLine?: string | null;
   tagLabels: string[];
   factLines: string[];
   ctaLabel: string;
@@ -17,14 +18,7 @@ export type HallCardItem = {
 
 type Props = {
   items: HallCardItem[];
-};
-
-type SupportedLocale = "ru" | "ro" | "en";
-
-const WEEKEND_HEADLINE: Record<SupportedLocale, string> = {
-  ru: "В выходные:",
-  ro: "În weekend:",
-  en: "Weekends:",
+  weekendLabel: string;
 };
 
 function splitFactLine(factLine: string) {
@@ -55,140 +49,89 @@ function normalizeVideoLabel(label: string) {
   return nextByLabel[label] ?? label;
 }
 
-function getLocaleFromHref(href: string) {
-  const match = href.match(/^\/(ru|ro|en)(?:\/|$)/i);
-  if (!match) return "ru" as SupportedLocale;
-  return match[1].toLowerCase() as SupportedLocale;
-}
-
-function isWeekendFactLine(factLine: string) {
-  return /^(выходные|weekend)\b/i.test(factLine.trim());
-}
-
-function getWeekendAmount(value: unknown): string | null {
-  if (typeof value === "number") {
-    return Number.isFinite(value) && value > 0 ? String(value) : null;
-  }
-  if (typeof value !== "string") return null;
-  const trimmed = value.trim();
-  if (!trimmed) return null;
-  const normalized = trimmed.replace(",", ".");
-  const asNumber = Number(normalized);
-  if (!Number.isNaN(asNumber) && asNumber <= 0) return null;
-  if (!Number.isNaN(asNumber)) return trimmed;
-  return null;
-}
-
-function getWeekendAmountFromFactLines(factLines: string[]) {
-  for (const factLine of factLines) {
-    const trimmed = factLine.trim();
-    if (!isWeekendFactLine(trimmed)) continue;
-    const match = trimmed.match(/(?:выходные|weekend)\s+(\d+(?:[.,]\d+)?)/i);
-    if (!match) continue;
-    const amount = getWeekendAmount(match[1]);
-    if (amount) return amount;
-  }
-  return null;
-}
-
-function formatPriceWithWeekendAmount(priceLine: string, weekendAmount: string) {
-  const replaced = priceLine.replace(/^\s*\d+(?:[.,]\d+)?/, weekendAmount);
-  return replaced === priceLine ? `${weekendAmount} ${priceLine}` : replaced;
-}
-
-export default function HallCardList({ items }: Props) {
+export default function HallCardList({ items, weekendLabel }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <div className="grid w-full max-w-5xl mx-auto gap-6">
       {items.map((item, index) => {
-        const locale = getLocaleFromHref(item.hallHref);
-        const weekendFromField = getWeekendAmount(
-          (item as Record<string, unknown>).weekend_price ??
-            (item as Record<string, unknown>).weekendPrice
-        );
-        const weekendAmount = weekendFromField ?? getWeekendAmountFromFactLines(item.factLines);
-        const weekendPriceLine = weekendAmount
-          ? formatPriceWithWeekendAmount(item.priceLine, weekendAmount)
-          : null;
         const visibleFacts = item.factLines
-          .filter((factLine) => !isWeekendFactLine(factLine))
           .map((factLine) => splitFactLine(factLine))
           .filter((fact) => isAvailableFact(fact.status));
 
         return (
-        <motion.article
-          key={item.id}
-          className="card p-4 sm:p-5"
-          initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: shouldReduceMotion ? 0 : 0.22,
-            delay: shouldReduceMotion ? 0 : index * 0.04,
-            ease: "easeOut",
-          }}
-          whileHover={shouldReduceMotion ? undefined : { y: -2 }}
-          whileTap={shouldReduceMotion ? undefined : { y: 1 }}
-          style={shouldReduceMotion ? undefined : { willChange: "transform" }}
-        >
-          <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
-            <div className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]">
-              {item.image && (
-                <motion.img
-                  src={item.image}
-                  alt={item.name}
-                  className="absolute inset-0 h-full w-full object-cover object-center"
-                  whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
-                  transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
-                />
-              )}
-            </div>
-
-            <div className="flex h-full min-w-0 flex-col gap-3">
-              <div className="space-y-1">
-                <h2 className="text-lg font-semibold text-gray-900">
-                  <Link href={item.hallHref} className="underline">
-                    {item.name}
-                  </Link>
-                </h2>
-                <div className="text-sm muted">{item.studioLine}</div>
-                <div className="text-sm font-semibold text-gray-900">{item.priceLine}</div>
-                {weekendPriceLine && (
-                  <div className="text-xs muted">
-                    {WEEKEND_HEADLINE[locale]} {weekendPriceLine}
-                  </div>
+          <motion.article
+            key={item.id}
+            className="card p-4 sm:p-5"
+            initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: shouldReduceMotion ? 0 : 0.22,
+              delay: shouldReduceMotion ? 0 : index * 0.04,
+              ease: "easeOut",
+            }}
+            whileHover={shouldReduceMotion ? undefined : { y: -2 }}
+            whileTap={shouldReduceMotion ? undefined : { y: 1 }}
+            style={shouldReduceMotion ? undefined : { willChange: "transform" }}
+          >
+            <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
+              <div className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]">
+                {item.image && (
+                  <motion.img
+                    src={item.image}
+                    alt={item.name}
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                    whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
+                    transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
+                  />
                 )}
               </div>
 
-              {visibleFacts.length > 0 && (
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs leading-tight muted">
-                  {visibleFacts.map((fact, factIndex) => (
-                    <div
-                      key={`${fact.label}-${factIndex}`}
-                      className="flex items-center justify-between gap-2"
-                    >
-                      <span>{fact.label}</span>
+              <div className="flex h-full min-w-0 flex-col gap-3">
+                <div className="space-y-1">
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    <Link href={item.hallHref} className="underline">
+                      {item.name}
+                    </Link>
+                  </h2>
+                  <div className="text-sm muted">{item.studioLine}</div>
+                  <div className="text-sm font-semibold text-gray-900">{item.priceLine}</div>
+                  {item.weekendPriceLine && (
+                    <div className="text-xs muted">
+                      {weekendLabel} {item.weekendPriceLine}
                     </div>
+                  )}
+                </div>
+
+                {visibleFacts.length > 0 && (
+                  <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs leading-tight muted">
+                    {visibleFacts.map((fact, factIndex) => (
+                      <div
+                        key={`${fact.label}-${factIndex}`}
+                        className="flex items-center justify-between gap-2"
+                      >
+                        <span>{fact.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div className="inline-flex flex-wrap gap-2">
+                  {item.tagLabels.map((tag) => (
+                    <span key={tag} className="pill text-xs">
+                      {tag}
+                    </span>
                   ))}
                 </div>
-              )}
 
-              <div className="inline-flex flex-wrap gap-2">
-                {item.tagLabels.map((tag) => (
-                  <span key={tag} className="pill text-xs">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="mt-auto pt-1">
-                <Link href={item.hallHref} className="btn btn-primary w-full sm:w-fit">
-                  {item.ctaLabel}
-                </Link>
+                <div className="mt-auto pt-1">
+                  <Link href={item.hallHref} className="btn btn-primary w-full sm:w-fit">
+                    {item.ctaLabel}
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        </motion.article>
+          </motion.article>
         );
       })}
     </div>

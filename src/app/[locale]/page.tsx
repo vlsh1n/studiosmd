@@ -17,6 +17,12 @@ type Props = {
   searchParams?: { [key: string]: string | string[] | undefined };
 };
 
+const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
+  ru: "В выходные:",
+  ro: "În weekend:",
+  en: "Weekends:",
+};
+
 function parseCsvParam(value?: string | string[]) {
   if (!value) return [];
   const items = Array.isArray(value) ? value : [value];
@@ -87,9 +93,12 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const tagLabels = hall.tags.map(
       (tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag
     );
-    const hallRecord = hall as Record<string, unknown>;
-    const flashAvailable = hallRecord.flash_available === true;
-    const continuousAvailable = hallRecord.continuous_available === true;
+    const flashAvailable = hall.flash_available === true;
+    const continuousAvailable = hall.continuous_available === true;
+    const weekendPriceLine =
+      typeof hall.weekend_price === "number" && hall.weekend_price > 0
+        ? `${hall.weekend_price}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`
+        : null;
 
     const hallId = encodeURIComponent(hall.id);
     const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
@@ -97,11 +106,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const factLines: string[] = [];
     if (typeof hall.area_sqm === "number") {
       factLines.push(`${hall.area_sqm} м²`);
-    }
-    if (typeof hall.weekend_price === "number") {
-      factLines.push(
-        `${UI_STRINGS.weekend_label[locale]} ${hall.weekend_price}\u00A0MDL`
-      );
     }
     factLines.push(`${UI_STRINGS.daylight_fact_label[locale]} ${factIcon(hall.daylight)}`);
     factLines.push(
@@ -124,6 +128,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       hallHref,
       studioLine: `${hall.studio.name} · ${DISTRICTS[hall.studio.district_key][locale]}`,
       priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
+      weekendPriceLine,
       tagLabels,
       factLines,
       ctaLabel: UI_STRINGS.view_hall_cta[locale],
@@ -244,7 +249,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         {displayedHalls.length === 0 ? (
           <div className="text-sm muted">{UI_STRINGS.no_results[locale]}</div>
         ) : (
-          <HallCardList items={cardItems} />
+          <HallCardList items={cardItems} weekendLabel={WEEKEND_PRICE_LABEL[locale]} />
         )}
       </div>
     </div>

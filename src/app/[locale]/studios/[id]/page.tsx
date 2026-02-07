@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { getStudioById } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
-import { isLocale } from "@/i18n";
+import { isLocale, type Locale } from "@/i18n";
 import HallCardList, {
   type StudioHallCardItem,
 } from "@/app/[locale]/studios/[id]/HallCardList.client";
@@ -16,6 +16,12 @@ type Props = {
 type Contacts = Record<string, unknown> | null | undefined;
 
 type JsonArray = unknown[] | null | undefined;
+
+const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
+  ru: "В выходные:",
+  ro: "În weekend:",
+  en: "Weekends:",
+};
 
 function getStringsFromJson(value: JsonArray) {
   if (!Array.isArray(value)) return [];
@@ -59,16 +65,16 @@ export default async function StudioPage({ params }: Props) {
   const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
     const images = getImageList(hall.images as JsonArray);
     const tags = hall.tags.map((tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag);
-    const hallRecord = hall as Record<string, unknown>;
-    const flashAvailable = hallRecord.flash_available === true;
-    const continuousAvailable = hallRecord.continuous_available === true;
+    const flashAvailable = hall.flash_available === true;
+    const continuousAvailable = hall.continuous_available === true;
+    const weekendPriceLine =
+      typeof hall.weekend_price === "number" && hall.weekend_price > 0
+        ? `${hall.weekend_price}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`
+        : null;
 
     const factLines: string[] = [];
     if (typeof hall.area_sqm === "number") {
       factLines.push(`${hall.area_sqm} м²`);
-    }
-    if (typeof hall.weekend_price === "number") {
-      factLines.push(`${UI_STRINGS.weekend_label[locale]} ${hall.weekend_price}\u00A0MDL`);
     }
     factLines.push(`${UI_STRINGS.daylight_fact_label[locale]} ${factIcon(hall.daylight)}`);
     factLines.push(`${UI_STRINGS.video_allowed_label[locale]} ${factIcon(hall.video_friendly)}`);
@@ -82,6 +88,7 @@ export default async function StudioPage({ params }: Props) {
       id: hall.id,
       name: hall.name,
       priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
+      weekendPriceLine,
       factLines,
       tags,
       images,
@@ -136,7 +143,7 @@ export default async function StudioPage({ params }: Props) {
 
       <HallFocus />
       <section className="stack">
-        <HallCardList halls={hallCards} />
+        <HallCardList halls={hallCards} weekendLabel={WEEKEND_PRICE_LABEL[locale]} />
       </section>
     </div>
   );
