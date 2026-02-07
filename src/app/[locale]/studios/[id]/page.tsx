@@ -73,9 +73,6 @@ export default async function StudioPage({ params }: Props) {
         : null;
 
     const factLines: string[] = [];
-    if (typeof hall.area_sqm === "number") {
-      factLines.push(`${hall.area_sqm} м²`);
-    }
     factLines.push(`${UI_STRINGS.daylight_fact_label[locale]} ${factIcon(hall.daylight)}`);
     factLines.push(`${UI_STRINGS.video_allowed_label[locale]} ${factIcon(hall.video_friendly)}`);
     factLines.push(`${UI_STRINGS.furniture_label[locale]} ${factIcon(hall.props_available)}`);

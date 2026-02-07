@@ -104,9 +104,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
 
     const factLines: string[] = [];
-    if (typeof hall.area_sqm === "number") {
-      factLines.push(`${hall.area_sqm} м²`);
-    }
     factLines.push(`${UI_STRINGS.daylight_fact_label[locale]} ${factIcon(hall.daylight)}`);
     factLines.push(
       `${UI_STRINGS.video_allowed_label[locale]} ${factIcon(hall.video_friendly)}`
