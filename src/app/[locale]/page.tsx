@@ -65,7 +65,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   }
 
   const query = (await searchParams) ?? {};
-  const q = Array.isArray(query.q) ? query.q[0] : query.q;
+  const rawQ = Array.isArray(query.q) ? query.q[0] : query.q;
+  const q = typeof rawQ === "string" ? rawQ.trim() : "";
   const district_keys = parseCsvParam(query.districts).filter((key): key is keyof typeof DISTRICTS =>
     districtKeys.includes(key as keyof typeof DISTRICTS)
   );
@@ -80,7 +81,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       : "random";
   const halls = (await listHalls({
     locale,
-    q,
+    q: q.length > 0 ? q : undefined,
     district_keys,
     tags,
     sort: sort === "random" ? undefined : sort,

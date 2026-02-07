@@ -45,6 +45,7 @@ export function getI18n(obj: I18nObject, locale: Locale): string {
 
 export async function listHalls(params: ListHallsParams) {
   const where: Prisma.HallWhereInput = {};
+  const query = params.q?.trim();
 
   if (params.tags && params.tags.length > 0) {
     where.tags = { hasEvery: params.tags };
@@ -54,6 +55,27 @@ export async function listHalls(params: ListHallsParams) {
     where.studio = {
       district_key: { in: params.district_keys },
     };
+  }
+
+  if (query) {
+    where.OR = [
+      {
+        name_i18n: {
+          path: [params.locale],
+          string_contains: query,
+          mode: "insensitive",
+        },
+      },
+      {
+        studio: {
+          name_i18n: {
+            path: [params.locale],
+            string_contains: query,
+            mode: "insensitive",
+          },
+        },
+      },
+    ];
   }
 
   const halls = await prisma.hall.findMany({
@@ -74,19 +96,7 @@ export async function listHalls(params: ListHallsParams) {
     },
   });
 
-  const query = params.q?.trim().toLowerCase();
-  const filtered = query
-    ? halls.filter((hall) => {
-        const hallName = getI18n(hall.name_i18n as I18nObject, params.locale).toLowerCase();
-        const studioName = getI18n(
-          hall.studio?.name_i18n as I18nObject,
-          params.locale
-        ).toLowerCase();
-        return hallName.includes(query) || studioName.includes(query);
-      })
-    : halls;
-
-  return filtered.map((hall) => ({
+  return halls.map((hall) => ({
     ...hall,
     area_sqm: hall.area_sqm,
     name: getI18n(hall.name_i18n as I18nObject, params.locale),
