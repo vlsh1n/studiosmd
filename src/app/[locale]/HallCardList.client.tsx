@@ -19,6 +19,14 @@ type Props = {
   items: HallCardItem[];
 };
 
+type SupportedLocale = "ru" | "ro" | "en";
+
+const WEEKEND_HEADLINE: Record<SupportedLocale, string> = {
+  ru: "В выходные:",
+  ro: "În weekend:",
+  en: "Weekends:",
+};
+
 function splitFactLine(factLine: string) {
   const trueIcon = "\u2705";
   const falseIcon = "\u274C";
@@ -47,13 +55,64 @@ function normalizeVideoLabel(label: string) {
   return nextByLabel[label] ?? label;
 }
 
+function getLocaleFromHref(href: string) {
+  const match = href.match(/^\/(ru|ro|en)(?:\/|$)/i);
+  if (!match) return "ru" as SupportedLocale;
+  return match[1].toLowerCase() as SupportedLocale;
+}
+
+function isWeekendFactLine(factLine: string) {
+  return /^(выходные|weekend)\b/i.test(factLine.trim());
+}
+
+function getWeekendAmount(value: unknown): string | null {
+  if (typeof value === "number") {
+    return Number.isFinite(value) && value > 0 ? String(value) : null;
+  }
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const normalized = trimmed.replace(",", ".");
+  const asNumber = Number(normalized);
+  if (!Number.isNaN(asNumber) && asNumber <= 0) return null;
+  if (!Number.isNaN(asNumber)) return trimmed;
+  return null;
+}
+
+function getWeekendAmountFromFactLines(factLines: string[]) {
+  for (const factLine of factLines) {
+    const trimmed = factLine.trim();
+    if (!isWeekendFactLine(trimmed)) continue;
+    const match = trimmed.match(/(?:выходные|weekend)\s+(\d+(?:[.,]\d+)?)/i);
+    if (!match) continue;
+    const amount = getWeekendAmount(match[1]);
+    if (amount) return amount;
+  }
+  return null;
+}
+
+function formatPriceWithWeekendAmount(priceLine: string, weekendAmount: string) {
+  const replaced = priceLine.replace(/^\s*\d+(?:[.,]\d+)?/, weekendAmount);
+  return replaced === priceLine ? `${weekendAmount} ${priceLine}` : replaced;
+}
+
 export default function HallCardList({ items }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <div className="grid w-full max-w-5xl mx-auto gap-6">
       {items.map((item, index) => {
+        const locale = getLocaleFromHref(item.hallHref);
+        const weekendFromField = getWeekendAmount(
+          (item as Record<string, unknown>).weekend_price ??
+            (item as Record<string, unknown>).weekendPrice
+        );
+        const weekendAmount = weekendFromField ?? getWeekendAmountFromFactLines(item.factLines);
+        const weekendPriceLine = weekendAmount
+          ? formatPriceWithWeekendAmount(item.priceLine, weekendAmount)
+          : null;
         const visibleFacts = item.factLines
+          .filter((factLine) => !isWeekendFactLine(factLine))
           .map((factLine) => splitFactLine(factLine))
           .filter((fact) => isAvailableFact(fact.status));
 
@@ -94,6 +153,11 @@ export default function HallCardList({ items }: Props) {
                 </h2>
                 <div className="text-sm muted">{item.studioLine}</div>
                 <div className="text-sm font-semibold text-gray-900">{item.priceLine}</div>
+                {weekendPriceLine && (
+                  <div className="text-xs muted">
+                    {WEEKEND_HEADLINE[locale]} {weekendPriceLine}
+                  </div>
+                )}
               </div>
 
               {visibleFacts.length > 0 && (
