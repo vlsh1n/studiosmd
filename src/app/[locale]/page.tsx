@@ -340,25 +340,27 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             <div className="text-xs font-semibold uppercase muted">
               {UI_STRINGS.facts_title[locale]}
             </div>
-            <div className="fact-filter-grid">
+            <div className="flex flex-wrap gap-2">
               {factKeys.map((factKey) => {
-                const isSelected = facts.includes(factKey);
                 const label = FACT_LABEL_BY_KEY[factKey](locale);
                 return (
                   <label
                     key={factKey}
-                    className={`fact-filter-chip${isSelected ? " is-selected" : ""}`}
+                    className="relative inline-flex h-11 w-11 items-stretch justify-stretch rounded-[0.85rem]"
                     title={label}
                   >
                     <input
                       type="checkbox"
                       name="facts"
                       value={factKey}
-                      defaultChecked={isSelected}
-                      className="fact-filter-input"
+                      defaultChecked={facts.includes(factKey)}
+                      className="peer absolute inset-0 z-10 m-0 cursor-pointer opacity-0"
                       aria-label={label}
                     />
-                    <span className="fact-filter-icon" aria-hidden="true">
+                    <span
+                      className="pointer-events-none inline-flex h-full w-full items-center justify-center rounded-[0.85rem] border border-[var(--glass-border)] bg-[var(--surface)] shadow-[var(--glass-shadow)] transition-all duration-150 peer-hover:-translate-y-px peer-checked:border-[#1c1a17] peer-checked:bg-[#1c1a17] peer-checked:shadow-[var(--shadow-lift)] peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2 [&>img]:h-5 [&>img]:w-5 [&>img]:object-contain [&>img]:opacity-80 [&>img]:grayscale [&>img]:transition-all [&>img]:duration-150 peer-checked:[&>img]:opacity-100 peer-checked:[&>img]:grayscale-0 peer-checked:[&>img]:invert"
+                      aria-hidden="true"
+                    >
                       <img src={FACT_ICON_BY_KEY[factKey]} alt="" loading="lazy" />
                     </span>
                     <span className="sr-only">{label}</span>
