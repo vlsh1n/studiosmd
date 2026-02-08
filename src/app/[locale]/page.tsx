@@ -2,7 +2,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { listHalls } from "@/db/queries";
 import type { HallListItem } from "@/db/queries";
-import HallCardList, { type HallCardItem } from "@/app/[locale]/HallCardList.client";
+import HallCardList, {
+  type HallCardItem,
+  type HallFactItem,
+} from "@/app/[locale]/HallCardList.client";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, Locale } from "@/i18n";
@@ -32,18 +35,21 @@ function parseCsvParam(value?: string | string[]) {
     .filter(Boolean);
 }
 
-function getImageFromJson(value: unknown) {
+function getImagesFromJson(value: unknown) {
   if (!Array.isArray(value)) {
-    return null;
+    return [];
   }
 
+  const images: string[] = [];
   for (const item of value) {
     if (typeof item !== "string") continue;
     const safeUrl = safeExternalUrl(item);
-    if (safeUrl) return safeUrl;
+    if (safeUrl) {
+      images.push(safeUrl);
+    }
   }
 
-  return null;
+  return images;
 }
 
 function shuffleArray<T>(items: T[]): T[] {
@@ -122,10 +128,11 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     return search ? `/${locale}?${search}` : `/${locale}`;
   }
   const cardItems: HallCardItem[] = displayedHalls.map((hall) => {
-    const hallImage = getImageFromJson(hall.images);
-    const studioImage = getImageFromJson(hall.studio.cover_images);
-    const image = hallImage ?? studioImage;
-    const tagLabels = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]);
+    const hallImages = getImagesFromJson(hall.images);
+    const studioImages = getImagesFromJson(hall.studio.cover_images);
+    const image = hallImages[0] ?? studioImages[0] ?? null;
+    const imageCount = hallImages.length > 0 ? hallImages.length : studioImages.length;
+    const tagLabels = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]).slice(0, 4);
     const hallTagSet = new Set(hall.tags);
     const flashAvailable = hall.flash_available === true;
     const continuousAvailable = hall.continuous_available === true;
@@ -145,40 +152,62 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const hallId = encodeURIComponent(hall.id);
     const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
 
-    const factLines: string[] = [];
+    const factItems: HallFactItem[] = [];
     if (hall.daylight === "yes") {
-      factLines.push(UI_STRINGS.daylight_fact_label[locale]);
+      factItems.push({
+        key: "daylight",
+        label: UI_STRINGS.daylight_fact_label[locale],
+      });
     }
     if (hallTagSet.has("blackout")) {
-      factLines.push(UI_STRINGS.blackout_fact_label[locale]);
+      factItems.push({
+        key: "blackout",
+        label: UI_STRINGS.blackout_fact_label[locale],
+      });
     }
     if (hallTagSet.has("parking")) {
-      factLines.push(UI_STRINGS.parking_fact_label[locale]);
+      factItems.push({
+        key: "parking",
+        label: UI_STRINGS.parking_fact_label[locale],
+      });
     }
     if (hallTagSet.has("changing_room")) {
-      factLines.push(UI_STRINGS.changing_room_fact_label[locale]);
+      factItems.push({
+        key: "changing_room",
+        label: UI_STRINGS.changing_room_fact_label[locale],
+      });
     }
     if (hall.props_available === true) {
-      factLines.push(UI_STRINGS.furniture_label[locale]);
+      factItems.push({
+        key: "furniture",
+        label: UI_STRINGS.furniture_label[locale],
+      });
     }
     if (flashAvailable) {
-      factLines.push(UI_STRINGS.flash_light_label[locale]);
+      factItems.push({
+        key: "flash_light",
+        label: UI_STRINGS.flash_light_label[locale],
+      });
     }
     if (continuousAvailable) {
-      factLines.push(UI_STRINGS.continuous_light_label[locale]);
+      factItems.push({
+        key: "continuous_light",
+        label: UI_STRINGS.continuous_light_label[locale],
+      });
     }
 
     return {
       id: hall.id,
       name: hall.name,
       image,
+      imageCount,
       hallHref,
       studioLine: `${DISTRICTS[hall.studio.district_key][locale]} • ${hall.studio.name}`,
       spaceLine,
       priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
       weekendPriceLine,
       tagLabels,
-      factLines,
+      factItems,
       ctaLabel: UI_STRINGS.view_hall_cta[locale],
     };
   });
