@@ -14,6 +14,7 @@ import { safeExternalUrl } from "@/lib/url";
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
 const PAGE_SIZE = 12;
+const SHOW_TAG_FILTERS = false;
 const factKeys: HallFactItem["key"][] = [
   "daylight",
   "blackout",
@@ -270,75 +271,82 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             <div className="text-xs font-semibold uppercase muted">
               {UI_STRINGS.districts_title[locale]}
             </div>
-            <div className="grid gap-2 md:grid-cols-2">
-              {districtKeys.map((key) => (
-                <label key={key} className="flex items-center gap-2 text-sm muted">
-                  <input
-                    type="checkbox"
-                    name="districts"
-                    value={key}
-                    defaultChecked={district_keys.includes(key)}
-                    className="h-4 w-4"
-                  />
-                  <span>{DISTRICTS[key][locale]}</span>
-                </label>
-              ))}
+            <div className="flex flex-wrap gap-2">
+              {districtKeys.map((key) => {
+                const checked = district_keys.includes(key);
+                return (
+                  <label key={key} className="relative inline-flex">
+                    <input
+                      type="checkbox"
+                      name="districts"
+                      value={key}
+                      defaultChecked={checked}
+                      className="peer sr-only"
+                    />
+                    <span className="pill cursor-pointer text-sm transition-colors peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2">
+                      {DISTRICTS[key][locale]}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           </div>
 
-          <details className="stack group">
-            <summary className="flex cursor-pointer items-center justify-between gap-3 py-1 list-none">
-              <span className="text-xs font-semibold uppercase muted">
-                {UI_STRINGS.filters_params_title[locale]} ({selectedTagLabels.length})
-              </span>
-              <span className="flex min-w-0 items-center gap-2 overflow-hidden">
-                {selectedTagLabels.slice(0, 3).map((label) => (
-                  <span key={label} className="pill text-xs whitespace-nowrap">
-                    {label}
-                  </span>
-                ))}
-                {selectedTagLabels.length > 3 && (
-                  <span className="pill text-xs whitespace-nowrap">
-                    +{selectedTagLabels.length - 3}
-                  </span>
-                )}
-              </span>
-              <span className="flex h-5 w-5 items-center justify-center text-gray-500 transition-transform group-open:rotate-180">
-                <svg
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  aria-hidden="true"
-                  className="h-4 w-4"
-                >
-                  <path
-                    d="M5 8l5 5 5-5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </span>
-            </summary>
-            <div className="grid gap-2 pt-3 md:grid-cols-3">
-              {tagKeys.map((key) => (
-                <label key={key} className="flex items-center gap-2 text-sm muted">
-                  <input
-                    type="checkbox"
-                    name="tags"
-                    value={key}
-                    defaultChecked={tags.includes(key)}
+          {SHOW_TAG_FILTERS && (
+            <details className="stack group">
+              <summary className="flex cursor-pointer items-center justify-between gap-3 py-1 list-none">
+                <span className="text-xs font-semibold uppercase muted">
+                  {UI_STRINGS.filters_params_title[locale]} ({selectedTagLabels.length})
+                </span>
+                <span className="flex min-w-0 items-center gap-2 overflow-hidden">
+                  {selectedTagLabels.slice(0, 3).map((label) => (
+                    <span key={label} className="pill text-xs whitespace-nowrap">
+                      {label}
+                    </span>
+                  ))}
+                  {selectedTagLabels.length > 3 && (
+                    <span className="pill text-xs whitespace-nowrap">
+                      +{selectedTagLabels.length - 3}
+                    </span>
+                  )}
+                </span>
+                <span className="flex h-5 w-5 items-center justify-center text-gray-500 transition-transform group-open:rotate-180">
+                  <svg
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    aria-hidden="true"
                     className="h-4 w-4"
-                  />
-                  <span>{TAGS[key][locale]}</span>
-                </label>
-              ))}
-            </div>
-          </details>
+                  >
+                    <path
+                      d="M5 8l5 5 5-5"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </summary>
+              <div className="grid gap-2 pt-3 md:grid-cols-3">
+                {tagKeys.map((key) => (
+                  <label key={key} className="flex items-center gap-2 text-sm muted">
+                    <input
+                      type="checkbox"
+                      name="tags"
+                      value={key}
+                      defaultChecked={tags.includes(key)}
+                      className="h-4 w-4"
+                    />
+                    <span>{TAGS[key][locale]}</span>
+                  </label>
+                ))}
+              </div>
+            </details>
+          )}
 
           <div className="stack">
             <div className="text-xs font-semibold uppercase muted">
-              {UI_STRINGS.facts_title[locale]}
+              {UI_STRINGS.filters_title[locale]}
             </div>
             <div className="flex flex-wrap gap-2">
               {factKeys.map((factKey) => {
@@ -346,24 +354,28 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                 return (
                   <label
                     key={factKey}
-                    className="relative inline-flex h-11 w-11 items-stretch justify-stretch rounded-[0.85rem]"
-                    title={label}
+                    className="relative inline-flex"
                   >
                     <input
                       type="checkbox"
                       name="facts"
                       value={factKey}
                       defaultChecked={facts.includes(factKey)}
-                      className="peer absolute inset-0 z-10 m-0 cursor-pointer opacity-0"
+                      className="peer sr-only"
                       aria-label={label}
                     />
                     <span
-                      className="pointer-events-none inline-flex h-full w-full items-center justify-center rounded-[0.85rem] border border-[var(--glass-border)] bg-[var(--surface)] shadow-[var(--glass-shadow)] transition-all duration-150 peer-hover:-translate-y-px peer-checked:border-[#1c1a17] peer-checked:bg-[#1c1a17] peer-checked:shadow-[var(--shadow-lift)] peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2 [&>img]:h-5 [&>img]:w-5 [&>img]:object-contain [&>img]:opacity-80 [&>img]:grayscale [&>img]:transition-all [&>img]:duration-150 peer-checked:[&>img]:opacity-100 peer-checked:[&>img]:grayscale-0 peer-checked:[&>img]:invert"
-                      aria-hidden="true"
+                      className="pill cursor-pointer gap-2 text-sm transition-colors peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2"
                     >
-                      <img src={FACT_ICON_BY_KEY[factKey]} alt="" loading="lazy" />
+                      <img
+                        src={FACT_ICON_BY_KEY[factKey]}
+                        alt=""
+                        loading="lazy"
+                        className="h-4 w-4 object-contain opacity-80 grayscale transition-all duration-150 peer-checked:opacity-100 peer-checked:grayscale-0 peer-checked:invert"
+                        aria-hidden="true"
+                      />
+                      <span>{label}</span>
                     </span>
-                    <span className="sr-only">{label}</span>
                   </label>
                 );
               })}
