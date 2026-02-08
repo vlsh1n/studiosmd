@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, t } from "@/i18n";
+import { safeExternalUrl } from "@/lib/url";
 
 type Props = {
   children: React.ReactNode;
@@ -43,7 +44,7 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
-  const kofiUrl = process.env.NEXT_PUBLIC_KOFI_URL;
+  const kofiUrl = safeExternalUrl(process.env.NEXT_PUBLIC_KOFI_URL);
 
   if (!isLocale(locale)) {
     notFound();
