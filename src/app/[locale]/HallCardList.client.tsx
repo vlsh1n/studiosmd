@@ -91,7 +91,7 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                 )}
               </div>
 
-              <div className="stack gap-3 min-w-0">
+              <div className="flex h-full min-w-0 flex-col gap-3">
                 <div className="space-y-1">
                   <h2 className="text-base font-semibold text-gray-900 sm:text-lg">
                     <Link href={item.hallHref} className="underline">
