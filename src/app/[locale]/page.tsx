@@ -365,13 +365,13 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       aria-label={label}
                     />
                     <span
-                      className="pill cursor-pointer gap-2 text-sm transition-colors peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2"
+                      className="pill cursor-pointer gap-2 text-sm transition-colors peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2 peer-checked:[&>img]:invert"
                     >
                       <img
                         src={FACT_ICON_BY_KEY[factKey]}
                         alt=""
                         loading="lazy"
-                        className="h-4 w-4 object-contain opacity-80 grayscale transition-all duration-150 peer-checked:opacity-100 peer-checked:grayscale-0 peer-checked:invert"
+                        className="h-4 w-4 object-contain opacity-80 grayscale transition-all duration-150 peer-checked:opacity-100 peer-checked:grayscale-0"
                         aria-hidden="true"
                       />
                       <span>{label}</span>
