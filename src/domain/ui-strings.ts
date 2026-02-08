@@ -113,6 +113,16 @@ export const UI_STRINGS: UiStrings = {
     ro: "Vezi",
     en: "View",
   },
+  instagram_cta: {
+    ru: "Instagram",
+    ro: "Instagram",
+    en: "Instagram",
+  },
+  phone_cta: {
+    ru: "Телефон",
+    ro: "Telefon",
+    en: "Phone",
+  },
   no_results: {
     ru: "Ничего не найдено",
     ro: "Nu s-a găsit nimic",

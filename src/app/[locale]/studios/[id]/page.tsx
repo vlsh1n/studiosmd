@@ -90,27 +90,48 @@ export default async function StudioPage({ params }: Props) {
     }
     const spaceLine = areaParts.length > 0 ? areaParts.join(" · ") : null;
 
-    const factLines: string[] = [];
+    const factItems: StudioHallCardItem["factItems"] = [];
     if (hall.daylight === "yes") {
-      factLines.push(UI_STRINGS.daylight_fact_label[locale]);
+      factItems.push({
+        key: "daylight",
+        label: UI_STRINGS.daylight_fact_label[locale],
+      });
     }
     if (hallTagSet.has("blackout")) {
-      factLines.push(UI_STRINGS.blackout_fact_label[locale]);
+      factItems.push({
+        key: "blackout",
+        label: UI_STRINGS.blackout_fact_label[locale],
+      });
     }
     if (hallTagSet.has("parking")) {
-      factLines.push(UI_STRINGS.parking_fact_label[locale]);
+      factItems.push({
+        key: "parking",
+        label: UI_STRINGS.parking_fact_label[locale],
+      });
     }
     if (hallTagSet.has("changing_room")) {
-      factLines.push(UI_STRINGS.changing_room_fact_label[locale]);
+      factItems.push({
+        key: "changing_room",
+        label: UI_STRINGS.changing_room_fact_label[locale],
+      });
     }
     if (hall.props_available === true) {
-      factLines.push(UI_STRINGS.furniture_label[locale]);
+      factItems.push({
+        key: "furniture",
+        label: UI_STRINGS.furniture_label[locale],
+      });
     }
     if (flashAvailable) {
-      factLines.push(UI_STRINGS.flash_light_label[locale]);
+      factItems.push({
+        key: "flash_light",
+        label: UI_STRINGS.flash_light_label[locale],
+      });
     }
     if (continuousAvailable) {
-      factLines.push(UI_STRINGS.continuous_light_label[locale]);
+      factItems.push({
+        key: "continuous_light",
+        label: UI_STRINGS.continuous_light_label[locale],
+      });
     }
 
     return {
@@ -119,7 +140,7 @@ export default async function StudioPage({ params }: Props) {
       priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
       weekendPriceLine,
       spaceLine,
-      factLines,
+      factItems,
       tags,
       images,
     };
@@ -171,7 +192,14 @@ export default async function StudioPage({ params }: Props) {
 
       <HallFocus />
       <section className="stack">
-        <HallCardList halls={hallCards} weekendLabel={WEEKEND_PRICE_LABEL[locale]} />
+        <HallCardList
+          halls={hallCards}
+          weekendLabel={WEEKEND_PRICE_LABEL[locale]}
+          instagramHref={instagram}
+          phoneHref={phoneHref ? `tel:${phoneHref}` : null}
+          instagramLabel={UI_STRINGS.instagram_cta[locale]}
+          phoneLabel={UI_STRINGS.phone_cta[locale]}
+        />
       </section>
     </div>
   );
