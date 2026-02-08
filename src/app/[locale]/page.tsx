@@ -10,8 +10,6 @@ import { isLocale, Locale } from "@/i18n";
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
 
-type SearchParams = Record<string, string | string[] | undefined>;
-
 type Props = {
   params: { locale: string };
   searchParams?: { [key: string]: string | string[] | undefined };
@@ -38,11 +36,6 @@ function getImageFromJson(value: unknown) {
     return typeof first === "string" ? first : null;
   }
   return null;
-}
-
-function getStringsFromJson(value: unknown) {
-  if (!Array.isArray(value)) return [];
-  return value.filter((item) => typeof item === "string") as string[];
 }
 
 function shuffleArray<T>(items: T[]): T[] {

@@ -1,0 +1,1 @@
+ALTER TABLE "Hall" DROP COLUMN "size_m2";

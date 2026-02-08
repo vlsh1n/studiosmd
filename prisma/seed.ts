@@ -7,7 +7,6 @@ type LocaleKey = "ru" | "ro" | "en";
 type HallSeed = {
   name_i18n: Record<LocaleKey, string>;
   images: string[];
-  size_m2?: number;
   weekend_price?: number;
   daylight: Daylight;
   video_friendly: VideoFriendly;
@@ -47,7 +46,6 @@ const studios: StudioSeed[] = [
     ],
     contacts: {
       phone: "+373-68-000-101",
-      email: "hello@aurora.md",
       instagram: "@aurora.studio",
     },
     halls: [
@@ -65,7 +63,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/aurora/hall-bright-5.jpg",
           "https://images.example.com/studios/aurora/hall-bright-6.jpg",
         ],
-        size_m2: 70,
         area_sqm: 72,
         weekend_price: 900,
         daylight: Daylight.yes,
@@ -89,7 +86,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/aurora/hall-loft-4.jpg",
           "https://images.example.com/studios/aurora/hall-loft-5.jpg",
         ],
-        size_m2: 55,
         area_sqm: 54,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.yes,
@@ -119,7 +115,6 @@ const studios: StudioSeed[] = [
     ],
     contacts: {
       phone: "+373-68-000-202",
-      email: "hello@lumi.md",
       instagram: "@lumi.studio",
     },
     halls: [
@@ -136,7 +131,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/lumi/hall-minimal-4.jpg",
           "https://images.example.com/studios/lumi/hall-minimal-5.jpg",
         ],
-        size_m2: 40,
         area_sqm: 38,
         weekend_price: 520,
         daylight: Daylight.no,
@@ -161,7 +155,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/lumi/hall-cyclo-5.jpg",
           "https://images.example.com/studios/lumi/hall-cyclo-6.jpg",
         ],
-        size_m2: 65,
         area_sqm: 68,
         weekend_price: 1000,
         daylight: Daylight.yes,
@@ -192,7 +185,6 @@ const studios: StudioSeed[] = [
     ],
     contacts: {
       phone: "+373-68-000-303",
-      email: "hello@central.md",
       instagram: "@central.studio",
     },
     halls: [
@@ -209,7 +201,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/central/hall-interior-4.jpg",
           "https://images.example.com/studios/central/hall-interior-5.jpg",
         ],
-        size_m2: 50,
         area_sqm: 49,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.no,
@@ -233,7 +224,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/central/hall-daylight-5.jpg",
           "https://images.example.com/studios/central/hall-daylight-6.jpg",
         ],
-        size_m2: 90,
         area_sqm: 78,
         weekend_price: 1150,
         daylight: Daylight.yes,
@@ -264,7 +254,6 @@ const studios: StudioSeed[] = [
     ],
     contacts: {
       phone: "+373-68-000-404",
-      email: "hello@loftic.md",
       instagram: "@loftic.studio",
     },
     halls: [
@@ -281,7 +270,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/loftic/hall-dark-4.jpg",
           "https://images.example.com/studios/loftic/hall-dark-5.jpg",
         ],
-        size_m2: 60,
         area_sqm: 58,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.yes,
@@ -304,7 +292,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/loftic/hall-minimal-4.jpg",
           "https://images.example.com/studios/loftic/hall-minimal-5.jpg",
         ],
-        size_m2: 45,
         area_sqm: 42,
         weekend_price: 600,
         daylight: Daylight.no,
@@ -335,7 +322,6 @@ const studios: StudioSeed[] = [
     ],
     contacts: {
       phone: "+373-68-000-505",
-      email: "hello@north.md",
       instagram: "@north.studio",
     },
     halls: [
@@ -352,7 +338,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/north/hall-portrait-4.jpg",
           "https://images.example.com/studios/north/hall-portrait-5.jpg",
         ],
-        size_m2: 35,
         area_sqm: 28,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.no,
@@ -376,7 +361,6 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/north/hall-video-5.jpg",
           "https://images.example.com/studios/north/hall-video-6.jpg",
         ],
-        size_m2: 85,
         area_sqm: 80,
         daylight: Daylight.yes,
         video_friendly: VideoFriendly.yes,

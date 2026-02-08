@@ -18,11 +18,6 @@ export const UI_STRINGS: UiStrings = {
     ro: "Cartiere",
     en: "Districts",
   },
-  tags_title: {
-    ru: "Теги",
-    ro: "Etichete",
-    en: "Tags",
-  },
   filters_params_title: {
     ru: "Параметры",
     ro: "Parametri",
@@ -48,11 +43,6 @@ export const UI_STRINGS: UiStrings = {
     ro: "Preț: descrescător",
     en: "Price: high to low",
   },
-  price_title: {
-    ru: "Цена",
-    ro: "Preț",
-    en: "Price",
-  },
   apply: {
     ru: "Применить",
     ro: "Aplică",
@@ -62,21 +52,6 @@ export const UI_STRINGS: UiStrings = {
     ru: "Сбросить",
     ro: "Resetare",
     en: "Reset",
-  },
-  weekend_label: {
-    ru: "выходные",
-    ro: "weekend",
-    en: "weekend",
-  },
-  daylight_short_label: {
-    ru: "дневной свет",
-    ro: "lumină naturală",
-    en: "daylight",
-  },
-  video_short_label: {
-    ru: "видео",
-    ro: "video",
-    en: "video",
   },
   daylight_fact_label: {
     ru: "Дневной свет",

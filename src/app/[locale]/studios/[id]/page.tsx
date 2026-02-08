@@ -10,7 +10,6 @@ import HallFocus from "@/components/HallFocus";
 
 type Props = {
   params: { locale: string; id: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
 };
 
 type Contacts = Record<string, unknown> | null | undefined;
@@ -89,8 +88,6 @@ export default async function StudioPage({ params }: Props) {
       factLines,
       tags,
       images,
-      ctaHref: `/${locale}/studios/${studio.id}?hallId=${encodeURIComponent(hall.id)}`,
-      ctaLabel: UI_STRINGS.view_hall_cta[locale],
     };
   });
 

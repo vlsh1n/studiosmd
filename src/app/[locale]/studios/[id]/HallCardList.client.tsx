@@ -11,8 +11,6 @@ export type StudioHallCardItem = {
   factLines: string[];
   tags: string[];
   images: string[];
-  ctaHref: string;
-  ctaLabel: string;
 };
 
 type Props = {

@@ -21,7 +21,6 @@
   --radius-xl: 28px;
   --radius-lg: 18px;
 
-  --shadow-soft: 0 10px 30px rgba(20, 16, 10, 0.08);
   --shadow-lift: 0 18px 45px rgba(20, 16, 10, 0.12);
 
   --ring: rgba(193, 150, 88, 0.45);
@@ -35,8 +34,6 @@
   --color-foreground: var(--foreground);
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
     Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
 }
 
 @layer base {
@@ -192,12 +189,6 @@
 
   .muted {
     color: var(--muted);
-  }
-
-  .layout-container {
-    width: min(72rem, 100%);
-    margin: 0 auto;
-    padding: 0 clamp(1.25rem, 3vw, 2.5rem);
   }
 
   .stack {
