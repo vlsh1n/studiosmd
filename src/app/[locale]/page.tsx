@@ -135,12 +135,12 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         : null;
     const areaParts: string[] = [];
     if (typeof hall.area_sqm === "number" && hall.area_sqm > 0) {
-      areaParts.push(`${hall.area_sqm} m\u00B2`);
+      areaParts.push(`${hall.area_sqm}m\u00B2`);
     }
-    if (hall.high_ceiling === true) {
-      areaParts.push(UI_STRINGS.high_ceiling_label[locale]);
+    if (typeof hall.high_ceiling === "number" && hall.high_ceiling > 0) {
+      areaParts.push(`${hall.high_ceiling}m`);
     }
-    const spaceLine = areaParts.length > 0 ? areaParts.join(" • ") : null;
+    const spaceLine = areaParts.length > 0 ? areaParts.join(" · ") : null;
 
     const hallId = encodeURIComponent(hall.id);
     const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;

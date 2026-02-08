@@ -11,7 +11,7 @@ type HallSeed = {
   daylight: Daylight;
   video_friendly: VideoFriendly;
   area_sqm: number;
-  high_ceiling: boolean;
+  high_ceiling: number | null;
   props_available: boolean;
   flash_available: boolean;
   continuous_available: boolean;
@@ -65,7 +65,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/aurora/hall-bright-6.jpg",
         ],
         area_sqm: 72,
-        high_ceiling: false,
+        high_ceiling: null,
         weekend_price: 900,
         daylight: Daylight.yes,
         video_friendly: VideoFriendly.no,
@@ -89,7 +89,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/aurora/hall-loft-5.jpg",
         ],
         area_sqm: 54,
-        high_ceiling: false,
+        high_ceiling: null,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.yes,
         props_available: false,
@@ -135,7 +135,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/lumi/hall-minimal-5.jpg",
         ],
         area_sqm: 38,
-        high_ceiling: false,
+        high_ceiling: null,
         weekend_price: 520,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.no,
@@ -160,7 +160,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/lumi/hall-cyclo-6.jpg",
         ],
         area_sqm: 68,
-        high_ceiling: true,
+        high_ceiling: 4,
         weekend_price: 1000,
         daylight: Daylight.yes,
         video_friendly: VideoFriendly.yes,
@@ -207,7 +207,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/central/hall-interior-5.jpg",
         ],
         area_sqm: 49,
-        high_ceiling: false,
+        high_ceiling: null,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.no,
         props_available: true,
@@ -231,7 +231,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/central/hall-daylight-6.jpg",
         ],
         area_sqm: 78,
-        high_ceiling: false,
+        high_ceiling: null,
         weekend_price: 1150,
         daylight: Daylight.yes,
         video_friendly: VideoFriendly.no,
@@ -278,7 +278,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/loftic/hall-dark-5.jpg",
         ],
         area_sqm: 58,
-        high_ceiling: false,
+        high_ceiling: null,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.yes,
         props_available: false,
@@ -301,7 +301,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/loftic/hall-minimal-5.jpg",
         ],
         area_sqm: 42,
-        high_ceiling: false,
+        high_ceiling: null,
         weekend_price: 600,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.no,
@@ -348,7 +348,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/north/hall-portrait-5.jpg",
         ],
         area_sqm: 28,
-        high_ceiling: false,
+        high_ceiling: null,
         daylight: Daylight.no,
         video_friendly: VideoFriendly.no,
         props_available: false,
@@ -372,7 +372,7 @@ const studios: StudioSeed[] = [
           "https://images.example.com/studios/north/hall-video-6.jpg",
         ],
         area_sqm: 80,
-        high_ceiling: false,
+        high_ceiling: null,
         daylight: Daylight.yes,
         video_friendly: VideoFriendly.yes,
         props_available: true,
