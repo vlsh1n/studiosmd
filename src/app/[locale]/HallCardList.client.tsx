@@ -9,7 +9,7 @@ export type HallCardItem = {
   image: string | null;
   hallHref: string;
   studioLine: string;
-  areaSqm?: number | null;
+  spaceLine?: string | null;
   priceLine: string;
   weekendPriceLine?: string | null;
   tagLabels: string[];
@@ -22,46 +22,16 @@ type Props = {
   weekendLabel: string;
 };
 
-function splitFactLine(factLine: string) {
-  const trueIcon = "\u2705";
-  const falseIcon = "\u274C";
-  const match = factLine.match(
-    new RegExp(`^(.*)\\s(${trueIcon}|${falseIcon}|yes|no|true|false)$`, "iu")
-  );
-  if (!match) {
-    return { label: normalizeVideoLabel(factLine.trim()), status: null as string | null };
-  }
-  return { label: normalizeVideoLabel(match[1].trim()), status: match[2] };
-}
-
-function isAvailableFact(status: string | null) {
-  if (status === null) return true;
-  const falseIcon = "\u274C";
-  const normalized = status.toLowerCase();
-  return normalized !== falseIcon && normalized !== "false" && normalized !== "no";
-}
-
-function normalizeVideoLabel(label: string) {
-  const nextByLabel: Record<string, string> = {
-    "Можно ли снимать видео?": "подходит для съемки видео",
-    "Se poate filma video?": "potrivit pentru filmare video",
-    "Can you shoot video?": "video-friendly",
-  };
-  return nextByLabel[label] ?? label;
-}
-
 export default function HallCardList({ items, weekendLabel }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <div className="grid w-full max-w-5xl mx-auto gap-6">
       {items.map((item, index) => {
-        const visibleFacts = item.factLines
-          .map((factLine) => splitFactLine(factLine))
-          .filter((fact) => isAvailableFact(fact.status));
+        const visibleFacts = item.factLines;
         const metaParts = [item.studioLine];
-        if (typeof item.areaSqm === "number" && item.areaSqm > 0) {
-          metaParts.push(`${item.areaSqm} m\u00B2`);
+        if (item.spaceLine) {
+          metaParts.push(item.spaceLine);
         }
         const metaLine = metaParts.join(" • ");
 
@@ -113,10 +83,10 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs leading-tight muted">
                     {visibleFacts.map((fact, factIndex) => (
                       <div
-                        key={`${fact.label}-${factIndex}`}
+                        key={`${fact}-${factIndex}`}
                         className="flex items-center justify-between gap-2"
                       >
-                        <span>{fact.label}</span>
+                        <span>{fact}</span>
                       </div>
                     ))}
                   </div>

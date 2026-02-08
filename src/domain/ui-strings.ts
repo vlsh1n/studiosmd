@@ -73,10 +73,25 @@ export const UI_STRINGS: UiStrings = {
     ro: "Lumină naturală",
     en: "Daylight",
   },
-  video_allowed_label: {
-    ru: "Можно ли снимать видео?",
-    ro: "Se poate filma video?",
-    en: "Can you shoot video?",
+  blackout_fact_label: {
+    ru: "Блэкаут",
+    ro: "Blackout",
+    en: "Blackout",
+  },
+  parking_fact_label: {
+    ru: "Парковка",
+    ro: "Parcare",
+    en: "Parking",
+  },
+  changing_room_fact_label: {
+    ru: "Гримерка/переодевание",
+    ro: "Cameră de schimb",
+    en: "Changing area",
+  },
+  high_ceiling_label: {
+    ru: "Высокие потолки",
+    ro: "Tavan înalt",
+    en: "High ceilings",
   },
   furniture_label: {
     ru: "Мебель",

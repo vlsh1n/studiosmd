@@ -27,16 +27,6 @@ export const DISTRICTS = {
 } as const;
 
 export const TAGS = {
-  daylight: {
-    ru: "Дневной свет",
-    ro: "Lumina zilei",
-    en: "Daylight",
-  },
-  blackout: {
-    ru: "Блэкаут",
-    ro: "Blackout",
-    en: "Blackout",
-  },
   sunny_morning: {
     ru: "Солнечно утром",
     ro: "Soare dimineața",
@@ -141,30 +131,5 @@ export const TAGS = {
     ru: "Просторно",
     ro: "Spațios",
     en: "Spacious",
-  },
-  high_ceiling: {
-    ru: "Высокие потолки",
-    ro: "Tavan înalt",
-    en: "High ceilings",
-  },
-  parking: {
-    ru: "Парковка",
-    ro: "Parcare",
-    en: "Parking",
-  },
-  easy_access: {
-    ru: "Легко добраться",
-    ro: "Acces ușor",
-    en: "Easy access",
-  },
-  changing_room: {
-    ru: "Гримерка/переодевание",
-    ro: "Cameră de schimb",
-    en: "Changing area",
-  },
-  shower: {
-    ru: "Душ",
-    ro: "Duș",
-    en: "Shower",
   },
 } as const;

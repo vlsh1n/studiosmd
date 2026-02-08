@@ -1,0 +1,1 @@
+ALTER TABLE "Hall" ADD COLUMN "high_ceiling" BOOLEAN NOT NULL DEFAULT false;

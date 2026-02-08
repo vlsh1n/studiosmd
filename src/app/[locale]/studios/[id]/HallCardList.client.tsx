@@ -8,6 +8,7 @@ export type StudioHallCardItem = {
   name: string;
   priceLine: string;
   weekendPriceLine?: string | null;
+  spaceLine?: string | null;
   factLines: string[];
   tags: string[];
   images: string[];
@@ -18,43 +19,13 @@ type Props = {
   weekendLabel: string;
 };
 
-function splitFactLine(factLine: string) {
-  const trueIcon = "\u2705";
-  const falseIcon = "\u274C";
-  const match = factLine.match(
-    new RegExp(`^(.*)\\s(${trueIcon}|${falseIcon}|yes|no|true|false)$`, "iu")
-  );
-  if (!match) {
-    return { label: normalizeVideoLabel(factLine.trim()), status: null as string | null };
-  }
-  return { label: normalizeVideoLabel(match[1].trim()), status: match[2] };
-}
-
-function isAvailableFact(status: string | null) {
-  if (status === null) return true;
-  const falseIcon = "\u274C";
-  const normalized = status.toLowerCase();
-  return normalized !== falseIcon && normalized !== "false" && normalized !== "no";
-}
-
-function normalizeVideoLabel(label: string) {
-  const nextByLabel: Record<string, string> = {
-    "Можно ли снимать видео?": "подходит для съемки видео",
-    "Se poate filma video?": "potrivit pentru filmare video",
-    "Can you shoot video?": "video-friendly",
-  };
-  return nextByLabel[label] ?? label;
-}
-
 export default function HallCardList({ halls, weekendLabel }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
     <div className="grid w-full max-w-5xl mx-auto gap-6">
       {halls.map((hall, index) => {
-        const visibleFacts = hall.factLines
-          .map((factLine) => splitFactLine(factLine))
-          .filter((fact) => isAvailableFact(fact.status));
+        const visibleFacts = hall.factLines;
 
         return (
           <motion.article
@@ -85,6 +56,7 @@ export default function HallCardList({ halls, weekendLabel }: Props) {
                   <div className="text-sm font-medium text-gray-900 whitespace-nowrap">
                     {hall.priceLine}
                   </div>
+                  {hall.spaceLine && <div className="text-xs muted">{hall.spaceLine}</div>}
                   {hall.weekendPriceLine && (
                     <div className="text-xs muted">
                       {weekendLabel} {hall.weekendPriceLine}
@@ -96,10 +68,10 @@ export default function HallCardList({ halls, weekendLabel }: Props) {
                   <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs leading-tight muted">
                     {visibleFacts.map((fact, factIndex) => (
                       <div
-                        key={`${fact.label}-${factIndex}`}
+                        key={`${fact}-${factIndex}`}
                         className="flex items-center justify-between gap-2"
                       >
-                        <span>{fact.label}</span>
+                        <span>{fact}</span>
                       </div>
                     ))}
                   </div>
