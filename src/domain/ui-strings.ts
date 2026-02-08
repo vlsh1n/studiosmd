@@ -88,11 +88,6 @@ export const UI_STRINGS: UiStrings = {
     ro: "Cameră de schimb",
     en: "Changing area",
   },
-  high_ceiling_label: {
-    ru: "Высокие потолки",
-    ro: "Tavan înalt",
-    en: "High ceilings",
-  },
   furniture_label: {
     ru: "Мебель",
     ro: "Mobilier",
