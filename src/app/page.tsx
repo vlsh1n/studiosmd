@@ -1,33 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
-
-const COPY = {
-  ru: {
-    title: "Каталог залов фотостудий Кишинёва",
-    body: "Быстро выбирайте зал по цене, свету и тегам. Сравнивайте карточки и переходите к студии с фокусом на выбранный зал.",
-    cta: "Искать студию",
-  },
-  ro: {
-    title: "Catalog de săli de studio foto în Chișinău",
-    body: "Alegeți rapid sala după preț, lumină și taguri. Comparați cardurile și deschideți studioul cu focus pe sala aleasă.",
-    cta: "Caută studio",
-  },
-  en: {
-    title: "Photo studio halls in Chisinau",
-    body: "Quickly pick a hall by price, daylight, and tags. Compare cards and jump to the studio with the selected hall in focus.",
-    cta: "Find a studio",
-  },
-} as const;
-
-type Locale = keyof typeof COPY;
+import { useState } from "react";
+import { UI_STRINGS } from "@/domain/ui-strings";
+import { type Locale } from "@/i18n";
 
 const LOCALES: Locale[] = ["ru", "ro", "en"];
 
 export default function Home() {
   const [locale, setLocale] = useState<Locale>("ru");
-  const content = useMemo(() => COPY[locale], [locale]);
 
   return (
     <div className="page">
@@ -53,14 +34,14 @@ export default function Home() {
 
           <div className="stack">
             <h1 className="text-3xl font-semibold text-gray-900 sm:text-4xl">
-              {content.title}
+              {UI_STRINGS.landing_title[locale]}
             </h1>
-            <p className="text-base muted sm:text-lg">{content.body}</p>
+            <p className="text-base muted sm:text-lg">{UI_STRINGS.landing_body[locale]}</p>
           </div>
 
           <div className="flex flex-wrap gap-3">
             <Link href={`/${locale}`} className="btn btn-primary">
-              {content.cta}
+              {UI_STRINGS.landing_cta[locale]}
             </Link>
           </div>
         </div>
