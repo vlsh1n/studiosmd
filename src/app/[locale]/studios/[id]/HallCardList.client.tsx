@@ -26,6 +26,11 @@ export default function HallCardList({ halls, weekendLabel }: Props) {
     <div className="grid w-full max-w-5xl mx-auto gap-6">
       {halls.map((hall, index) => {
         const visibleFacts = hall.factLines;
+        const metaParts: string[] = [];
+        if (hall.spaceLine) {
+          metaParts.push(hall.spaceLine);
+        }
+        const metaLine = metaParts.join(" • ");
 
         return (
           <motion.article
@@ -53,10 +58,8 @@ export default function HallCardList({ halls, weekendLabel }: Props) {
               <div className="stack gap-3 min-w-0 lg:sticky lg:top-4">
                 <div className="space-y-1">
                   <h2 className="text-base font-semibold text-gray-900 sm:text-lg">{hall.name}</h2>
-                  <div className="text-sm font-medium text-gray-900 whitespace-nowrap">
-                    {hall.priceLine}
-                  </div>
-                  {hall.spaceLine && <div className="text-xs muted">{hall.spaceLine}</div>}
+                  {metaLine && <div className="text-sm muted">{metaLine}</div>}
+                  <div className="text-sm font-semibold text-gray-900">{hall.priceLine}</div>
                   {hall.weekendPriceLine && (
                     <div className="text-xs muted">
                       {weekendLabel} {hall.weekendPriceLine}
