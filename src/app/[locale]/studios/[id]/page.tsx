@@ -3,6 +3,7 @@ import { getStudioById } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, type Locale } from "@/i18n";
+import { safeExternalUrl } from "@/lib/url";
 import HallCardList, {
   type StudioHallCardItem,
 } from "@/app/[locale]/studios/[id]/HallCardList.client";
@@ -60,7 +61,7 @@ export default async function StudioPage({ params }: Props) {
   const coverImage = coverImages[0];
   const phone = getContact(studio.contacts as Contacts, "phone");
   const phoneHref = phone ? sanitizePhoneForTel(phone) : null;
-  const instagram = getContact(studio.contacts as Contacts, "instagram");
+  const instagram = safeExternalUrl(getContact(studio.contacts as Contacts, "instagram"));
   const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
     const images = getImageList(hall.images as JsonArray);
     const tags = hall.tags.map((tag) => TAGS[tag as keyof typeof TAGS]?.[locale] ?? tag);
