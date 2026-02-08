@@ -38,6 +38,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Parametri",
     en: "Parameters",
   },
+  facts_title: {
+    ru: "Факты",
+    ro: "Fapte",
+    en: "Facts",
+  },
   sort_label: {
     ru: "Сортировка",
     ro: "Sortare",

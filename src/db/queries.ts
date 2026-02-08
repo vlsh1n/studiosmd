@@ -7,10 +7,20 @@ type ListHallsParams = {
   q?: string;
   district_keys?: DistrictKey[];
   tags?: string[];
+  facts?: HallFactFilterKey[];
   sort?: "price_asc" | "price_desc";
   take?: number;
   skip?: number;
 };
+
+type HallFactFilterKey =
+  | "daylight"
+  | "blackout"
+  | "parking"
+  | "changing_room"
+  | "furniture"
+  | "flash_light"
+  | "continuous_light";
 
 type HallWithStudio = Prisma.HallGetPayload<{
   include: {
@@ -48,9 +58,32 @@ export function getI18n(obj: I18nObject, locale: Locale): string {
 export async function listHalls(params: ListHallsParams) {
   const where: Prisma.HallWhereInput = {};
   const query = params.q?.trim();
+  const andFilters: Prisma.HallWhereInput[] = [];
 
   if (params.tags && params.tags.length > 0) {
-    where.tags = { hasEvery: params.tags };
+    andFilters.push({ tags: { hasEvery: params.tags } });
+  }
+
+  if (params.facts && params.facts.length > 0) {
+    for (const fact of params.facts) {
+      if (fact === "daylight") {
+        andFilters.push({ daylight: "yes" });
+        continue;
+      }
+      if (fact === "furniture") {
+        andFilters.push({ props_available: true });
+        continue;
+      }
+      if (fact === "flash_light") {
+        andFilters.push({ flash_available: true });
+        continue;
+      }
+      if (fact === "continuous_light") {
+        andFilters.push({ continuous_available: true });
+        continue;
+      }
+      andFilters.push({ tags: { has: fact } });
+    }
   }
 
   if (params.district_keys && params.district_keys.length > 0) {
@@ -78,6 +111,10 @@ export async function listHalls(params: ListHallsParams) {
         },
       },
     ];
+  }
+
+  if (andFilters.length > 0) {
+    where.AND = andFilters;
   }
 
   const halls = await prisma.hall.findMany({

@@ -197,6 +197,80 @@
     gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
+  .fact-filter-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .fact-filter-chip {
+    position: relative;
+    width: 2.7rem;
+    height: 2.7rem;
+    border-radius: 0.85rem;
+    display: inline-flex;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+
+  .fact-filter-input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+    z-index: 1;
+  }
+
+  .fact-filter-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 0.85rem;
+    border: 1px solid var(--glass-border);
+    background: var(--surface);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(130%);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.65)) saturate(130%);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.16s ease, background-color 0.16s ease, border-color 0.16s ease,
+      box-shadow 0.16s ease;
+    pointer-events: none;
+  }
+
+  .fact-filter-icon img {
+    width: 1.3rem;
+    height: 1.3rem;
+    object-fit: contain;
+    opacity: 0.78;
+    filter: grayscale(0.35);
+    transition: opacity 0.16s ease, filter 0.16s ease;
+    pointer-events: none;
+  }
+
+  .fact-filter-chip:hover .fact-filter-icon {
+    transform: translateY(-1px);
+  }
+
+  .fact-filter-input:checked + .fact-filter-icon,
+  .fact-filter-chip.is-selected .fact-filter-icon {
+    background: #1c1a17;
+    border-color: #1c1a17;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .fact-filter-input:checked + .fact-filter-icon img,
+  .fact-filter-chip.is-selected .fact-filter-icon img {
+    filter: invert(1);
+    opacity: 1;
+  }
+
+  .fact-filter-input:focus-visible + .fact-filter-icon {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+  }
+
   .hall-facts-icons {
     display: flex;
     align-items: center;

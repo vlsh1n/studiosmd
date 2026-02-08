@@ -14,6 +14,33 @@ import { safeExternalUrl } from "@/lib/url";
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
 const PAGE_SIZE = 12;
+const factKeys: HallFactItem["key"][] = [
+  "daylight",
+  "blackout",
+  "parking",
+  "changing_room",
+  "furniture",
+  "flash_light",
+  "continuous_light",
+];
+const FACT_ICON_BY_KEY: Record<HallFactItem["key"], string> = {
+  daylight: "/icons/daylight.png",
+  blackout: "/icons/blackout.png",
+  parking: "/icons/parking.png",
+  changing_room: "/icons/changing_room.png",
+  furniture: "/icons/furniture.png",
+  flash_light: "/icons/flash_light.png",
+  continuous_light: "/icons/continuous_light.png",
+};
+const FACT_LABEL_BY_KEY: Record<HallFactItem["key"], (locale: Locale) => string> = {
+  daylight: (locale) => UI_STRINGS.daylight_fact_label[locale],
+  blackout: (locale) => UI_STRINGS.blackout_fact_label[locale],
+  parking: (locale) => UI_STRINGS.parking_fact_label[locale],
+  changing_room: (locale) => UI_STRINGS.changing_room_fact_label[locale],
+  furniture: (locale) => UI_STRINGS.furniture_label[locale],
+  flash_light: (locale) => UI_STRINGS.flash_light_label[locale],
+  continuous_light: (locale) => UI_STRINGS.continuous_light_label[locale],
+};
 
 type Props = {
   params: { locale: string };
@@ -65,6 +92,10 @@ function isTagKey(value: string): value is keyof typeof TAGS {
   return value in TAGS;
 }
 
+function isFactKey(value: string): value is HallFactItem["key"] {
+  return factKeys.includes(value as HallFactItem["key"]);
+}
+
 export default async function CatalogPage({ params, searchParams }: Props) {
   const { locale } = await params;
   if (!isLocale(locale)) {
@@ -84,6 +115,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const tags = parseCsvParam(query.tags).filter((key): key is keyof typeof TAGS =>
     tagKeys.includes(key as keyof typeof TAGS)
   );
+  const facts = parseCsvParam(query.facts).filter((key): key is HallFactItem["key"] =>
+    isFactKey(key)
+  );
   const selectedTagLabels = tags.map((tag) => TAGS[tag][locale]);
   const rawSort = Array.isArray(query.sort) ? query.sort[0] : query.sort;
   const sort =
@@ -95,6 +129,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     q: q.length > 0 ? q : undefined,
     district_keys,
     tags,
+    facts,
     sort: sort === "random" ? undefined : sort,
     take: PAGE_SIZE + 1,
     skip,
@@ -114,6 +149,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   }
   for (const tag of tags) {
     paginationParams.append("tags", tag);
+  }
+  for (const fact of facts) {
+    paginationParams.append("facts", fact);
   }
   if (sort !== "random") {
     paginationParams.set("sort", sort);
@@ -297,6 +335,38 @@ export default async function CatalogPage({ params, searchParams }: Props) {
               ))}
             </div>
           </details>
+
+          <div className="stack">
+            <div className="text-xs font-semibold uppercase muted">
+              {UI_STRINGS.facts_title[locale]}
+            </div>
+            <div className="fact-filter-grid">
+              {factKeys.map((factKey) => {
+                const isSelected = facts.includes(factKey);
+                const label = FACT_LABEL_BY_KEY[factKey](locale);
+                return (
+                  <label
+                    key={factKey}
+                    className={`fact-filter-chip${isSelected ? " is-selected" : ""}`}
+                    title={label}
+                  >
+                    <input
+                      type="checkbox"
+                      name="facts"
+                      value={factKey}
+                      defaultChecked={isSelected}
+                      className="fact-filter-input"
+                      aria-label={label}
+                    />
+                    <span className="fact-filter-icon" aria-hidden="true">
+                      <img src={FACT_ICON_BY_KEY[factKey]} alt="" loading="lazy" />
+                    </span>
+                    <span className="sr-only">{label}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="stack">
             <div className="text-xs font-semibold uppercase muted">
