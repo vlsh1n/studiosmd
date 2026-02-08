@@ -6,6 +6,7 @@ import HallCardList, { type HallCardItem } from "@/app/[locale]/HallCardList.cli
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, Locale } from "@/i18n";
+import { safeExternalUrl } from "@/lib/url";
 
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
@@ -31,10 +32,16 @@ function parseCsvParam(value?: string | string[]) {
 }
 
 function getImageFromJson(value: unknown) {
-  if (Array.isArray(value)) {
-    const first = value.find((item) => typeof item === "string");
-    return typeof first === "string" ? first : null;
+  if (!Array.isArray(value)) {
+    return null;
   }
+
+  for (const item of value) {
+    if (typeof item !== "string") continue;
+    const safeUrl = safeExternalUrl(item);
+    if (safeUrl) return safeUrl;
+  }
+
   return null;
 }
 
