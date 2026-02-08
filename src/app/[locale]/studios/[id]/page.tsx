@@ -25,7 +25,16 @@ const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
 
 function getStringsFromJson(value: JsonArray) {
   if (!Array.isArray(value)) return [];
-  return value.filter((item) => typeof item === "string") as string[];
+
+  const urls: string[] = [];
+  for (const item of value) {
+    if (typeof item !== "string") continue;
+    const safeUrl = safeExternalUrl(item);
+    if (safeUrl) {
+      urls.push(safeUrl);
+    }
+  }
+  return urls;
 }
 
 function getImageList(value: JsonArray) {
