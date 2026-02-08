@@ -24,9 +24,16 @@ npm run db:seed
 npm run dev
 ```
 
+## Quality and build
+```bash
+npm run lint
+npm run build
+```
+
+`npm run build` runs lint first and then Next.js production build.
+
 ## Production
 ```bash
-npm run build
 npm start
 ```
 
@@ -35,7 +42,7 @@ npm start
 - `prisma migrate deploy` is for production. It applies existing migrations without creating new ones.
 
 ## Routes
-- `/` -> `/ru`
+- `/` — landing (locale switch + CTA)
 - `/ru`
 - `/ro`
 - `/en`
@@ -45,6 +52,7 @@ npm start
 - Environment variables:
   - `DATABASE_URL` (required)
   - `NEXT_PUBLIC_SITE_URL` (optional)
+  - `NEXT_PUBLIC_KOFI_URL` (optional)
 - Build command: `npm run build`
 - Start command: `npm start`
 - Migrations: run `npm run db:migrate` during deploy (or manually)
