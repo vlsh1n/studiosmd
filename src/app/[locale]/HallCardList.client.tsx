@@ -31,7 +31,6 @@ export type HallCardItem = {
   id: string;
   name: string;
   image: string | null;
-  imageCount: number;
   hallHref: string;
   studioLine: string;
   spaceLine?: string | null;
@@ -51,20 +50,18 @@ export default function HallCardList({ items, weekendLabel }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <div className="grid w-full max-w-5xl mx-auto gap-4 sm:gap-6">
+    <div className="grid w-full max-w-5xl mx-auto gap-6">
       {items.map((item, index) => {
         const metaParts = [item.studioLine];
         if (item.spaceLine) {
           metaParts.push(item.spaceLine);
         }
         const metaLine = metaParts.join(" • ");
-        const imageCount = item.imageCount > 0 ? item.imageCount : item.image ? 1 : 0;
-        const dotCount = Math.min(5, imageCount);
 
         return (
           <motion.article
             key={item.id}
-            className="hall-catalog-card"
+            className="card p-4 sm:p-5"
             initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{
@@ -76,45 +73,39 @@ export default function HallCardList({ items, weekendLabel }: Props) {
             whileTap={shouldReduceMotion ? undefined : { y: 1 }}
             style={shouldReduceMotion ? undefined : { willChange: "transform" }}
           >
-            {item.image ? (
-              <motion.img
-                src={item.image}
-                alt={item.name}
-                className="hall-catalog-bg"
-                whileHover={shouldReduceMotion ? undefined : { scale: 1.02 }}
-                transition={{ duration: shouldReduceMotion ? 0 : 0.25, ease: "easeOut" }}
-              />
-            ) : (
-              <div className="hall-catalog-bg hall-catalog-bg-fallback" aria-hidden="true" />
-            )}
-
-            <div className="hall-catalog-veil" aria-hidden="true" />
-            <div className="hall-catalog-overlay">
-              <div className="hall-catalog-top">
-                {dotCount > 1 && (
-                  <div className="hall-catalog-dots" aria-hidden="true">
-                    {Array.from({ length: dotCount }).map((_, dotIndex) => (
-                      <span
-                        key={`${item.id}-dot-${dotIndex}`}
-                        className={dotIndex === 0 ? "is-active" : undefined}
-                      />
-                    ))}
-                  </div>
+            <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
+              <div className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]">
+                {item.image ? (
+                  <motion.img
+                    src={item.image}
+                    alt={item.name}
+                    className="absolute inset-0 h-full w-full object-cover object-center"
+                    whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
+                    transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 bg-gradient-to-br from-neutral-200 via-neutral-300 to-neutral-400"
+                    aria-hidden="true"
+                  />
                 )}
-                <div className="hall-glass-pill hall-price-pill">
-                  <div className="hall-price-main">{item.priceLine}</div>
+              </div>
+
+              <div className="stack gap-3 min-w-0">
+                <div className="space-y-1">
+                  <h2 className="text-base font-semibold text-gray-900 sm:text-lg">
+                    <Link href={item.hallHref} className="underline">
+                      {item.name}
+                    </Link>
+                  </h2>
+                  {metaLine && <div className="text-sm muted">{metaLine}</div>}
+                  <div className="text-sm font-semibold text-gray-900">{item.priceLine}</div>
                   {item.weekendPriceLine && (
-                    <div className="hall-price-sub">
+                    <div className="text-xs muted">
                       {weekendLabel} {item.weekendPriceLine}
                     </div>
                   )}
                 </div>
-              </div>
-
-              <div className="hall-catalog-content">
-                <h2 className="hall-catalog-title">
-                  <Link href={item.hallHref}>{item.name}</Link>
-                </h2>
 
                 {item.factItems.length > 0 && (
                   <div className="hall-facts-icons">
@@ -141,20 +132,18 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                   </div>
                 )}
 
-                <div className="hall-catalog-meta">{metaLine}</div>
-
                 {item.tagLabels.length > 0 && (
-                  <div className="hall-catalog-tags">
+                  <div className="inline-flex flex-wrap gap-2">
                     {item.tagLabels.map((tag) => (
-                      <span key={tag} className="hall-glass-pill hall-tag-pill">
+                      <span key={tag} className="pill text-xs">
                         {tag}
                       </span>
                     ))}
                   </div>
                 )}
 
-                <div className="hall-catalog-cta-wrap">
-                  <Link href={item.hallHref} className="hall-glass-cta">
+                <div className="mt-auto pt-1">
+                  <Link href={item.hallHref} className="btn btn-primary w-full sm:w-fit">
                     {item.ctaLabel}
                   </Link>
                 </div>

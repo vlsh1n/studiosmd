@@ -131,7 +131,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const hallImages = getImagesFromJson(hall.images);
     const studioImages = getImagesFromJson(hall.studio.cover_images);
     const image = hallImages[0] ?? studioImages[0] ?? null;
-    const imageCount = hallImages.length > 0 ? hallImages.length : studioImages.length;
     const tagLabels = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]).slice(0, 4);
     const hallTagSet = new Set(hall.tags);
     const flashAvailable = hall.flash_available === true;
@@ -200,7 +199,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       id: hall.id,
       name: hall.name,
       image,
-      imageCount,
       hallHref,
       studioLine: `${DISTRICTS[hall.studio.district_key][locale]} • ${hall.studio.name}`,
       spaceLine,
