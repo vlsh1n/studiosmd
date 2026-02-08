@@ -320,7 +320,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         </div>
       </form>
 
-      <div className="grid w-full max-w-3xl mx-auto gap-6">
+      <div className="grid w-full max-w-5xl mx-auto gap-6 -mx-2 sm:mx-auto">
         {displayedHalls.length === 0 ? (
           <div className="text-sm muted">{UI_STRINGS.no_results[locale]}</div>
         ) : (
@@ -329,7 +329,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       </div>
 
       {(hasPrev || hasNext) && (
-        <div className="flex items-center justify-between gap-3 w-full max-w-3xl mx-auto">
+        <div className="flex items-center justify-between gap-3 w-full max-w-5xl mx-auto">
           {hasPrev ? (
             <Link href={pageHref(page - 1)} className="btn">
               {UI_STRINGS.pagination_prev[locale]}
