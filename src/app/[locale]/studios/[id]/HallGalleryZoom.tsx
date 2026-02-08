@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -17,6 +17,10 @@ function clampIndex(value: number, maxIndex: number) {
 export default function HallGalleryZoom({ images, alt }: Props) {
   if (images.length === 0) return null;
 
+  return <HallGalleryZoomContent images={images} alt={alt} />;
+}
+
+function HallGalleryZoomContent({ images, alt }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -32,28 +36,28 @@ export default function HallGalleryZoom({ images, alt }: Props) {
   const imageDuration = prefersReducedMotion ? 0 : 0.2;
   const modalInitialScale = prefersReducedMotion ? 1 : 0.98;
 
-  function changeInlineSlide(direction: -1 | 1) {
+  const changeInlineSlide = useCallback((direction: -1 | 1) => {
     if (!emblaApi || !hasMultiple) return;
     if (direction === -1) {
       emblaApi.scrollPrev();
     } else {
       emblaApi.scrollNext();
     }
-  }
+  }, [emblaApi, hasMultiple]);
 
-  function openModal(index: number) {
+  const openModal = useCallback((index: number) => {
     setModalIndex(index);
     setIsModalOpen(true);
-  }
+  }, []);
 
-  function closeModal() {
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
-  }
+  }, []);
 
-  function changeModalSlide(direction: -1 | 1) {
+  const changeModalSlide = useCallback((direction: -1 | 1) => {
     if (!hasMultiple) return;
     setModalIndex((current) => clampIndex(current + direction, maxIndex));
-  }
+  }, [hasMultiple, maxIndex]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -81,7 +85,7 @@ export default function HallGalleryZoom({ images, alt }: Props) {
       document.removeEventListener("keydown", onKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [isModalOpen, hasMultiple, maxIndex]);
+  }, [isModalOpen, closeModal, changeModalSlide]);
 
   useEffect(() => {
     if (!emblaApi) return;
