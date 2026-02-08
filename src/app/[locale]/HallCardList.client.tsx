@@ -143,7 +143,7 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                 )}
 
                 <div className="mt-auto pt-1">
-                  <Link href={item.hallHref} className="btn btn-primary w-full sm:w-fit">
+                  <Link href={item.hallHref} className="btn btn-primary w-full">
                     {item.ctaLabel}
                   </Link>
                 </div>
