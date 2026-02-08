@@ -8,6 +8,8 @@ type ListHallsParams = {
   district_keys?: DistrictKey[];
   tags?: string[];
   sort?: "price_asc" | "price_desc";
+  take?: number;
+  skip?: number;
 };
 
 type HallWithStudio = Prisma.HallGetPayload<{
@@ -91,9 +93,12 @@ export async function listHalls(params: ListHallsParams) {
         },
       },
     },
-    orderBy: {
-      price_per_hour: params.sort === "price_desc" ? "desc" : "asc",
-    },
+    orderBy: [
+      { price_per_hour: params.sort === "price_desc" ? "desc" : "asc" },
+      { id: "asc" },
+    ],
+    take: params.take,
+    skip: params.skip,
   });
 
   return halls.map((hall) => ({
