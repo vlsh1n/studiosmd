@@ -10,6 +10,7 @@ import { safeExternalUrl } from "@/lib/url";
 
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
+const PAGE_SIZE = 12;
 
 type Props = {
   params: { locale: string };
@@ -66,7 +67,11 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   const query = (await searchParams) ?? {};
   const rawQ = Array.isArray(query.q) ? query.q[0] : query.q;
-  const q = typeof rawQ === "string" ? rawQ.trim() : "";
+  const q = typeof rawQ === "string" ? rawQ.trim().slice(0, 80) : "";
+  const rawPage = Array.isArray(query.page) ? query.page[0] : query.page;
+  const parsedPage = Number.parseInt(typeof rawPage === "string" ? rawPage : "", 10);
+  const page = Number.isFinite(parsedPage) && parsedPage > 0 ? parsedPage : 1;
+  const skip = (page - 1) * PAGE_SIZE;
   const district_keys = parseCsvParam(query.districts).filter((key): key is keyof typeof DISTRICTS =>
     districtKeys.includes(key as keyof typeof DISTRICTS)
   );
@@ -85,8 +90,37 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     district_keys,
     tags,
     sort: sort === "random" ? undefined : sort,
+    take: PAGE_SIZE + 1,
+    skip,
   })) as HallListItem[];
-  const displayedHalls = sort === "random" ? shuffleArray(halls) : halls;
+  const hasNext = halls.length > PAGE_SIZE;
+  const hasPrev = page > 1;
+  const paginatedHalls = halls.slice(0, PAGE_SIZE);
+  const displayedHalls =
+    sort === "random" ? shuffleArray(paginatedHalls) : paginatedHalls;
+
+  const paginationParams = new URLSearchParams();
+  if (q) {
+    paginationParams.set("q", q);
+  }
+  for (const district of district_keys) {
+    paginationParams.append("districts", district);
+  }
+  for (const tag of tags) {
+    paginationParams.append("tags", tag);
+  }
+  if (sort !== "random") {
+    paginationParams.set("sort", sort);
+  }
+
+  function pageHref(targetPage: number) {
+    const params = new URLSearchParams(paginationParams);
+    if (targetPage > 1) {
+      params.set("page", String(targetPage));
+    }
+    const search = params.toString();
+    return search ? `/${locale}?${search}` : `/${locale}`;
+  }
   const cardItems: HallCardItem[] = displayedHalls.map((hall) => {
     const hallImage = getImageFromJson(hall.images);
     const studioImage = getImageFromJson(hall.studio.cover_images);
@@ -251,6 +285,29 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           <HallCardList items={cardItems} weekendLabel={WEEKEND_PRICE_LABEL[locale]} />
         )}
       </div>
+
+      {(hasPrev || hasNext) && (
+        <div className="flex items-center justify-between gap-3 w-full max-w-3xl mx-auto">
+          {hasPrev ? (
+            <Link href={pageHref(page - 1)} className="btn">
+              {UI_STRINGS.pagination_prev[locale]}
+            </Link>
+          ) : (
+            <span className="btn opacity-45" aria-hidden="true">
+              {UI_STRINGS.pagination_prev[locale]}
+            </span>
+          )}
+          {hasNext ? (
+            <Link href={pageHref(page + 1)} className="btn">
+              {UI_STRINGS.pagination_next[locale]}
+            </Link>
+          ) : (
+            <span className="btn opacity-45" aria-hidden="true">
+              {UI_STRINGS.pagination_next[locale]}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   );
 }

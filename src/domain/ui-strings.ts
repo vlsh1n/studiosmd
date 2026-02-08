@@ -88,6 +88,16 @@ export const UI_STRINGS: UiStrings = {
     ro: "Nu s-a găsit nimic",
     en: "No results",
   },
+  pagination_prev: {
+    ru: "Назад",
+    ro: "Înapoi",
+    en: "Previous",
+  },
+  pagination_next: {
+    ru: "Вперёд",
+    ro: "Înainte",
+    en: "Next",
+  },
   per_hour: {
     ru: "в час",
     ro: "pe oră",
