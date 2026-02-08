@@ -23,7 +23,6 @@ export default function HallGalleryZoom({ images, alt }: Props) {
 function HallGalleryZoomContent({ images, alt }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
   const maxIndex = images.length - 1;
   const hasMultiple = images.length > 1;
@@ -58,10 +57,6 @@ function HallGalleryZoomContent({ images, alt }: Props) {
     if (!hasMultiple) return;
     setModalIndex((current) => clampIndex(current + direction, maxIndex));
   }, [hasMultiple, maxIndex]);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -161,7 +156,7 @@ function HallGalleryZoomContent({ images, alt }: Props) {
         )}
       </div>
 
-      {isMounted &&
+      {typeof window !== "undefined" &&
         createPortal(
           <AnimatePresence>
             {isModalOpen && (
