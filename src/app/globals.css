@@ -464,6 +464,11 @@
 
 @media (min-width: 768px) {
   .hall-catalog-card {
+    width: min(100% - 2.2rem, 100%);
+    margin-inline: auto;
+  }
+
+  .hall-catalog-card {
     min-height: 24rem;
   }
 

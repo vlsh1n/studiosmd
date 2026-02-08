@@ -58,7 +58,6 @@ export default function HallCardList({ items, weekendLabel }: Props) {
           metaParts.push(item.spaceLine);
         }
         const metaLine = metaParts.join(" • ");
-        const factsLine = item.factItems.map((fact) => fact.label).join(" • ");
         const imageCount = item.imageCount > 0 ? item.imageCount : item.image ? 1 : 0;
         const dotCount = Math.min(5, imageCount);
 
@@ -118,7 +117,7 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                 </h2>
 
                 {item.factItems.length > 0 && (
-                  <div className="hall-facts-icons" aria-label={factsLine}>
+                  <div className="hall-facts-icons">
                     {item.factItems.map((fact) => (
                       <span key={`${item.id}-${fact.key}`} className="hall-fact-chip">
                         <button
@@ -143,7 +142,6 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                 )}
 
                 <div className="hall-catalog-meta">{metaLine}</div>
-                {factsLine && <div className="hall-catalog-facts-text">{factsLine}</div>}
 
                 {item.tagLabels.length > 0 && (
                   <div className="hall-catalog-tags">
