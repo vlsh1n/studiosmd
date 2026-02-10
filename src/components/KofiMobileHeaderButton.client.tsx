@@ -4,7 +4,7 @@ export default function KofiMobileHeaderButton() {
       href="https://ko-fi.com/voloshinw"
       target="_blank"
       rel="noreferrer noopener"
-      className="sm:hidden pill ui-pill-control ui-pill-control-active px-3 py-1 text-xs font-semibold leading-none shrink-0"
+      className="sm:hidden pill ui-pill-control ui-pill-control-active px-4 py-2 text-sm font-semibold leading-none shrink-0"
     >
       Donate
     </a>

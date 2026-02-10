@@ -58,8 +58,13 @@ export default async function LocaleLayout({ children, params }: Props) {
           >
             {t(locale, "projectName")}
           </Link>
-          <div className="flex items-center gap-2 shrink-0 max-w-full">
+          <div className="sm:hidden w-full flex items-center">
             <KofiMobileHeaderButton />
+            <div className="ml-auto">
+              <LocaleSwitcher locale={locale} />
+            </div>
+          </div>
+          <div className="hidden sm:flex items-center gap-2 shrink-0 max-w-full">
             <LocaleSwitcher locale={locale} />
           </div>
         </header>
