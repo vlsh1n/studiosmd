@@ -261,6 +261,171 @@
     gap: clamp(0.75rem, 2vw, 1.25rem);
   }
 
+  .landing-hero {
+    padding: clamp(1rem, 4vw, 1.6rem);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 3.2vw, 1.8rem);
+    overflow: hidden;
+  }
+
+  .landing-hero-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.85rem;
+  }
+
+  .landing-hero-brand {
+    margin: 0;
+    font-size: clamp(1.35rem, 5vw, 1.95rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #171613;
+  }
+
+  .landing-hero-locales {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.42rem;
+    margin-left: auto;
+  }
+
+  .landing-hero-content {
+    width: min(38rem, 100%);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.9rem;
+  }
+
+  .landing-hero-title {
+    margin: 0;
+    text-wrap: balance;
+    font-size: clamp(1.95rem, 8.2vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    font-weight: 650;
+    color: #171613;
+  }
+
+  .landing-hero-body {
+    margin: 0;
+    max-width: 36rem;
+    font-size: clamp(0.97rem, 3.45vw, 1.08rem);
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .landing-hero-cta-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+
+  .landing-gallery {
+    position: relative;
+    margin-top: 0.35rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    min-height: clamp(12rem, 60vw, 18rem);
+    padding-bottom: 0.15rem;
+  }
+
+  .landing-gallery-side {
+    display: none;
+  }
+
+  .landing-gallery-central,
+  .landing-gallery-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 1.35rem;
+    border: 1px solid rgba(255, 255, 255, 0.58);
+    box-shadow: 0 18px 34px rgba(20, 16, 10, 0.14);
+  }
+
+  .landing-gallery-central {
+    width: min(17.5rem, 84vw);
+    aspect-ratio: 9 / 16;
+    background: rgba(247, 243, 237, 0.75);
+  }
+
+  .landing-gallery-card {
+    width: clamp(8.5rem, 13vw, 10.6rem);
+    aspect-ratio: 3 / 5;
+    background: rgba(255, 255, 255, 0.6);
+  }
+
+  .landing-gallery-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  @media (min-width: 1024px) {
+    .landing-hero {
+      gap: 1.6rem;
+      padding: clamp(1.5rem, 2vw, 2rem) clamp(1.6rem, 2.3vw, 2.1rem) 0;
+      min-height: clamp(41rem, 92vh, 50rem);
+    }
+
+    .landing-hero-brand {
+      font-size: 1.9rem;
+    }
+
+    .landing-hero-title {
+      font-size: clamp(3rem, 4.8vw, 4.15rem);
+      line-height: 1.02;
+    }
+
+    .landing-hero-body {
+      font-size: 1.05rem;
+      max-width: 34rem;
+    }
+
+    .landing-gallery {
+      margin-top: auto;
+      min-height: clamp(17.5rem, 28vw, 22rem);
+      gap: clamp(0.75rem, 1.05vw, 1.05rem);
+      padding-top: 0.75rem;
+      padding-bottom: 0;
+    }
+
+    .landing-gallery-side {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: clamp(0.75rem, 1.05vw, 1.05rem);
+    }
+
+    .landing-gallery-central {
+      width: clamp(13.2rem, 16vw, 16.3rem);
+      margin-inline: clamp(0.55rem, 1vw, 1rem);
+    }
+
+    .landing-gallery-card {
+      width: clamp(8.2rem, 10.3vw, 10.5rem);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .landing-hero-content {
+      gap: 1rem;
+    }
+
+    .landing-gallery-central {
+      width: clamp(14rem, 17vw, 17.3rem);
+    }
+
+    .landing-gallery-card {
+      width: clamp(8.6rem, 9.7vw, 10.9rem);
+    }
+  }
+
   .hall-facts-icons {
     display: flex;
     align-items: center;
