@@ -71,7 +71,7 @@ export default async function LocaleLayout({ children, params }: Props) {
                 {UI_STRINGS.support_project[locale]}
               </a>
             )}
-            <div className="pill shrink-0 max-w-full">
+            <div className="shrink-0 max-w-full">
               <LocaleSwitcher locale={locale} />
             </div>
           </div>

@@ -136,6 +136,7 @@
     border: 1px solid var(--border);
     background: var(--surface);
     color: var(--text);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
   }
 
   .btn {
@@ -171,6 +172,45 @@
     color: #ffffff;
     border-color: transparent;
     box-shadow: var(--shadow-lift);
+  }
+
+  .btn.btn-primary:hover {
+    background: #13110f;
+  }
+
+  .btn.btn-primary:active {
+    transform: translateY(1px);
+  }
+
+  .ui-pill-control {
+    cursor: pointer;
+  }
+
+  .ui-pill-control:hover {
+    background: #1c1a17;
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: var(--glass-shadow-lift);
+  }
+
+  .ui-pill-control:active {
+    transform: translateY(1px);
+    box-shadow: var(--glass-shadow-press);
+  }
+
+  .ui-pill-control[data-active="true"],
+  .ui-pill-control[aria-pressed="true"],
+  .ui-pill-control[aria-current="page"] {
+    background: #1c1a17;
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: var(--shadow-lift);
+  }
+
+  .ui-pill-control[data-active="true"] img,
+  .ui-pill-control[aria-pressed="true"] img,
+  .ui-pill-control[aria-current="page"] img {
+    filter: invert(1);
   }
 
   .input,

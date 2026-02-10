@@ -283,7 +283,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       defaultChecked={checked}
                       className="peer sr-only"
                     />
-                    <span className="pill cursor-pointer text-sm transition-colors peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2">
+                    <span className="pill ui-pill-control text-sm peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2">
                       {DISTRICTS[key][locale]}
                     </span>
                   </label>
@@ -365,7 +365,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
                       aria-label={label}
                     />
                     <span
-                      className="pill cursor-pointer gap-2 text-sm transition-colors peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2 peer-checked:[&>img]:invert"
+                      className="pill ui-pill-control gap-2 text-sm peer-checked:border-transparent peer-checked:bg-[#1c1a17] peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-3 peer-focus-visible:outline-[var(--ring)] peer-focus-visible:outline-offset-2 peer-checked:[&>img]:invert"
                     >
                       <img
                         src={FACT_ICON_BY_KEY[factKey]}

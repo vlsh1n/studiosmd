@@ -20,12 +20,9 @@ export default function Home() {
                 key={code}
                 type="button"
                 onClick={() => setLocale(code)}
-                className={
-                  code === locale
-                    ? "pill text-sm font-semibold"
-                    : "pill text-sm muted"
-                }
+                className="pill ui-pill-control text-sm font-semibold"
                 aria-pressed={code === locale}
+                data-active={code === locale ? "true" : "false"}
               >
                 {code.toUpperCase()}
               </button>

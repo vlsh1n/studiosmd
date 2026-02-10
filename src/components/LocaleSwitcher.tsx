@@ -20,7 +20,7 @@ export function LocaleSwitcher({ locale }: Props) {
   const rest = segments.slice(1);
 
   return (
-    <nav className="flex items-center gap-3 text-sm font-medium">
+    <nav className="flex items-center gap-2 text-sm font-medium">
       {locales.map((nextLocale) => {
         const href = "/" + [nextLocale, ...rest].join("/");
         const isActive = nextLocale === locale;
@@ -29,11 +29,8 @@ export function LocaleSwitcher({ locale }: Props) {
           <Link
             key={nextLocale}
             href={href}
-            className={
-              isActive
-                ? "text-black"
-                : "text-gray-500 hover:text-gray-900"
-            }
+            className="pill ui-pill-control px-3 py-1 text-xs font-semibold"
+            data-active={isActive ? "true" : "false"}
             aria-current={isActive ? "page" : undefined}
           >
             {labels[nextLocale]}
