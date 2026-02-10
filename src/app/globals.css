@@ -368,6 +368,11 @@
     object-position: center;
   }
 
+  .landing-gallery-central .landing-gallery-image {
+    transform: scale(1.26) translateY(4.6%);
+    transform-origin: center bottom;
+  }
+
   @media (min-width: 1024px) {
     .landing-hero {
       gap: 1.15rem;
@@ -419,6 +424,10 @@
       margin-inline: clamp(0.65rem, 1.1vw, 1.15rem);
       border-radius: 0;
       transform: translateY(8%);
+    }
+
+    .landing-gallery-central .landing-gallery-image {
+      transform: none;
     }
 
     .landing-gallery-card {
