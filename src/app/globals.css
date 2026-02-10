@@ -265,7 +265,7 @@
     padding: clamp(1rem, 4vw, 1.6rem);
     display: flex;
     flex-direction: column;
-    gap: clamp(1rem, 3.2vw, 1.8rem);
+    gap: clamp(0.9rem, 2.6vw, 1.4rem);
     overflow: hidden;
   }
 
@@ -327,11 +327,11 @@
 
   .landing-gallery {
     position: relative;
-    margin-top: 0.35rem;
+    margin-top: 0.2rem;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    min-height: clamp(12rem, 60vw, 18rem);
+    min-height: clamp(11.2rem, 56vw, 16.5rem);
     padding-bottom: 0.15rem;
     width: 100%;
   }
@@ -352,7 +352,7 @@
   .landing-gallery-central {
     width: min(17.5rem, 84vw);
     aspect-ratio: 9 / 16;
-    background: rgba(247, 243, 237, 0.75);
+    background: transparent;
   }
 
   .landing-gallery-card {
@@ -370,9 +370,9 @@
 
   @media (min-width: 1024px) {
     .landing-hero {
-      gap: 1.6rem;
+      gap: 1.15rem;
       padding: clamp(1.5rem, 2vw, 2rem) clamp(1.6rem, 2.3vw, 2.1rem) 0;
-      min-height: clamp(41rem, 92vh, 50rem);
+      min-height: clamp(39rem, 88vh, 47rem);
     }
 
     .landing-hero-brand {
@@ -393,9 +393,9 @@
       width: min(66rem, 100%);
       margin-inline: auto;
       margin-top: auto;
-      min-height: clamp(18rem, 26vw, 21.5rem);
-      gap: clamp(0.6rem, 1vw, 1rem);
-      padding-top: 1rem;
+      min-height: clamp(19.2rem, 29vw, 23.6rem);
+      gap: clamp(0.7rem, 1.15vw, 1.2rem);
+      padding-top: 0.15rem;
       padding-bottom: 0;
       overflow: hidden;
     }
@@ -403,8 +403,8 @@
     .landing-gallery-side {
       display: inline-flex;
       align-items: flex-end;
-      gap: clamp(0.6rem, 1vw, 1rem);
-      transform: translateY(24%);
+      gap: clamp(0.7rem, 1.15vw, 1.2rem);
+      transform: translateY(19%);
     }
 
     .landing-gallery-central,
@@ -415,14 +415,14 @@
     }
 
     .landing-gallery-central {
-      width: clamp(13.8rem, 16.2vw, 16.9rem);
-      margin-inline: clamp(0.5rem, 0.9vw, 0.9rem);
+      width: clamp(15rem, 17.3vw, 18rem);
+      margin-inline: clamp(0.65rem, 1.1vw, 1.15rem);
       border-radius: 0;
-      transform: translateY(11%);
+      transform: translateY(8%);
     }
 
     .landing-gallery-card {
-      width: clamp(8rem, 9.8vw, 10.3rem);
+      width: clamp(9.1rem, 10.7vw, 11.5rem);
       border-radius: 1.35rem 1.35rem 0 0;
     }
   }
@@ -433,11 +433,11 @@
     }
 
     .landing-gallery-central {
-      width: clamp(14.4rem, 16.8vw, 17.4rem);
+      width: clamp(15.4rem, 17.5vw, 18.6rem);
     }
 
     .landing-gallery-card {
-      width: clamp(8.3rem, 9.2vw, 10.6rem);
+      width: clamp(9.4rem, 10.2vw, 11.9rem);
     }
   }
 
