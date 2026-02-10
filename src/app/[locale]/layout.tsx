@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Script from "next/script";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
-import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, t } from "@/i18n";
-import { safeExternalUrl } from "@/lib/url";
 
 type Props = {
   children: React.ReactNode;
@@ -44,40 +43,41 @@ export async function generateMetadata({
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;
-  const kofiUrl = safeExternalUrl(process.env.NEXT_PUBLIC_KOFI_URL);
 
   if (!isLocale(locale)) {
     notFound();
   }
 
   return (
-    <div className="page">
-      <div className="panel p-5 sm:p-7">
-        <header className="flex flex-wrap items-center justify-between gap-4">
-          <Link
-            href={`/${locale}`}
-            className="min-w-0 text-lg font-semibold text-black"
-          >
-            {t(locale, "projectName")}
-          </Link>
-          <div className="flex flex-wrap items-center gap-2">
-            {kofiUrl && (
-              <a
-                href={kofiUrl}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn"
-              >
-                {UI_STRINGS.support_project[locale]}
-              </a>
-            )}
+    <>
+      <Script
+        src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"
+        strategy="afterInteractive"
+      />
+      <Script id="kofi-overlay" strategy="afterInteractive">
+        {`kofiWidgetOverlay.draw('voloshinw', {
+          'type': 'floating-chat',
+          'floating-chat.donateButton.text': 'Donate',
+          'floating-chat.donateButton.background-color': '#323842',
+          'floating-chat.donateButton.text-color': '#fff'
+        });`}
+      </Script>
+      <div className="page">
+        <div className="panel p-5 sm:p-7">
+          <header className="flex flex-wrap items-center justify-between gap-4">
+            <Link
+              href={`/${locale}`}
+              className="min-w-0 text-lg font-semibold text-black"
+            >
+              {t(locale, "projectName")}
+            </Link>
             <div className="shrink-0 max-w-full">
               <LocaleSwitcher locale={locale} />
             </div>
-          </div>
-        </header>
-        <main className="stack pt-6">{children}</main>
+          </header>
+          <main className="stack pt-6">{children}</main>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

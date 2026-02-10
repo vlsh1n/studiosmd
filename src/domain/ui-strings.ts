@@ -178,9 +178,4 @@ export const UI_STRINGS: UiStrings = {
     ro: "pe oră",
     en: "per hour",
   },
-  support_project: {
-    ru: "Поддержать проект",
-    ro: "Susține proiectul",
-    en: "Support project",
-  },
 };

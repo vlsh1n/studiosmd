@@ -83,7 +83,6 @@ Defined in `.env.example`:
 
 - `DATABASE_URL` (required)
 - `NEXT_PUBLIC_SITE_URL` (optional)
-- `NEXT_PUBLIC_KOFI_URL` (optional)
 
 ## Database Workflow
 
