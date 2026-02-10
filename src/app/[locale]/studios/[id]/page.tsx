@@ -292,8 +292,12 @@ export default async function StudioPage({ params }: Props) {
           weekendLabel={WEEKEND_PRICE_LABEL[locale]}
           instagramHref={instagramHref}
           phoneHref={phoneHref ? `tel:${phoneHref}` : null}
+          yandexMapsHref={yandexMapsHref}
+          googleMapsHref={googleMapsHref}
           instagramLabel={UI_STRINGS.instagram_cta[locale]}
-          phoneLabel={UI_STRINGS.phone_cta[locale]}
+          phoneText={phone}
+          yandexMapsLabel={UI_STRINGS.yandex_maps_cta[locale]}
+          googleMapsLabel={UI_STRINGS.google_maps_cta[locale]}
         />
       </section>
     </div>

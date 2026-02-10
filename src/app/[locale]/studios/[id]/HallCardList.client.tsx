@@ -43,8 +43,12 @@ type Props = {
   weekendLabel: string;
   instagramHref: string | null;
   phoneHref: string | null;
+  yandexMapsHref: string | null;
+  googleMapsHref: string | null;
   instagramLabel: string;
-  phoneLabel: string;
+  phoneText: string | null;
+  yandexMapsLabel: string;
+  googleMapsLabel: string;
 };
 
 export default function HallCardList({
@@ -52,8 +56,12 @@ export default function HallCardList({
   weekendLabel,
   instagramHref,
   phoneHref,
+  yandexMapsHref,
+  googleMapsHref,
   instagramLabel,
-  phoneLabel,
+  phoneText,
+  yandexMapsLabel,
+  googleMapsLabel,
 }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -134,24 +142,72 @@ export default function HallCardList({
                   ))}
                 </div>
 
-                {(instagramHref || phoneHref) && (
+                {(instagramHref || phoneHref || yandexMapsHref || googleMapsHref) && (
                   <div className="mt-auto pt-1 flex flex-wrap gap-2">
                     {instagramHref && (
                       <a
                         href={instagramHref}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="btn flex-1 min-w-[8.5rem]"
+                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
                       >
+                        <img
+                          src="/icons/instagram.png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-4 w-4 object-contain"
+                          loading="lazy"
+                        />
                         {instagramLabel}
                       </a>
                     )}
-                    {phoneHref && (
+                    {phoneHref && phoneText && (
                       <a
                         href={phoneHref}
-                        className="btn btn-primary flex-1 min-w-[8.5rem]"
+                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
                       >
-                        {phoneLabel}
+                        <img
+                          src="/icons/telephone.png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-4 w-4 object-contain"
+                          loading="lazy"
+                        />
+                        {phoneText}
+                      </a>
+                    )}
+                    {yandexMapsHref && (
+                      <a
+                        href={yandexMapsHref}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                      >
+                        <img
+                          src="/icons/yandex_maps.png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-4 w-4 object-contain"
+                          loading="lazy"
+                        />
+                        {yandexMapsLabel}
+                      </a>
+                    )}
+                    {googleMapsHref && (
+                      <a
+                        href={googleMapsHref}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                      >
+                        <img
+                          src="/icons/google_maps.png"
+                          alt=""
+                          aria-hidden="true"
+                          className="h-4 w-4 object-contain"
+                          loading="lazy"
+                        />
+                        {googleMapsLabel}
                       </a>
                     )}
                   </div>
