@@ -293,7 +293,7 @@
 
   .landing-hero-content {
     width: min(38rem, 100%);
-    margin: 0 auto;
+    margin: 0.3rem auto 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -373,6 +373,10 @@
     .landing-hero {
       gap: 1.2rem;
       padding: clamp(1.5rem, 2vw, 2rem) clamp(1.6rem, 2.3vw, 2.1rem) 0;
+    }
+
+    .landing-hero-content {
+      margin-top: 0;
     }
 
     .landing-hero-brand {

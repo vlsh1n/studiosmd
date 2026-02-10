@@ -20,7 +20,7 @@ export default function Home() {
     <div className="page">
       <section className="panel landing-hero">
         <header className="landing-hero-header">
-          <p className="landing-hero-brand">StudiosMD</p>
+          <p className="landing-hero-brand">STUDIOS.MD</p>
           <div className="landing-hero-locales">
             {LOCALES.map((code) => (
               <button
