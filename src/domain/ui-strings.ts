@@ -28,6 +28,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Filtre",
     en: "Filters",
   },
+  options_title: {
+    ru: "Опции",
+    ro: "Opțiuni",
+    en: "Options",
+  },
   districts_title: {
     ru: "Районы",
     ro: "Cartiere",

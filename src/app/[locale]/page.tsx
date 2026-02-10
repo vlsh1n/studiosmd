@@ -346,7 +346,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
           <div className="stack">
             <div className="text-xs font-semibold uppercase muted">
-              {UI_STRINGS.filters_title[locale]}
+              {UI_STRINGS.options_title[locale]}
             </div>
             <div className="flex flex-wrap gap-2">
               {factKeys.map((factKey) => {
