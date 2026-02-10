@@ -12,17 +12,17 @@ type Props = {
 
 const SEO_COPY = {
   ru: {
-    title: "StudiosMD — фотостудии Кишинёв",
+    title: "STUDIOS.MD — фотостудии Кишинёв",
     description:
       "Каталог залов фотостудий в Кишинёве: цены, теги, дневной свет, условия.",
   },
   ro: {
-    title: "StudiosMD — studiouri foto Chișinău",
+    title: "STUDIOS.MD — studiouri foto Chișinău",
     description:
       "Catalog de săli de studio foto în Chișinău: prețuri, taguri, lumină naturală, condiții.",
   },
   en: {
-    title: "StudiosMD — photo studios Chisinau",
+    title: "STUDIOS.MD — photo studios Chisinau",
     description: "Catalog of photo studio rooms in Chisinau: pricing, tags, daylight, terms.",
   },
 } as const;

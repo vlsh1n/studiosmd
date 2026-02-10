@@ -4,7 +4,7 @@ import KofiOverlay from "@/components/KofiOverlay.client";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "StudiosMD",
+  title: "STUDIOS.MD",
   description: "Studios catalog",
 };
 
