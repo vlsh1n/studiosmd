@@ -202,15 +202,17 @@
     cursor: pointer;
   }
 
-  .ui-pill-control:hover {
-    background: #1c1a17;
-    color: #ffffff;
-    border-color: transparent;
-    box-shadow: var(--glass-shadow-lift);
-  }
+  @media (hover: hover) and (pointer: fine) {
+    .ui-pill-control:hover {
+      background: #1c1a17;
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: var(--glass-shadow-lift);
+    }
 
-  .ui-pill-control:hover img {
-    filter: invert(1);
+    .ui-pill-control:hover img {
+      filter: invert(1);
+    }
   }
 
   .ui-pill-control:active {
