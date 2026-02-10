@@ -154,15 +154,24 @@
       saturate(var(--glass-saturate));
     -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.8))
       saturate(var(--glass-saturate));
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease, color 0.15s ease;
   }
 
-  .btn:not(.btn-primary):hover {
-    background: var(--glass-bg-hover);
-    box-shadow: var(--glass-shadow-lift);
+  a.btn:hover,
+  button.btn:hover {
+    background: #1c1a17;
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: var(--shadow-lift);
   }
 
-  .btn:not(.btn-primary):active {
+  a.btn:hover img,
+  button.btn:hover img {
+    filter: invert(1);
+  }
+
+  a.btn:active,
+  button.btn:active {
     transform: translateY(1px);
     box-shadow: var(--glass-shadow-press);
   }
@@ -174,12 +183,12 @@
     box-shadow: var(--shadow-lift);
   }
 
-  .btn.btn-primary:hover {
+  a.btn.btn-primary:hover,
+  button.btn.btn-primary:hover {
     background: #13110f;
-  }
-
-  .btn.btn-primary:active {
-    transform: translateY(1px);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: var(--shadow-lift);
   }
 
   .ui-pill-control {
@@ -193,11 +202,16 @@
     box-shadow: var(--glass-shadow-lift);
   }
 
+  .ui-pill-control:hover img {
+    filter: invert(1);
+  }
+
   .ui-pill-control:active {
     transform: translateY(1px);
     box-shadow: var(--glass-shadow-press);
   }
 
+  .ui-pill-control-active,
   .ui-pill-control[data-active="true"],
   .ui-pill-control[aria-pressed="true"],
   .ui-pill-control[aria-current="page"] {
@@ -207,6 +221,7 @@
     box-shadow: var(--shadow-lift);
   }
 
+  .ui-pill-control-active img,
   .ui-pill-control[data-active="true"] img,
   .ui-pill-control[aria-pressed="true"] img,
   .ui-pill-control[aria-current="page"] img {

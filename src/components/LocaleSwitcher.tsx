@@ -29,7 +29,7 @@ export function LocaleSwitcher({ locale }: Props) {
           <Link
             key={nextLocale}
             href={href}
-            className="pill ui-pill-control px-3 py-1 text-xs font-semibold"
+            className={`pill ui-pill-control px-3 py-1 text-xs font-semibold${isActive ? " ui-pill-control-active" : ""}`}
             data-active={isActive ? "true" : "false"}
             aria-current={isActive ? "page" : undefined}
           >

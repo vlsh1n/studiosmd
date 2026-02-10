@@ -20,7 +20,7 @@ export default function Home() {
                 key={code}
                 type="button"
                 onClick={() => setLocale(code)}
-                className="pill ui-pill-control text-sm font-semibold"
+                className={`pill ui-pill-control text-sm font-semibold${code === locale ? " ui-pill-control-active" : ""}`}
                 aria-pressed={code === locale}
                 data-active={code === locale ? "true" : "false"}
               >

@@ -216,7 +216,7 @@ export default async function StudioPage({ params }: Props) {
                   href={instagramHref}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                  className="pill ui-pill-control text-sm font-medium"
                 >
                   <img
                     src="/icons/instagram.png"
@@ -232,7 +232,7 @@ export default async function StudioPage({ params }: Props) {
               {phone && phoneHref && (
                 <a
                   href={`tel:${phoneHref}`}
-                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                  className="pill ui-pill-control text-sm font-medium"
                 >
                   <img
                     src="/icons/telephone.png"
@@ -250,7 +250,7 @@ export default async function StudioPage({ params }: Props) {
                   href={yandexMapsHref}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                  className="pill ui-pill-control text-sm font-medium"
                 >
                   <img
                     src="/icons/yandex_maps.png"
@@ -268,7 +268,7 @@ export default async function StudioPage({ params }: Props) {
                   href={googleMapsHref}
                   target="_blank"
                   rel="noreferrer noopener"
-                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                  className="pill ui-pill-control text-sm font-medium"
                 >
                   <img
                     src="/icons/google_maps.png"
