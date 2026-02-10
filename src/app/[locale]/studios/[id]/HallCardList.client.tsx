@@ -149,31 +149,33 @@ export default function HallCardList({
                         href={instagramHref}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                        aria-label={instagramLabel}
+                        title={instagramLabel}
+                        className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
                       >
                         <img
                           src="/icons/instagram.png"
                           alt=""
                           aria-hidden="true"
-                          className="h-4 w-4 object-contain"
+                          className="h-5 w-5 object-contain brightness-0 transition group-hover:invert"
                           loading="lazy"
                         />
-                        {instagramLabel}
                       </a>
                     )}
                     {phoneHref && phoneText && (
                       <a
                         href={phoneHref}
-                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                        aria-label={phoneText}
+                        title={phoneText}
+                        className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
                       >
                         <img
                           src="/icons/telephone.png"
                           alt=""
                           aria-hidden="true"
-                          className="h-4 w-4 object-contain"
+                          className="h-5 w-5 object-contain brightness-0 transition group-hover:invert"
                           loading="lazy"
                         />
-                        {phoneText}
                       </a>
                     )}
                     {yandexMapsHref && (
@@ -181,16 +183,17 @@ export default function HallCardList({
                         href={yandexMapsHref}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                        aria-label={yandexMapsLabel}
+                        title={yandexMapsLabel}
+                        className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
                       >
                         <img
                           src="/icons/yandex_maps.png"
                           alt=""
                           aria-hidden="true"
-                          className="h-4 w-4 object-contain"
+                          className="h-5 w-5 object-contain brightness-0 transition group-hover:invert"
                           loading="lazy"
                         />
-                        {yandexMapsLabel}
                       </a>
                     )}
                     {googleMapsHref && (
@@ -198,16 +201,17 @@ export default function HallCardList({
                         href={googleMapsHref}
                         target="_blank"
                         rel="noreferrer noopener"
-                        className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                        aria-label={googleMapsLabel}
+                        title={googleMapsLabel}
+                        className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
                       >
                         <img
                           src="/icons/google_maps.png"
                           alt=""
                           aria-hidden="true"
-                          className="h-4 w-4 object-contain"
+                          className="h-5 w-5 object-contain brightness-0 transition group-hover:invert"
                           loading="lazy"
                         />
-                        {googleMapsLabel}
                       </a>
                     )}
                   </div>
