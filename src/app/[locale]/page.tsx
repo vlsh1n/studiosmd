@@ -394,7 +394,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit" className="btn btn-primary cursor-pointer">
               {UI_STRINGS.apply[locale]}
             </button>
             <Link href={`/${locale}`} className="btn">

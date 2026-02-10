@@ -158,6 +158,12 @@
     cursor: pointer;
   }
 
+  button.btn,
+  button.btn-primary,
+  button[type="submit"].btn {
+    cursor: pointer;
+  }
+
   a.btn:hover,
   button.btn:hover {
     background: #1c1a17;
