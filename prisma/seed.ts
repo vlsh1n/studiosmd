@@ -24,7 +24,12 @@ type StudioSeed = {
   name_i18n: Record<LocaleKey, string>;
   address_i18n: Record<LocaleKey, string>;
   cover_images: string[];
-  contacts: Record<string, string>;
+  phone: string;
+  instagram_nickname: string;
+  google_maps_url: string;
+  yandex_maps_url: string;
+  logo_url: string;
+  working_hours_i18n: Record<LocaleKey, string>;
   halls: HallSeed[];
 };
 
@@ -45,9 +50,15 @@ const studios: StudioSeed[] = [
       "https://images.example.com/studios/aurora/cover-1.jpg",
       "https://images.example.com/studios/aurora/cover-2.jpg",
     ],
-    contacts: {
-      phone: "+373-68-000-101",
-      instagram: "@aurora.studio",
+    phone: "+373-68-000-101",
+    instagram_nickname: "aurora.studio",
+    google_maps_url: "https://maps.google.com/?q=Dacia+24+Chisinau",
+    yandex_maps_url: "https://yandex.com/maps/?text=Dacia+24+Chisinau",
+    logo_url: "https://images.example.com/studios/aurora/logo.png",
+    working_hours_i18n: {
+      ru: "Пн-Вс: 08:00-22:00",
+      ro: "Lun-Dum: 08:00-22:00",
+      en: "Mon-Sun: 08:00-22:00",
     },
     halls: [
       {
@@ -116,9 +127,15 @@ const studios: StudioSeed[] = [
       "https://images.example.com/studios/lumi/cover-1.jpg",
       "https://images.example.com/studios/lumi/cover-2.jpg",
     ],
-    contacts: {
-      phone: "+373-68-000-202",
-      instagram: "@lumi.studio",
+    phone: "+373-68-000-202",
+    instagram_nickname: "lumi.studio",
+    google_maps_url: "https://maps.google.com/?q=Mircea+cel+Batran+12+Chisinau",
+    yandex_maps_url: "https://yandex.com/maps/?text=Mircea+cel+Batran+12+Chisinau",
+    logo_url: "https://images.example.com/studios/lumi/logo.png",
+    working_hours_i18n: {
+      ru: "Пн-Сб: 09:00-21:00, Вс: 10:00-20:00",
+      ro: "Lun-Sam: 09:00-21:00, Dum: 10:00-20:00",
+      en: "Mon-Sat: 09:00-21:00, Sun: 10:00-20:00",
     },
     halls: [
       {
@@ -188,9 +205,15 @@ const studios: StudioSeed[] = [
       "https://images.example.com/studios/central/cover-1.jpg",
       "https://images.example.com/studios/central/cover-2.jpg",
     ],
-    contacts: {
-      phone: "+373-68-000-303",
-      instagram: "@central.studio",
+    phone: "+373-68-000-303",
+    instagram_nickname: "central.studio",
+    google_maps_url: "https://maps.google.com/?q=Pushkin+10+Chisinau",
+    yandex_maps_url: "https://yandex.com/maps/?text=Pushkin+10+Chisinau",
+    logo_url: "https://images.example.com/studios/central/logo.png",
+    working_hours_i18n: {
+      ru: "Пн-Вс: 08:00-23:00",
+      ro: "Lun-Dum: 08:00-23:00",
+      en: "Mon-Sun: 08:00-23:00",
     },
     halls: [
       {
@@ -259,9 +282,15 @@ const studios: StudioSeed[] = [
       "https://images.example.com/studios/loftic/cover-1.jpg",
       "https://images.example.com/studios/loftic/cover-2.jpg",
     ],
-    contacts: {
-      phone: "+373-68-000-404",
-      instagram: "@loftic.studio",
+    phone: "+373-68-000-404",
+    instagram_nickname: "loftic.studio",
+    google_maps_url: "https://maps.google.com/?q=Albisoara+7+Chisinau",
+    yandex_maps_url: "https://yandex.com/maps/?text=Albisoara+7+Chisinau",
+    logo_url: "https://images.example.com/studios/loftic/logo.png",
+    working_hours_i18n: {
+      ru: "Вт-Вс: 10:00-22:00",
+      ro: "Mar-Dum: 10:00-22:00",
+      en: "Tue-Sun: 10:00-22:00",
     },
     halls: [
       {
@@ -329,9 +358,15 @@ const studios: StudioSeed[] = [
       "https://images.example.com/studios/north/cover-1.jpg",
       "https://images.example.com/studios/north/cover-2.jpg",
     ],
-    contacts: {
-      phone: "+373-68-000-505",
-      instagram: "@north.studio",
+    phone: "+373-68-000-505",
+    instagram_nickname: "north.studio",
+    google_maps_url: "https://maps.google.com/?q=Studenteasca+5+Chisinau",
+    yandex_maps_url: "https://yandex.com/maps/?text=Studenteasca+5+Chisinau",
+    logo_url: "https://images.example.com/studios/north/logo.png",
+    working_hours_i18n: {
+      ru: "Пн-Пт: 09:00-20:00, Сб-Вс: 10:00-20:00",
+      ro: "Lun-Vin: 09:00-20:00, Sam-Dum: 10:00-20:00",
+      en: "Mon-Fri: 09:00-20:00, Sat-Sun: 10:00-20:00",
     },
     halls: [
       {
@@ -405,7 +440,12 @@ async function main() {
         address_i18n: studio.address_i18n,
         district_key: studio.district_key,
         cover_images: studio.cover_images,
-        contacts: studio.contacts,
+        phone: studio.phone,
+        instagram_nickname: studio.instagram_nickname,
+        google_maps_url: studio.google_maps_url,
+        yandex_maps_url: studio.yandex_maps_url,
+        logo_url: studio.logo_url,
+        working_hours_i18n: studio.working_hours_i18n,
         halls: {
           create: studio.halls,
         },

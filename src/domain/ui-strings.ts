@@ -118,10 +118,40 @@ export const UI_STRINGS: UiStrings = {
     ro: "Instagram",
     en: "Instagram",
   },
+  yandex_maps_cta: {
+    ru: "Yandex Maps",
+    ro: "Yandex Maps",
+    en: "Yandex Maps",
+  },
+  google_maps_cta: {
+    ru: "Google Maps",
+    ro: "Google Maps",
+    en: "Google Maps",
+  },
   phone_cta: {
     ru: "Телефон",
     ro: "Telefon",
     en: "Phone",
+  },
+  working_hours_label: {
+    ru: "График:",
+    ro: "Program:",
+    en: "Hours:",
+  },
+  working_hours_fallback: {
+    ru: "по запросу",
+    ro: "la cerere",
+    en: "on request",
+  },
+  logo_placeholder: {
+    ru: "Лого",
+    ro: "Logo",
+    en: "Logo",
+  },
+  halls_count: {
+    ru: "Залов: {count}",
+    ro: "Săli: {count}",
+    en: "Halls: {count}",
   },
   no_results: {
     ru: "Ничего не найдено",

@@ -13,9 +13,8 @@ type Props = {
   params: { locale: string; id: string };
 };
 
-type Contacts = Record<string, unknown> | null | undefined;
-
 type JsonArray = unknown[] | null | undefined;
+type JsonObject = Record<string, unknown> | null | undefined;
 
 const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
   ru: "В выходные:",
@@ -41,14 +40,33 @@ function getImageList(value: JsonArray) {
   return getStringsFromJson(value);
 }
 
-function getContact(contacts: Contacts, key: string) {
-  if (!contacts || typeof contacts !== "object") return null;
-  const value = contacts[key];
-  return typeof value === "string" ? value : null;
+function getLocalizedText(value: JsonObject, locale: Locale) {
+  if (!value || typeof value !== "object") return null;
+
+  const localizedValue = value[locale];
+  if (typeof localizedValue !== "string") return null;
+
+  const trimmed = localizedValue.trim();
+  return trimmed.length > 0 ? trimmed : null;
+}
+
+function getStringValue(value: unknown) {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : null;
 }
 
 function sanitizePhoneForTel(value: string) {
-  return value.replace(/[\s()-]/g, "");
+  return value.replace(/[^\d+]/g, "");
+}
+
+function getInstagramNickname(value: unknown) {
+  const rawValue = getStringValue(value);
+  if (!rawValue) return null;
+
+  const withoutDomain = rawValue.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "");
+  const nickname = withoutDomain.split(/[/?#]/)[0]?.replace(/^@+/, "").trim();
+  return nickname && nickname.length > 0 ? nickname : null;
 }
 
 function isTagKey(value: string): value is keyof typeof TAGS {
@@ -68,9 +86,20 @@ export default async function StudioPage({ params }: Props) {
 
   const coverImages = getImageList(studio.cover_images as JsonArray);
   const coverImage = coverImages[0];
-  const phone = getContact(studio.contacts as Contacts, "phone");
+  const phone = getStringValue(studio.phone);
   const phoneHref = phone ? sanitizePhoneForTel(phone) : null;
-  const instagram = safeExternalUrl(getContact(studio.contacts as Contacts, "instagram"));
+  const instagramNickname = getInstagramNickname(studio.instagram_nickname);
+  const instagramHref = instagramNickname
+    ? `https://instagram.com/${encodeURIComponent(instagramNickname)}`
+    : null;
+  const yandexMapsHref = safeExternalUrl(studio.yandex_maps_url);
+  const googleMapsHref = safeExternalUrl(studio.google_maps_url);
+  const logoUrl = safeExternalUrl(studio.logo_url);
+  const workingHours =
+    getLocalizedText(studio.working_hours_i18n as JsonObject, locale) ??
+    UI_STRINGS.working_hours_fallback[locale];
+  const hallCountLabel = UI_STRINGS.halls_count[locale].replace("{count}", String(studio.halls.length));
+  const hasStudioCta = Boolean(instagramHref || phoneHref || yandexMapsHref || googleMapsHref);
   const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
     const images = getImageList(hall.images as JsonArray);
     const tags = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]);
@@ -149,34 +178,112 @@ export default async function StudioPage({ params }: Props) {
   return (
     <div className="stack">
       <section className="card p-4 sm:p-5">
-        <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
-          <div className="stack gap-2">
-            <h1 className="text-2xl font-semibold text-gray-900">{studio.name}</h1>
-            <span className="pill w-fit text-xs">
-              {DISTRICTS[studio.district_key][locale]}
-            </span>
-            <div className="text-sm muted">{studio.address}</div>
+        <div className="stack gap-4">
+          <div className="flex items-start gap-3 sm:gap-4">
+            <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl border border-[var(--glass-border)] bg-[var(--surface)] sm:h-20 sm:w-20">
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt={`${studio.name} logo`}
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center text-[10px] font-medium uppercase tracking-wide muted">
+                  {UI_STRINGS.logo_placeholder[locale]}
+                </div>
+              )}
+            </div>
+
+            <div className="min-w-0 stack gap-2">
+              <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">{studio.name}</h1>
+
+              <div className="inline-flex flex-wrap gap-2">
+                <span className="pill w-fit text-xs">{DISTRICTS[studio.district_key][locale]}</span>
+                <span className="pill w-fit text-xs">{hallCountLabel}</span>
+              </div>
+
+              <div className="text-sm muted">{studio.address}</div>
+              <div className="text-sm muted">
+                <span className="font-medium text-gray-900">{UI_STRINGS.working_hours_label[locale]}</span>{" "}
+                {workingHours}
+              </div>
+            </div>
           </div>
-          <div className="stack gap-2 sm:items-end">
-            {phone && phoneHref && (
-              <a
-                href={`tel:${phoneHref}`}
-                className="text-sm font-medium text-gray-900 underline underline-offset-2"
-              >
-                {phone}
-              </a>
-            )}
-            {instagram && (
-              <a
-                href={instagram}
-                target="_blank"
-                rel="noreferrer noopener"
-                className="btn"
-              >
-                Instagram
-              </a>
-            )}
-          </div>
+
+          {hasStudioCta && (
+            <div className="flex flex-wrap gap-2">
+              {instagramHref && (
+                <a
+                  href={instagramHref}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                >
+                  <img
+                    src="/icons/instagram.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-4 w-4 object-contain"
+                    loading="lazy"
+                  />
+                  <span>{UI_STRINGS.instagram_cta[locale]}</span>
+                </a>
+              )}
+
+              {phone && phoneHref && (
+                <a
+                  href={`tel:${phoneHref}`}
+                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                >
+                  <img
+                    src="/icons/telephone.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-4 w-4 object-contain"
+                    loading="lazy"
+                  />
+                  <span>{phone}</span>
+                </a>
+              )}
+
+              {yandexMapsHref && (
+                <a
+                  href={yandexMapsHref}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                >
+                  <img
+                    src="/icons/yandex_maps.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-4 w-4 object-contain"
+                    loading="lazy"
+                  />
+                  <span>{UI_STRINGS.yandex_maps_cta[locale]}</span>
+                </a>
+              )}
+
+              {googleMapsHref && (
+                <a
+                  href={googleMapsHref}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="pill text-sm font-medium transition-colors hover:bg-white/88"
+                >
+                  <img
+                    src="/icons/google_maps.png"
+                    alt=""
+                    aria-hidden="true"
+                    className="h-4 w-4 object-contain"
+                    loading="lazy"
+                  />
+                  <span>{UI_STRINGS.google_maps_cta[locale]}</span>
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </section>
 
@@ -195,7 +302,7 @@ export default async function StudioPage({ params }: Props) {
         <HallCardList
           halls={hallCards}
           weekendLabel={WEEKEND_PRICE_LABEL[locale]}
-          instagramHref={instagram}
+          instagramHref={instagramHref}
           phoneHref={phoneHref ? `tel:${phoneHref}` : null}
           instagramLabel={UI_STRINGS.instagram_cta[locale]}
           phoneLabel={UI_STRINGS.phone_cta[locale]}

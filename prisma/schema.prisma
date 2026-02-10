@@ -32,13 +32,18 @@ enum VideoFriendly {
 }
 
 model Studio {
-  id           String      @id @default(cuid())
-  name_i18n    Json
-  address_i18n Json
-  district_key DistrictKey
-  cover_images Json
-  contacts     Json
-  halls        Hall[]
+  id                 String      @id @default(cuid())
+  name_i18n          Json
+  address_i18n       Json
+  district_key       DistrictKey
+  cover_images       Json
+  phone              String?
+  instagram_nickname String?
+  google_maps_url    String?
+  yandex_maps_url    String?
+  logo_url           String?
+  working_hours_i18n Json?
+  halls              Hall[]
 }
 
 model Hall {
