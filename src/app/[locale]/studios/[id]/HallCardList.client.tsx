@@ -143,7 +143,7 @@ export default function HallCardList({
                 </div>
 
                 {(instagramHref || phoneHref || yandexMapsHref || googleMapsHref) && (
-                  <div className="mt-auto pt-1 flex flex-wrap gap-2">
+                  <div className="mt-auto pt-1 flex flex-wrap justify-center gap-2">
                     {instagramHref && (
                       <a
                         href={instagramHref}
