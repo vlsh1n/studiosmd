@@ -333,6 +333,7 @@
     justify-content: center;
     min-height: clamp(12rem, 60vw, 18rem);
     padding-bottom: 0.15rem;
+    width: 100%;
   }
 
   .landing-gallery-side {
@@ -389,26 +390,40 @@
     }
 
     .landing-gallery {
+      width: min(66rem, 100%);
+      margin-inline: auto;
       margin-top: auto;
-      min-height: clamp(17.5rem, 28vw, 22rem);
-      gap: clamp(0.75rem, 1.05vw, 1.05rem);
-      padding-top: 0.75rem;
+      min-height: clamp(18rem, 26vw, 21.5rem);
+      gap: clamp(0.6rem, 1vw, 1rem);
+      padding-top: 1rem;
       padding-bottom: 0;
+      overflow: hidden;
     }
 
     .landing-gallery-side {
       display: inline-flex;
       align-items: flex-end;
-      gap: clamp(0.75rem, 1.05vw, 1.05rem);
+      gap: clamp(0.6rem, 1vw, 1rem);
+      transform: translateY(24%);
+    }
+
+    .landing-gallery-central,
+    .landing-gallery-card {
+      border: 0;
+      background: transparent;
+      box-shadow: none;
     }
 
     .landing-gallery-central {
-      width: clamp(13.2rem, 16vw, 16.3rem);
-      margin-inline: clamp(0.55rem, 1vw, 1rem);
+      width: clamp(13.8rem, 16.2vw, 16.9rem);
+      margin-inline: clamp(0.5rem, 0.9vw, 0.9rem);
+      border-radius: 0;
+      transform: translateY(11%);
     }
 
     .landing-gallery-card {
-      width: clamp(8.2rem, 10.3vw, 10.5rem);
+      width: clamp(8rem, 9.8vw, 10.3rem);
+      border-radius: 1.35rem 1.35rem 0 0;
     }
   }
 
@@ -418,11 +433,11 @@
     }
 
     .landing-gallery-central {
-      width: clamp(14rem, 17vw, 17.3rem);
+      width: clamp(14.4rem, 16.8vw, 17.4rem);
     }
 
     .landing-gallery-card {
-      width: clamp(8.6rem, 9.7vw, 10.9rem);
+      width: clamp(8.3rem, 9.2vw, 10.6rem);
     }
   }
 
