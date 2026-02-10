@@ -327,13 +327,13 @@
 
   .landing-gallery {
     position: relative;
-    margin-top: 0.2rem;
+    margin-top: 0.9rem;
     display: flex;
     align-items: flex-end;
     justify-content: center;
-    min-height: clamp(11.2rem, 56vw, 16.5rem);
-    padding-bottom: 0.15rem;
+    min-height: clamp(12.6rem, 66vw, 17.8rem);
     width: 100%;
+    overflow: hidden;
   }
 
   .landing-gallery-side {
@@ -344,21 +344,21 @@
   .landing-gallery-card {
     position: relative;
     overflow: hidden;
-    border-radius: 1.35rem;
-    border: 1px solid rgba(255, 255, 255, 0.58);
-    box-shadow: 0 18px 34px rgba(20, 16, 10, 0.14);
+    border: 0;
+    background: transparent;
+    box-shadow: none;
   }
 
   .landing-gallery-central {
-    width: min(17.5rem, 84vw);
-    aspect-ratio: 9 / 16;
-    background: transparent;
+    width: min(18.2rem, 90vw);
+    aspect-ratio: 1475 / 2550;
+    border-radius: 0;
   }
 
   .landing-gallery-card {
     width: clamp(8.5rem, 13vw, 10.6rem);
-    aspect-ratio: 3 / 5;
-    background: rgba(255, 255, 255, 0.6);
+    aspect-ratio: 13 / 24;
+    border-radius: 1.35rem 1.35rem 0 0;
   }
 
   .landing-gallery-image {
@@ -366,18 +366,13 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-  }
-
-  .landing-gallery-central .landing-gallery-image {
-    transform: scale(1.26) translateY(4.6%);
-    transform-origin: center bottom;
+    display: block;
   }
 
   @media (min-width: 1024px) {
     .landing-hero {
-      gap: 1.15rem;
+      gap: 1.2rem;
       padding: clamp(1.5rem, 2vw, 2rem) clamp(1.6rem, 2.3vw, 2.1rem) 0;
-      min-height: clamp(39rem, 88vh, 47rem);
     }
 
     .landing-hero-brand {
@@ -395,44 +390,28 @@
     }
 
     .landing-gallery {
-      width: min(66rem, 100%);
+      width: min(64.5rem, 100%);
       margin-inline: auto;
-      margin-top: auto;
-      min-height: clamp(19.2rem, 29vw, 23.6rem);
-      gap: clamp(0.7rem, 1.15vw, 1.2rem);
-      padding-top: 0.15rem;
-      padding-bottom: 0;
-      overflow: hidden;
+      margin-top: clamp(1.55rem, 3.2vw, 2.5rem);
+      min-height: clamp(20.5rem, 29.5vw, 24.5rem);
+      gap: clamp(0.6rem, 1.05vw, 1rem);
     }
 
     .landing-gallery-side {
       display: inline-flex;
       align-items: flex-end;
-      gap: clamp(0.7rem, 1.15vw, 1.2rem);
-      transform: translateY(19%);
-    }
-
-    .landing-gallery-central,
-    .landing-gallery-card {
-      border: 0;
-      background: transparent;
-      box-shadow: none;
+      gap: clamp(0.6rem, 1.05vw, 1rem);
+      transform: translateY(10%);
     }
 
     .landing-gallery-central {
-      width: clamp(15rem, 17.3vw, 18rem);
-      margin-inline: clamp(0.65rem, 1.1vw, 1.15rem);
-      border-radius: 0;
-      transform: translateY(8%);
-    }
-
-    .landing-gallery-central .landing-gallery-image {
-      transform: none;
+      width: clamp(15.8rem, 18.4vw, 19.4rem);
+      margin-inline: clamp(0.55rem, 1vw, 1rem);
+      transform: translateY(4%);
     }
 
     .landing-gallery-card {
-      width: clamp(9.1rem, 10.7vw, 11.5rem);
-      border-radius: 1.35rem 1.35rem 0 0;
+      width: clamp(8.9rem, 10.1vw, 11rem);
     }
   }
 
@@ -441,12 +420,21 @@
       gap: 1rem;
     }
 
+    .landing-gallery {
+      min-height: clamp(21.2rem, 28.2vw, 25.2rem);
+      gap: clamp(0.72rem, 1vw, 1.05rem);
+    }
+
+    .landing-gallery-side {
+      gap: clamp(0.72rem, 1vw, 1.05rem);
+    }
+
     .landing-gallery-central {
-      width: clamp(15.4rem, 17.5vw, 18.6rem);
+      width: clamp(16.4rem, 18.2vw, 20.2rem);
     }
 
     .landing-gallery-card {
-      width: clamp(9.4rem, 10.2vw, 11.9rem);
+      width: clamp(9.4rem, 10vw, 11.8rem);
     }
   }
 
