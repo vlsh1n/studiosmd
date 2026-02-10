@@ -84,8 +84,6 @@ export default async function StudioPage({ params }: Props) {
     notFound();
   }
 
-  const coverImages = getImageList(studio.cover_images as JsonArray);
-  const coverImage = coverImages[0];
   const phone = getStringValue(studio.phone);
   const phoneHref = phone ? sanitizePhoneForTel(phone) : null;
   const instagramNickname = getInstagramNickname(studio.instagram_nickname);
@@ -286,16 +284,6 @@ export default async function StudioPage({ params }: Props) {
           )}
         </div>
       </section>
-
-      {coverImage && (
-        <section className="card p-4">
-          <img
-            src={coverImage}
-            alt={studio.name}
-            className="h-56 w-full rounded object-cover sm:h-64"
-          />
-        </section>
-      )}
 
       <HallFocus />
       <section className="stack">
