@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import KofiMobileHeaderButton from "@/components/KofiMobileHeaderButton.client";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { isLocale, t } from "@/i18n";
 
@@ -57,7 +58,8 @@ export default async function LocaleLayout({ children, params }: Props) {
           >
             {t(locale, "projectName")}
           </Link>
-          <div className="shrink-0 max-w-full">
+          <div className="flex items-center gap-2 shrink-0 max-w-full">
+            <KofiMobileHeaderButton />
             <LocaleSwitcher locale={locale} />
           </div>
         </header>

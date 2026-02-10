@@ -12,6 +12,8 @@ type KofiWindow = Window & {
 
 export default function KofiOverlay() {
   useEffect(() => {
+    if (window.matchMedia("(max-width: 639px)").matches) return;
+
     const kofiWindow = window as KofiWindow;
 
     if (kofiWindow.__kofiOverlayMounted) return;
@@ -32,6 +34,8 @@ export default function KofiOverlay() {
       src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"
       strategy="afterInteractive"
       onLoad={() => {
+        if (window.matchMedia("(max-width: 639px)").matches) return;
+
         const kofiWindow = window as KofiWindow;
 
         if (kofiWindow.__kofiOverlayMounted) return;
