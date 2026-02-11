@@ -398,7 +398,7 @@
       width: min(70rem, 100%);
       margin-inline: auto;
       margin-top: clamp(1.1rem, 2.3vw, 1.7rem);
-      min-height: clamp(24.8rem, 33vw, 29rem);
+      min-height: clamp(28rem, 39vw, 33rem);
       height: auto;
       aspect-ratio: auto;
     }
