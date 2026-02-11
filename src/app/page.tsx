@@ -48,27 +48,23 @@ export default function Home() {
         </div>
 
         <div className="landing-gallery" aria-hidden="true">
-          <div className="landing-gallery-side">
-            <figure className="landing-gallery-card">
-              <Image src={hall1Image} alt="" className="landing-gallery-image" />
-            </figure>
-            <figure className="landing-gallery-card">
-              <Image src={hall2Image} alt="" className="landing-gallery-image" />
-            </figure>
-          </div>
+          <figure className="landing-gallery-card landing-gallery-card-left-outer">
+            <Image src={hall1Image} alt="" className="landing-gallery-image" />
+          </figure>
+          <figure className="landing-gallery-card landing-gallery-card-left-inner">
+            <Image src={hall2Image} alt="" className="landing-gallery-image" />
+          </figure>
 
           <figure className="landing-gallery-central">
             <Image src={centralImage} alt="" className="landing-gallery-image" priority />
           </figure>
 
-          <div className="landing-gallery-side">
-            <figure className="landing-gallery-card">
-              <Image src={hall3Image} alt="" className="landing-gallery-image" />
-            </figure>
-            <figure className="landing-gallery-card">
-              <Image src={hall4Image} alt="" className="landing-gallery-image" />
-            </figure>
-          </div>
+          <figure className="landing-gallery-card landing-gallery-card-right-inner">
+            <Image src={hall3Image} alt="" className="landing-gallery-image" />
+          </figure>
+          <figure className="landing-gallery-card landing-gallery-card-right-outer">
+            <Image src={hall4Image} alt="" className="landing-gallery-image" />
+          </figure>
         </div>
       </section>
     </div>

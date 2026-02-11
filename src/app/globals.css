@@ -356,6 +356,7 @@
   }
 
   .landing-gallery-card {
+    display: none;
     width: clamp(8.5rem, 13vw, 10.6rem);
     aspect-ratio: 13 / 24;
     border-radius: 1.35rem 1.35rem 0 0;
@@ -394,28 +395,52 @@
     }
 
     .landing-gallery {
-      width: min(67.5rem, 100%);
+      width: min(70rem, 100%);
       margin-inline: auto;
-      margin-top: clamp(1.25rem, 2.7vw, 2rem);
-      min-height: clamp(22.4rem, 31.5vw, 26.4rem);
-      gap: clamp(0.34rem, 0.72vw, 0.62rem);
-    }
-
-    .landing-gallery-side {
-      display: inline-flex;
-      align-items: flex-end;
-      gap: clamp(0.34rem, 0.72vw, 0.62rem);
-      transform: translateY(7%);
+      margin-top: clamp(1.1rem, 2.3vw, 1.7rem);
+      min-height: clamp(24.8rem, 33vw, 29rem);
     }
 
     .landing-gallery-central {
-      width: clamp(17rem, 19.7vw, 21.2rem);
-      margin-inline: clamp(0.22rem, 0.6vw, 0.55rem);
-      transform: translateY(2%);
+      position: absolute;
+      left: 50%;
+      bottom: -0.1rem;
+      width: clamp(16.9rem, 18.9vw, 20.8rem);
+      transform: translateX(-50%);
     }
 
     .landing-gallery-card {
-      width: clamp(9.9rem, 11.1vw, 12.3rem);
+      display: block;
+      position: absolute;
+      margin: 0;
+      bottom: 0;
+      width: clamp(10rem, 10.9vw, 12.2rem);
+    }
+
+    .landing-gallery-card-left-inner,
+    .landing-gallery-card-right-inner {
+      bottom: clamp(0.6rem, 0.95vw, 0.9rem);
+      width: clamp(11.7rem, 12.7vw, 14rem);
+    }
+
+    .landing-gallery-card-left-inner {
+      left: 50%;
+      transform: translateX(calc(-50% - clamp(14.1rem, 15.8vw, 17.2rem)));
+    }
+
+    .landing-gallery-card-right-inner {
+      left: 50%;
+      transform: translateX(calc(-50% + clamp(14.1rem, 15.8vw, 17.2rem)));
+    }
+
+    .landing-gallery-card-left-outer {
+      left: 50%;
+      transform: translateX(calc(-50% - clamp(24.4rem, 27.3vw, 30.2rem)));
+    }
+
+    .landing-gallery-card-right-outer {
+      left: 50%;
+      transform: translateX(calc(-50% + clamp(24.4rem, 27.3vw, 30.2rem)));
     }
   }
 
@@ -425,21 +450,37 @@
     }
 
     .landing-gallery {
-      width: min(69.5rem, 100%);
-      min-height: clamp(23.4rem, 30vw, 27.4rem);
-      gap: clamp(0.4rem, 0.6vw, 0.64rem);
-    }
-
-    .landing-gallery-side {
-      gap: clamp(0.4rem, 0.6vw, 0.64rem);
+      width: min(71.5rem, 100%);
+      min-height: clamp(25.8rem, 31vw, 30rem);
     }
 
     .landing-gallery-central {
-      width: clamp(18rem, 20vw, 22.2rem);
+      width: clamp(17.6rem, 19.2vw, 21.2rem);
     }
 
     .landing-gallery-card {
-      width: clamp(10.2rem, 10.8vw, 12.7rem);
+      width: clamp(10.5rem, 11.1vw, 12.6rem);
+    }
+
+    .landing-gallery-card-left-inner,
+    .landing-gallery-card-right-inner {
+      width: clamp(12.3rem, 12.9vw, 14.3rem);
+    }
+
+    .landing-gallery-card-left-inner {
+      transform: translateX(calc(-50% - clamp(14.8rem, 15.9vw, 17.8rem)));
+    }
+
+    .landing-gallery-card-right-inner {
+      transform: translateX(calc(-50% + clamp(14.8rem, 15.9vw, 17.8rem)));
+    }
+
+    .landing-gallery-card-left-outer {
+      transform: translateX(calc(-50% - clamp(25.9rem, 27.8vw, 31rem)));
+    }
+
+    .landing-gallery-card-right-outer {
+      transform: translateX(calc(-50% + clamp(25.9rem, 27.8vw, 31rem)));
     }
   }
 
