@@ -394,28 +394,28 @@
     }
 
     .landing-gallery {
-      width: min(64.5rem, 100%);
+      width: min(67.5rem, 100%);
       margin-inline: auto;
-      margin-top: clamp(1.55rem, 3.2vw, 2.5rem);
-      min-height: clamp(20.5rem, 29.5vw, 24.5rem);
-      gap: clamp(0.6rem, 1.05vw, 1rem);
+      margin-top: clamp(1.25rem, 2.7vw, 2rem);
+      min-height: clamp(22.4rem, 31.5vw, 26.4rem);
+      gap: clamp(0.34rem, 0.72vw, 0.62rem);
     }
 
     .landing-gallery-side {
       display: inline-flex;
       align-items: flex-end;
-      gap: clamp(0.6rem, 1.05vw, 1rem);
-      transform: translateY(10%);
+      gap: clamp(0.34rem, 0.72vw, 0.62rem);
+      transform: translateY(7%);
     }
 
     .landing-gallery-central {
-      width: clamp(15.8rem, 18.4vw, 19.4rem);
-      margin-inline: clamp(0.55rem, 1vw, 1rem);
-      transform: translateY(4%);
+      width: clamp(17rem, 19.7vw, 21.2rem);
+      margin-inline: clamp(0.22rem, 0.6vw, 0.55rem);
+      transform: translateY(2%);
     }
 
     .landing-gallery-card {
-      width: clamp(8.9rem, 10.1vw, 11rem);
+      width: clamp(9.9rem, 11.1vw, 12.3rem);
     }
   }
 
@@ -425,20 +425,21 @@
     }
 
     .landing-gallery {
-      min-height: clamp(21.2rem, 28.2vw, 25.2rem);
-      gap: clamp(0.72rem, 1vw, 1.05rem);
+      width: min(69.5rem, 100%);
+      min-height: clamp(23.4rem, 30vw, 27.4rem);
+      gap: clamp(0.4rem, 0.6vw, 0.64rem);
     }
 
     .landing-gallery-side {
-      gap: clamp(0.72rem, 1vw, 1.05rem);
+      gap: clamp(0.4rem, 0.6vw, 0.64rem);
     }
 
     .landing-gallery-central {
-      width: clamp(16.4rem, 18.2vw, 20.2rem);
+      width: clamp(18rem, 20vw, 22.2rem);
     }
 
     .landing-gallery-card {
-      width: clamp(9.4rem, 10vw, 11.8rem);
+      width: clamp(10.2rem, 10.8vw, 12.7rem);
     }
   }
 
