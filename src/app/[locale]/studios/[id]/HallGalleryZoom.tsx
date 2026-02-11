@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
 import { createPortal } from "react-dom";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -13,6 +13,8 @@ type Props = {
 function clampIndex(value: number, maxIndex: number) {
   return Math.min(Math.max(value, 0), maxIndex);
 }
+
+const SWIPE_THRESHOLD_PX = 42;
 
 export default function HallGalleryZoom({ images, alt }: Props) {
   if (images.length === 0) return null;
@@ -34,6 +36,8 @@ function HallGalleryZoomContent({ images, alt }: Props) {
   const modalDuration = prefersReducedMotion ? 0 : 0.22;
   const imageDuration = prefersReducedMotion ? 0 : 0.2;
   const modalInitialScale = prefersReducedMotion ? 1 : 0.98;
+  const swipeStartRef = useRef<{ x: number; y: number } | null>(null);
+  const swipeCurrentRef = useRef<{ x: number; y: number } | null>(null);
 
   const changeInlineSlide = useCallback((direction: -1 | 1) => {
     if (!emblaApi || !hasMultiple) return;
@@ -57,6 +61,38 @@ function HallGalleryZoomContent({ images, alt }: Props) {
     if (!hasMultiple) return;
     setModalIndex((current) => clampIndex(current + direction, maxIndex));
   }, [hasMultiple, maxIndex]);
+
+  const handleModalTouchStart = useCallback((event: TouchEvent<HTMLDivElement>) => {
+    if (!hasMultiple || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    const point = { x: touch.clientX, y: touch.clientY };
+    swipeStartRef.current = point;
+    swipeCurrentRef.current = point;
+  }, [hasMultiple]);
+
+  const handleModalTouchMove = useCallback((event: TouchEvent<HTMLDivElement>) => {
+    if (!swipeStartRef.current || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    swipeCurrentRef.current = { x: touch.clientX, y: touch.clientY };
+  }, []);
+
+  const handleModalTouchEnd = useCallback(() => {
+    const start = swipeStartRef.current;
+    const end = swipeCurrentRef.current;
+    swipeStartRef.current = null;
+    swipeCurrentRef.current = null;
+
+    if (!start || !end) return;
+
+    const deltaX = end.x - start.x;
+    const deltaY = end.y - start.y;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+
+    if (absX < SWIPE_THRESHOLD_PX || absX <= absY) return;
+
+    changeModalSlide(deltaX > 0 ? -1 : 1);
+  }, [changeModalSlide]);
 
   useEffect(() => {
     if (!isModalOpen) return;
@@ -204,18 +240,25 @@ function HallGalleryZoomContent({ images, alt }: Props) {
                     ›
                   </button>
 
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.img
-                      key={modalIndex}
-                      src={images[modalIndex]}
-                      alt={alt}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: imageDuration, ease: "easeOut" }}
-                      className="max-h-screen max-w-screen object-contain"
-                    />
-                  </AnimatePresence>
+                  <div
+                    className="max-h-screen max-w-screen touch-pan-y"
+                    onTouchStart={handleModalTouchStart}
+                    onTouchMove={handleModalTouchMove}
+                    onTouchEnd={handleModalTouchEnd}
+                  >
+                    <AnimatePresence mode="wait" initial={false}>
+                      <motion.img
+                        key={modalIndex}
+                        src={images[modalIndex]}
+                        alt={alt}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: imageDuration, ease: "easeOut" }}
+                        className="max-h-screen max-w-screen object-contain"
+                      />
+                    </AnimatePresence>
+                  </div>
 
                   {hasMultiple && (
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-black/55 px-3 py-1 text-sm text-white">
