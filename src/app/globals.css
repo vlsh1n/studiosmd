@@ -535,3 +535,9 @@
     max-width: 100%;
   }
 }
+
+/* Keep Ko-fi overlay root out of app stacking contexts. */
+body > div[id^="kofi-widget-overlay-"] {
+  position: static !important;
+  z-index: auto !important;
+}
