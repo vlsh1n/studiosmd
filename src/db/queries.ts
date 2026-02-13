@@ -20,7 +20,8 @@ type HallFactFilterKey =
   | "changing_room"
   | "furniture"
   | "flash_light"
-  | "continuous_light";
+  | "continuous_light"
+  | "cyclorama";
 
 type HallWithStudio = Prisma.HallGetPayload<{
   include: {
@@ -92,6 +93,10 @@ export async function listHalls(params: ListHallsParams) {
       }
       if (fact === "continuous_light") {
         andFilters.push({ continuous_light: true });
+        continue;
+      }
+      if (fact === "cyclorama") {
+        andFilters.push({ cyclorama: true });
       }
     }
   }

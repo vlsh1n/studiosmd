@@ -97,11 +97,6 @@ export const TAGS = {
     ro: "Pastel",
     en: "Pastel",
   },
-  cyclorama: {
-    ru: "Циклорама",
-    ro: "Cyclorama",
-    en: "Cyclorama",
-  },
   colored_walls: {
     ru: "Цветные стены",
     ro: "Pereți colorați",

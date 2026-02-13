@@ -62,7 +62,7 @@ Before insert, always check:
 - optional numeric fields are valid integers if present
 - all fact fields are booleans (`yes/no -> true/false`)
 - `HL_tags` length <= 6
-- `HL_tags` does not include: `daylight`, `blackout`, `parking`, `changing_room`, `furniture`, `flash_light`, `continuous_light`
+- `HL_tags` does not include: `daylight`, `blackout`, `parking`, `changing_room`, `furniture`, `flash_light`, `continuous_light`, `cyclorama`
 - images arrays are non-empty and contain valid URLs
 
 ## Recommended operating mode

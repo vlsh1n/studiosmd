@@ -10,7 +10,8 @@ export type HallFactKey =
   | "changing_room"
   | "furniture"
   | "flash_light"
-  | "continuous_light";
+  | "continuous_light"
+  | "cyclorama";
 
 export type HallFactItem = {
   key: HallFactKey;
@@ -25,6 +26,7 @@ const FACT_ICON_BY_KEY: Record<HallFactKey, string> = {
   furniture: "/icons/furniture.png",
   flash_light: "/icons/flash_light.png",
   continuous_light: "/icons/continuous_light.png",
+  cyclorama: "/icons/cyclorama.png",
 };
 
 export type HallCardItem = {

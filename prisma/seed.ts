@@ -17,6 +17,7 @@ type HallSeed = {
   furniture: boolean;
   flash_light: boolean;
   continuous_light: boolean;
+  cyclorama?: boolean;
   tags: string[];
   price_per_hour: number;
 };
@@ -182,7 +183,8 @@ const studios: StudioSeed[] = [
         furniture: false,
         flash_light: true,
         continuous_light: true,
-        tags: ["cyclorama", "content", "product", "spacious"],
+        cyclorama: true,
+        tags: ["content", "product", "spacious"],
         price_per_hour: 800,
       },
     ],

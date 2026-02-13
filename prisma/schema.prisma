@@ -51,6 +51,7 @@ model Hall {
   furniture        Boolean  @default(false)
   flash_light      Boolean  @default(false)
   continuous_light Boolean  @default(false)
+  cyclorama        Boolean  @default(false)
   tags             String[]
   price_per_hour   Int
 

@@ -159,6 +159,12 @@ export default async function StudioPage({ params }: Props) {
         label: UI_STRINGS.continuous_light_label[locale],
       });
     }
+    if (hall.cyclorama === true) {
+      factItems.push({
+        key: "cyclorama",
+        label: UI_STRINGS.cyclorama_fact_label[locale],
+      });
+    }
 
     return {
       id: hall.id,

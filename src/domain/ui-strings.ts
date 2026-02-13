@@ -113,6 +113,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Lumină continuă",
     en: "Continuous light",
   },
+  cyclorama_fact_label: {
+    ru: "Циклорама",
+    ro: "Cyclorama",
+    en: "Cyclorama",
+  },
   view_hall_cta: {
     ru: "Посмотреть",
     ro: "Vezi",

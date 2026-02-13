@@ -23,6 +23,7 @@ const factKeys: HallFactItem["key"][] = [
   "furniture",
   "flash_light",
   "continuous_light",
+  "cyclorama",
 ];
 const FACT_ICON_BY_KEY: Record<HallFactItem["key"], string> = {
   daylight: "/icons/daylight.png",
@@ -32,6 +33,7 @@ const FACT_ICON_BY_KEY: Record<HallFactItem["key"], string> = {
   furniture: "/icons/furniture.png",
   flash_light: "/icons/flash_light.png",
   continuous_light: "/icons/continuous_light.png",
+  cyclorama: "/icons/cyclorama.png",
 };
 const FACT_LABEL_BY_KEY: Record<HallFactItem["key"], (locale: Locale) => string> = {
   daylight: (locale) => UI_STRINGS.daylight_fact_label[locale],
@@ -41,6 +43,7 @@ const FACT_LABEL_BY_KEY: Record<HallFactItem["key"], (locale: Locale) => string>
   furniture: (locale) => UI_STRINGS.furniture_label[locale],
   flash_light: (locale) => UI_STRINGS.flash_light_label[locale],
   continuous_light: (locale) => UI_STRINGS.continuous_light_label[locale],
+  cyclorama: (locale) => UI_STRINGS.cyclorama_fact_label[locale],
 };
 
 type Props = {
@@ -230,6 +233,12 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       factItems.push({
         key: "continuous_light",
         label: UI_STRINGS.continuous_light_label[locale],
+      });
+    }
+    if (hall.cyclorama === true) {
+      factItems.push({
+        key: "cyclorama",
+        label: UI_STRINGS.cyclorama_fact_label[locale],
       });
     }
 

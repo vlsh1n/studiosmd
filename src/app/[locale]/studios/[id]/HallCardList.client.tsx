@@ -10,7 +10,8 @@ export type StudioHallFactKey =
   | "changing_room"
   | "furniture"
   | "flash_light"
-  | "continuous_light";
+  | "continuous_light"
+  | "cyclorama";
 
 export type StudioHallFactItem = {
   key: StudioHallFactKey;
@@ -25,6 +26,7 @@ const FACT_ICON_BY_KEY: Record<StudioHallFactKey, string> = {
   furniture: "/icons/furniture.png",
   flash_light: "/icons/flash_light.png",
   continuous_light: "/icons/continuous_light.png",
+  cyclorama: "/icons/cyclorama.png",
 };
 
 export type StudioHallCardItem = {

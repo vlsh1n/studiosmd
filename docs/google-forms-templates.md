@@ -176,7 +176,13 @@ Questions:
 - Options: yes, no
 - Prisma mapping: `Hall.continuous_light` (boolean)
 
-15. Tags (select up to 6) [HL_tags]
+15. Cyclorama [HL_cyclorama]
+- Type: Multiple choice
+- Required: yes
+- Options: yes, no
+- Prisma mapping: `Hall.cyclorama` (boolean)
+
+16. Tags (select up to 6) [HL_tags]
 - Type: Checkboxes
 - Required: yes
 - Options (current project tags):
@@ -194,7 +200,6 @@ Questions:
   - bright
   - dark
   - pastel
-  - cyclorama
   - colored_walls
   - texture_walls
   - paper_backdrops
@@ -214,6 +219,7 @@ Important for tags:
   - furniture
   - flash_light
   - continuous_light
+  - cyclorama
 
 ## 3) Form Settings
 
