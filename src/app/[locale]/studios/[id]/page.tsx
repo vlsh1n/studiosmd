@@ -1,9 +1,11 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getStudioById } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, type Locale } from "@/i18n";
 import { safeExternalUrl } from "@/lib/url";
+import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
 import HallCardList, {
   type StudioHallCardItem,
 } from "@/app/[locale]/studios/[id]/HallCardList.client";
@@ -71,6 +73,138 @@ function getInstagramNickname(value: unknown) {
 
 function isTagKey(value: string): value is keyof typeof TAGS {
   return value in TAGS;
+}
+
+function getStudioPriceRange(halls: Array<{ price_per_hour: number }>) {
+  if (halls.length === 0) {
+    return null;
+  }
+
+  const prices = halls
+    .map((hall) => hall.price_per_hour)
+    .filter((price): price is number => typeof price === "number" && price > 0);
+
+  if (prices.length === 0) {
+    return null;
+  }
+
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+  return { min, max };
+}
+
+function getStudioFactsSummary(
+  halls: Array<{ daylight: boolean; blackout: boolean; parking: boolean; cyclorama: boolean }>,
+  locale: Locale
+) {
+  const labels: string[] = [];
+  if (halls.some((hall) => hall.daylight === true)) {
+    labels.push(UI_STRINGS.daylight_fact_label[locale]);
+  }
+  if (halls.some((hall) => hall.blackout === true)) {
+    labels.push(UI_STRINGS.blackout_fact_label[locale]);
+  }
+  if (halls.some((hall) => hall.parking === true)) {
+    labels.push(UI_STRINGS.parking_fact_label[locale]);
+  }
+  if (halls.some((hall) => hall.cyclorama === true)) {
+    labels.push(UI_STRINGS.cyclorama_fact_label[locale]);
+  }
+
+  if (labels.length === 0) {
+    return null;
+  }
+
+  if (locale === "ru") {
+    return `Есть: ${labels.join(", ")}.`;
+  }
+  if (locale === "ro") {
+    return `Disponibile: ${labels.join(", ")}.`;
+  }
+  return `Available: ${labels.join(", ")}.`;
+}
+
+function getStudioSeo(studio: NonNullable<Awaited<ReturnType<typeof getStudioById>>>, locale: Locale) {
+  const districtLabel = DISTRICTS[studio.district_key][locale];
+  const priceRange = getStudioPriceRange(studio.halls);
+  const factsSummary = getStudioFactsSummary(studio.halls, locale);
+  const hallsCount = studio.halls.length;
+  const priceLine = priceRange
+    ? priceRange.min === priceRange.max
+      ? `${priceRange.min} MDL`
+      : `${priceRange.min}-${priceRange.max} MDL`
+    : null;
+
+  if (locale === "ru") {
+    const title = `${studio.name} — фотостудия в ${districtLabel} | цены, залы, фото | ${SITE_NAME}`;
+    const descriptionParts = [
+      `${studio.name}: ${hallsCount} залов в ${districtLabel}.`,
+      priceLine ? `Цены от ${priceLine} в час.` : null,
+      factsSummary,
+    ].filter(Boolean);
+    return { title, description: descriptionParts.join(" ") };
+  }
+
+  if (locale === "ro") {
+    const title = `${studio.name} — studio foto în ${districtLabel} | prețuri, săli, poze | ${SITE_NAME}`;
+    const descriptionParts = [
+      `${studio.name}: ${hallsCount} săli în ${districtLabel}.`,
+      priceLine ? `Prețuri de la ${priceLine} pe oră.` : null,
+      factsSummary,
+    ].filter(Boolean);
+    return { title, description: descriptionParts.join(" ") };
+  }
+
+  const title = `${studio.name} — photo studio in ${districtLabel} | prices, halls, photos | ${SITE_NAME}`;
+  const descriptionParts = [
+    `${studio.name}: ${hallsCount} halls in ${districtLabel}.`,
+    priceLine ? `Prices from ${priceLine} per hour.` : null,
+    factsSummary,
+  ].filter(Boolean);
+  return { title, description: descriptionParts.join(" ") };
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; id: string }>;
+}): Promise<Metadata> {
+  const { locale, id } = await params;
+  const currentLocale = isLocale(locale) ? locale : DEFAULT_LOCALE;
+  const studio = await getStudioById(id, currentLocale);
+
+  if (!studio) {
+    return {
+      title: SITE_NAME,
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
+  const seo = getStudioSeo(studio, currentLocale);
+  const languageAlternates = Object.fromEntries(
+    LOCALES.map((languageLocale) =>
+      [languageLocale, absUrl(localePath(languageLocale, `/studios/${studio.id}`))]
+    )
+  );
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: {
+      canonical: absUrl(localePath(currentLocale, `/studios/${studio.id}`)),
+      languages: {
+        ...languageAlternates,
+        "x-default": absUrl(localePath(DEFAULT_LOCALE, `/studios/${studio.id}`)),
+      },
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
 }
 
 export default async function StudioPage({ params }: Props) {

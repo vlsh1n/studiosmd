@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import KofiMobileHeaderButton from "@/components/KofiMobileHeaderButton.client";
@@ -9,37 +8,6 @@ type Props = {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 };
-
-const SEO_COPY = {
-  ru: {
-    title: "STUDIOS.MD — фотостудии Кишинёв",
-    description:
-      "Каталог залов фотостудий в Кишинёве: цены, теги, дневной свет, условия.",
-  },
-  ro: {
-    title: "STUDIOS.MD — studiouri foto Chișinău",
-    description:
-      "Catalog de săli de studio foto în Chișinău: prețuri, taguri, lumină naturală, condiții.",
-  },
-  en: {
-    title: "STUDIOS.MD — photo studios Chisinau",
-    description: "Catalog of photo studio rooms in Chisinau: pricing, tags, daylight, terms.",
-  },
-} as const;
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
-  const { locale } = await params;
-  const seo = SEO_COPY[locale as keyof typeof SEO_COPY] ?? SEO_COPY.en;
-
-  return {
-    title: seo.title,
-    description: seo.description,
-  };
-}
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params;

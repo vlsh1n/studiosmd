@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { listHalls } from "@/db/queries";
@@ -10,6 +11,7 @@ import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, Locale } from "@/i18n";
 import { safeExternalUrl } from "@/lib/url";
+import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
 
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
@@ -45,6 +47,66 @@ const FACT_LABEL_BY_KEY: Record<HallFactItem["key"], (locale: Locale) => string>
   continuous_light: (locale) => UI_STRINGS.continuous_light_label[locale],
   cyclorama: (locale) => UI_STRINGS.cyclorama_fact_label[locale],
 };
+
+const CATALOG_SEO_COPY: Record<Locale, { title: string; description: string }> = {
+  ru: {
+    title: `Каталог фотостудий в Кишинёве — цены, районы, теги | ${SITE_NAME}`,
+    description:
+      "Подберите фотостудию в Кишинёве по фото, цене, району и тегам. Сравнивайте залы и переходите к карточке студии.",
+  },
+  ro: {
+    title: `Catalog de studiouri foto în Chișinău — prețuri, sectoare, taguri | ${SITE_NAME}`,
+    description:
+      "Alegeți un studio foto în Chișinău după poze, preț, sector și taguri. Comparați sălile și deschideți pagina studioului.",
+  },
+  en: {
+    title: `Photo studios directory in Chișinău — prices, districts, tags | ${SITE_NAME}`,
+    description:
+      "Choose a photo studio in Chișinău by photos, price, district, and tags. Compare halls and open each studio page for details.",
+  },
+};
+
+function hasSearchParams(query: { [key: string]: string | string[] | undefined }) {
+  return Object.keys(query).length > 0;
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined } | undefined>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const query = (await searchParams) ?? {};
+  const currentLocale = isLocale(locale) ? locale : DEFAULT_LOCALE;
+  const shouldNoIndex = hasSearchParams(query);
+  const languageAlternates = Object.fromEntries(
+    LOCALES.map((languageLocale) => [languageLocale, absUrl(localePath(languageLocale))])
+  );
+  const seo = CATALOG_SEO_COPY[currentLocale];
+
+  return {
+    title: seo.title,
+    description: seo.description,
+    alternates: {
+      canonical: absUrl(localePath(currentLocale)),
+      languages: {
+        ...languageAlternates,
+        "x-default": absUrl("/"),
+      },
+    },
+    robots: shouldNoIndex
+      ? {
+          index: false,
+          follow: true,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
+  };
+}
 
 type Props = {
   params: { locale: string };
@@ -258,6 +320,13 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   return (
     <div className="stack">
+      <section className="card p-4 sm:p-5">
+        <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
+          {UI_STRINGS.catalog_h1[locale]}
+        </h1>
+        <p className="mt-2 text-sm muted">{UI_STRINGS.catalog_intro[locale]}</p>
+      </section>
+
       <form className="stack" method="get">
         <div className="card p-4">
           <input

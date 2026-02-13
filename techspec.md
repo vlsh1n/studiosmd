@@ -10,7 +10,7 @@
 
 ## 1) Product Scope
 
-- Продукт: мультиязычный каталог залов фотостудий Кишинёва.
+- Продукт: мультиязычный каталог фотостудий Кишинёва.
 - Поддерживаемые локали: `ru`, `ro`, `en`.
 - Главная сущность выбора: `Hall` (зал).
 - Основные пользовательские сценарии:
@@ -52,6 +52,8 @@ Quality gate:
 - `/` — landing page.
 - `/[locale]` — локализованный каталог.
 - `/[locale]/studios/[id]` — страница студии.
+- `/robots.txt` — robots rules.
+- `/sitemap.xml` — sitemap со страницами локалей и студий.
 
 ### 4.2 App structure
 
@@ -60,6 +62,8 @@ Quality gate:
   - Проставляет `<html lang>`.
   - Рендерит `KofiOverlay` в конце `<body>`.
 - `src/app/page.tsx`
+  - Server wrapper landing + metadata для `/`.
+- `src/app/LandingPage.client.tsx`
   - Client landing с локальным переключателем языка.
 - `src/app/[locale]/layout.tsx`
   - Валидация локали.
@@ -69,6 +73,10 @@ Quality gate:
   - Каталог.
 - `src/app/[locale]/studios/[id]/page.tsx`
   - Страница студии.
+- `src/app/robots.ts`
+  - Генерация `robots.txt`.
+- `src/app/sitemap.ts`
+  - Генерация `sitemap.xml`.
 
 ### 4.3 Middleware
 
@@ -281,9 +289,10 @@ Quality gate:
   - перелистывание влево/вправо.
 - Если `images.length === 0`, компонент возвращает `null`.
 
-## 11) Landing Page (`src/app/page.tsx`)
+## 11) Landing Page (`src/app/page.tsx`, `src/app/LandingPage.client.tsx`)
 
-- Client page с локальным `useState` для выбора локали (без URL смены до нажатия CTA).
+- `src/app/page.tsx` — server wrapper с metadata для root (`/`).
+- `src/app/LandingPage.client.tsx` — client page с локальным `useState` для выбора локали (без URL смены до нажатия CTA).
 - Тексты `landing_title`, `landing_body`, `landing_cta` берутся из `UI_STRINGS`.
 - CTA ведет на `/{locale}`.
 - В header используется бренд `STUDIOS.MD`.
@@ -372,7 +381,7 @@ Quality gate:
 ### 16.1 Environment variables
 
 - `DATABASE_URL` — required.
-- `NEXT_PUBLIC_SITE_URL` — optional (в текущем app-коде не используется напрямую).
+- `NEXT_PUBLIC_SITE_URL` — required for SEO metadata (`canonical`, `hreflang`, `robots`, `sitemap`).
 
 Примечание:
 
@@ -391,3 +400,36 @@ Quality gate:
 - В `src/db/prisma.ts` остается предупреждение про `eslint-disable no-var`.
 - Теги в query поддерживаются, но UI секция тегов скрыта (`SHOW_TAG_FILTERS = false`).
 - Для landing используются локальные файлы `design/*.png`; эти assets должны присутствовать в рабочем дереве для корректного build.
+
+## 18) SEO (Current State + Next Steps)
+
+### 18.1 Implemented now
+
+- Единый SEO-конфиг: `src/seo/site.ts` (`SITE_NAME`, `DEFAULT_LOCALE`, `LOCALES`, `SITE_URL`, `absUrl`, `localePath`).
+- Для `/` добавлены:
+  - canonical,
+  - hreflang (`ru`, `ro`, `en`, `x-default`).
+- Для `/{locale}` добавлены:
+  - локализованные `title`/`description`,
+  - canonical и hreflang,
+  - `robots: noindex,follow` при наличии query-параметров фильтра.
+- Для `/{locale}/studios/[id]` добавлены:
+  - data-driven локализованные `title`/`description`,
+  - canonical и hreflang.
+- Добавлены file-convention routes:
+  - `src/app/robots.ts` (`/robots.txt`),
+  - `src/app/sitemap.ts` (`/sitemap.xml`).
+- На странице каталога добавлен явный `h1`:
+  - «Каталог фотостудий в Кишинёве» (+ `ro/en` локализации).
+
+### 18.2 To Do (post-MVP SEO)
+
+- Добавить `openGraph` и `twitter` metadata для `/{locale}` и `/{locale}/studios/[id]`.
+- Добавить JSON-LD (`LocalBusiness`) на страницу студии без выдуманных полей.
+- Перейти на URL-формат студии `/{locale}/studios/{id}-{slug}` с обратной совместимостью.
+- Улучшить image SEO:
+  - языковые `alt` на ключевых изображениях,
+  - стабильные размеры/`next/image` для ключевых блоков.
+- Добавить индексируемые SEO-лендинги:
+  - `/{locale}/district/{districtKey}`,
+  - `/{locale}/tag/{tagKey}`.

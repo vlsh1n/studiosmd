@@ -4,9 +4,9 @@ type UiStrings = Record<string, Record<Locale, string>>;
 
 export const UI_STRINGS: UiStrings = {
   landing_title: {
-    ru: "Каталог фотостудий Кишинёва",
-    ro: "Catalog de studiouri foto în Chișinău",
-    en: "Photo studios catalog in Chisinau",
+    ru: "Каталог фотостудий в Кишинёве",
+    ro: "Catalog de studiouri foto din Chișinău",
+    en: "Photo studios directory in Chișinău",
   },
   landing_body: {
     ru: "Быстро выбирайте зал по фото, цене и фильтрам. Сравнивайте карточки и переходите к студии с фокусом на выбранный зал.",
@@ -17,6 +17,16 @@ export const UI_STRINGS: UiStrings = {
     ru: "Искать студию",
     ro: "Caută studio",
     en: "Find a studio",
+  },
+  catalog_h1: {
+    ru: "Каталог фотостудий в Кишинёве",
+    ro: "Catalog de studiouri foto din Chișinău",
+    en: "Photo studios directory in Chișinău",
+  },
+  catalog_intro: {
+    ru: "Подберите студию и зал по фото, цене, району и фактам.",
+    ro: "Alegeți studioul și sala după poze, preț, sector și opțiuni.",
+    en: "Pick a studio and hall by photos, price, district, and facts.",
   },
   search_placeholder: {
     ru: "Поиск по студиям и залам",

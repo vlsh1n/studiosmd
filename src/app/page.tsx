@@ -1,72 +1,23 @@
-"use client";
+import type { Metadata } from "next";
+import LandingPage from "@/app/LandingPage.client";
+import { LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useState } from "react";
-import { UI_STRINGS } from "@/domain/ui-strings";
-import { type Locale } from "@/i18n";
-import centralImage from "../../design/central.png";
-import hall1Image from "../../design/hall1.png";
-import hall2Image from "../../design/hall2.png";
-import hall3Image from "../../design/hall3.png";
-import hall4Image from "../../design/hall4.png";
+const ROOT_LANGUAGES = Object.fromEntries(
+  LOCALES.map((locale) => [locale, absUrl(localePath(locale))])
+);
 
-const LOCALES: Locale[] = ["ru", "ro", "en"];
+export const metadata: Metadata = {
+  title: `${SITE_NAME} — Photo studios directory in Chișinău`,
+  description: "Choose a locale and browse photo studios in Chișinău by price, district, and tags.",
+  alternates: {
+    canonical: absUrl("/"),
+    languages: {
+      ...ROOT_LANGUAGES,
+      "x-default": absUrl("/"),
+    },
+  },
+};
 
 export default function Home() {
-  const [locale, setLocale] = useState<Locale>("ru");
-
-  return (
-    <div className="page">
-      <section className="panel landing-hero">
-        <header className="landing-hero-header">
-          <p className="landing-hero-brand">STUDIOS.MD</p>
-          <div className="landing-hero-locales">
-            {LOCALES.map((code) => (
-              <button
-                key={code}
-                type="button"
-                onClick={() => setLocale(code)}
-                className={`pill ui-pill-control text-sm font-semibold${code === locale ? " ui-pill-control-active" : ""}`}
-                aria-pressed={code === locale}
-                data-active={code === locale ? "true" : "false"}
-              >
-                {code.toUpperCase()}
-              </button>
-            ))}
-          </div>
-        </header>
-
-        <div className="landing-hero-content">
-          <h1 className="landing-hero-title">{UI_STRINGS.landing_title[locale]}</h1>
-          <p className="landing-hero-body muted">{UI_STRINGS.landing_body[locale]}</p>
-          <div className="landing-hero-cta-wrap">
-            <Link href={`/${locale}`} className="btn btn-primary">
-              {UI_STRINGS.landing_cta[locale]}
-            </Link>
-          </div>
-        </div>
-
-        <div className="landing-gallery" aria-hidden="true">
-          <figure className="landing-gallery-card landing-gallery-card-left-outer">
-            <Image src={hall1Image} alt="" className="landing-gallery-image" />
-          </figure>
-          <figure className="landing-gallery-card landing-gallery-card-left-inner">
-            <Image src={hall2Image} alt="" className="landing-gallery-image" />
-          </figure>
-
-          <figure className="landing-gallery-central">
-            <Image src={centralImage} alt="" className="landing-gallery-image" priority />
-          </figure>
-
-          <figure className="landing-gallery-card landing-gallery-card-right-inner">
-            <Image src={hall3Image} alt="" className="landing-gallery-image" />
-          </figure>
-          <figure className="landing-gallery-card landing-gallery-card-right-outer">
-            <Image src={hall4Image} alt="" className="landing-gallery-image" />
-          </figure>
-        </div>
-      </section>
-    </div>
-  );
+  return <LandingPage />;
 }
