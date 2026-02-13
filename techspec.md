@@ -93,8 +93,11 @@ Quality gate:
 ### 6.1 Enums
 
 - `DistrictKey`: `botanica | ciocana | centru | buiucani | riscani`.
-- `Daylight`: `no | yes`.
-- `VideoFriendly`: `no | yes`.
+
+Примечание:
+
+- `daylight` и другие hall-факты сейчас хранятся как `Boolean` в `Hall`.
+- Enum-ы `Daylight` и `VideoFriendly` удалены.
 
 ### 6.2 Model: Studio
 
@@ -124,14 +127,21 @@ Quality gate:
 - `area_sqm: Int?`
 - `high_ceiling: Int?`
 - `weekend_price: Int?`
-- `daylight: Daylight @default(no)`
-- `video_friendly: VideoFriendly @default(no)`
-- `props_available: Boolean @default(false)`
-- `flash_available: Boolean @default(false)`
-- `continuous_available: Boolean @default(false)`
+- `daylight: Boolean @default(false)`
+- `blackout: Boolean @default(false)`
+- `parking: Boolean @default(false)`
+- `changing_room: Boolean @default(false)`
+- `furniture: Boolean @default(false)`
+- `flash_light: Boolean @default(false)`
+- `continuous_light: Boolean @default(false)`
+- `cyclorama: Boolean @default(false)`
 - `tags: String[]`
 - `price_per_hour: Int`
 - relation: `studio` (`onDelete: Cascade`)
+
+Примечание:
+
+- `cyclorama` перенесен из `tags` в отдельную boolean-колонку.
 
 ### 6.4 Catalog indexes
 
@@ -141,6 +151,14 @@ Quality gate:
 - `Hall(studioId)`
 - `Studio(district_key)`
 - `Hall(tags)` через GIN
+
+Актуальные миграции по hall-фактам:
+
+- `prisma/migrations/20260213120000_hall_filters_to_boolean/migration.sql`
+  - перевод фактов каталога в boolean-колонки `Hall`
+  - удаление `video_friendly`
+- `prisma/migrations/20260213212824_move_cyclorama_to_hall_fact/migration.sql`
+  - перенос `cyclorama` из `tags` в `Hall.cyclorama`
 
 ## 7) Query Layer
 
@@ -162,18 +180,14 @@ Quality gate:
   - `furniture`
   - `flash_light`
   - `continuous_light`
+  - `cyclorama`
 - `sort?: price_asc | price_desc`
 - `take?`, `skip?`
 
 Поведение:
 
 - `tags` фильтруются через `hasEvery` (AND semantics).
-- `facts`:
-  - `daylight` -> `daylight = yes`
-  - `furniture` -> `props_available = true`
-  - `flash_light` -> `flash_available = true`
-  - `continuous_light` -> `continuous_available = true`
-  - остальные факты -> `tags has factKey`
+- `facts` фильтруются напрямую по boolean-колонкам `Hall`.
 - Поиск по `name_i18n` зала и студии (JSON path, insensitive).
 - Сортировка: `price_per_hour` + стабильный tie-breaker `id`.
 - Возврат: локализованные `hall.name`, `studio.name`, `studio.address`.
@@ -212,12 +226,15 @@ Quality gate:
 
 - Районы: pills-чекбоксы.
 - Опции (`facts`): pills-чекбоксы с иконками (`/public/icons/*`).
+  - `daylight`, `blackout`, `parking`, `changing_room`,
+  - `furniture`, `flash_light`, `continuous_light`, `cyclorama`
 - Теги: backend поддержан, но UI скрыт (`SHOW_TAG_FILTERS = false`).
 
 ### 8.5 Catalog cards
 
 - Фолбек изображения: `hall.images[0]` -> `studio.cover_images[0]` -> placeholder.
-- Факты карточки собираются из флагов/тегов.
+- Факты карточки собираются из boolean-колонок `Hall`.
+- Теги карточки рендерятся отдельно из `Hall.tags` (без факт-тегов).
 - CTA ведет в студию с deep-link:
   - `/{locale}/studios/{studioId}?hallId={hallId}#hall-{hallId}`.
 
@@ -245,6 +262,7 @@ Quality gate:
 ### 9.3 Hall cards on studio page
 
 - Галерея зала + инфо-блок (цена, площадь/высота, теги, факты).
+- Факты карточек на странице студии также строятся из boolean-колонок `Hall` (включая `cyclorama`).
 - Нижний блок CTA: icon-only pills (Instagram/Phone/Yandex/Google), выравнивание по центру, hover inversion.
 
 Примечание:
@@ -344,6 +362,9 @@ Quality gate:
 
 - Создает 5 студий и 10 залов.
 - Перед сидированием очищает `Hall`, затем `Studio`.
+- Для `Hall` использует актуальные boolean-факты:
+  - `daylight`, `blackout`, `parking`, `changing_room`,
+  - `furniture`, `flash_light`, `continuous_light`, `cyclorama`.
 - Использует актуальные поля `Studio`:
   - `phone`, `instagram_nickname`, `google_maps_url`, `yandex_maps_url`, `logo_url`, `working_hours_i18n`.
 
