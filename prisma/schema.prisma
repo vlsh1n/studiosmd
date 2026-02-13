@@ -26,7 +26,6 @@ model Studio {
   name_i18n          Json
   address_i18n       Json
   district_key       DistrictKey
-  cover_images       Json
   phone              String?
   instagram_nickname String?
   google_maps_url    String?

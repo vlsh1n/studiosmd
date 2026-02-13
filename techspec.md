@@ -105,7 +105,6 @@ Quality gate:
 - `name_i18n: Json`
 - `address_i18n: Json`
 - `district_key: DistrictKey`
-- `cover_images: Json`
 - `phone: String?`
 - `instagram_nickname: String?`
 - `google_maps_url: String?`
@@ -232,7 +231,7 @@ Quality gate:
 
 ### 8.5 Catalog cards
 
-- Фолбек изображения: `hall.images[0]` -> `studio.cover_images[0]` -> placeholder.
+- Фолбек изображения: `hall.images[0]` -> placeholder.
 - Факты карточки собираются из boolean-колонок `Hall`.
 - Теги карточки рендерятся отдельно из `Hall.tags` (без факт-тегов).
 - CTA ведет в студию с deep-link:

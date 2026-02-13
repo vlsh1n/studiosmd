@@ -26,7 +26,6 @@ type StudioSeed = {
   district_key: DistrictKey;
   name_i18n: Record<LocaleKey, string>;
   address_i18n: Record<LocaleKey, string>;
-  cover_images: string[];
   phone: string;
   instagram_nickname: string;
   google_maps_url: string;
@@ -49,10 +48,6 @@ const studios: StudioSeed[] = [
       ro: "str. Dacia, 24",
       en: "Dacia St, 24",
     },
-    cover_images: [
-      "https://images.example.com/studios/aurora/cover-1.jpg",
-      "https://images.example.com/studios/aurora/cover-2.jpg",
-    ],
     phone: "+373-68-000-101",
     instagram_nickname: "aurora.studio",
     google_maps_url: "https://maps.google.com/?q=Dacia+24+Chisinau",
@@ -124,10 +119,6 @@ const studios: StudioSeed[] = [
       ro: "str. Mircea cel Batran, 12",
       en: "Mircea cel Batran St, 12",
     },
-    cover_images: [
-      "https://images.example.com/studios/lumi/cover-1.jpg",
-      "https://images.example.com/studios/lumi/cover-2.jpg",
-    ],
     phone: "+373-68-000-202",
     instagram_nickname: "lumi.studio",
     google_maps_url: "https://maps.google.com/?q=Mircea+cel+Batran+12+Chisinau",
@@ -201,10 +192,6 @@ const studios: StudioSeed[] = [
       ro: "str. Puskin, 10",
       en: "Pushkin St, 10",
     },
-    cover_images: [
-      "https://images.example.com/studios/central/cover-1.jpg",
-      "https://images.example.com/studios/central/cover-2.jpg",
-    ],
     phone: "+373-68-000-303",
     instagram_nickname: "central.studio",
     google_maps_url: "https://maps.google.com/?q=Pushkin+10+Chisinau",
@@ -277,10 +264,6 @@ const studios: StudioSeed[] = [
       ro: "str. Albisoara, 7",
       en: "Albisoara St, 7",
     },
-    cover_images: [
-      "https://images.example.com/studios/loftic/cover-1.jpg",
-      "https://images.example.com/studios/loftic/cover-2.jpg",
-    ],
     phone: "+373-68-000-404",
     instagram_nickname: "loftic.studio",
     google_maps_url: "https://maps.google.com/?q=Albisoara+7+Chisinau",
@@ -351,10 +334,6 @@ const studios: StudioSeed[] = [
       ro: "str. Studenteasca, 5",
       en: "Studenteasca St, 5",
     },
-    cover_images: [
-      "https://images.example.com/studios/north/cover-1.jpg",
-      "https://images.example.com/studios/north/cover-2.jpg",
-    ],
     phone: "+373-68-000-505",
     instagram_nickname: "north.studio",
     google_maps_url: "https://maps.google.com/?q=Studenteasca+5+Chisinau",
@@ -434,7 +413,6 @@ async function main() {
         name_i18n: studio.name_i18n,
         address_i18n: studio.address_i18n,
         district_key: studio.district_key,
-        cover_images: studio.cover_images,
         phone: studio.phone,
         instagram_nickname: studio.instagram_nickname,
         google_maps_url: studio.google_maps_url,

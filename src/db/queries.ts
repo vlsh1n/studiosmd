@@ -31,7 +31,6 @@ type HallWithStudio = Prisma.HallGetPayload<{
         name_i18n: true;
         address_i18n: true;
         district_key: true;
-        cover_images: true;
       };
     };
   };
@@ -141,7 +140,6 @@ export async function listHalls(params: ListHallsParams) {
           name_i18n: true,
           address_i18n: true,
           district_key: true,
-          cover_images: true,
         },
       },
     },

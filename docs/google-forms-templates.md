@@ -45,41 +45,35 @@ Questions:
   - riscani
 - Prisma mapping: `Studio.district_key`
 
-6. Cover image URLs (one per line) [ST_cover_images]
-- Type: Paragraph
-- Required: yes
-- Validation note: each line must be full `https://...` URL
-- Prisma mapping: `Studio.cover_images[]`
-
-7. Public phone [ST_phone]
+6. Public phone [ST_phone]
 - Type: Short answer
 - Required: no
 - Prisma mapping: `Studio.phone`
 
-8. Instagram nickname or URL [ST_instagram_nickname]
+7. Instagram nickname or URL [ST_instagram_nickname]
 - Type: Short answer
 - Required: no
 - Prisma mapping: `Studio.instagram_nickname`
 
-9. Google Maps URL [ST_google_maps_url]
+8. Google Maps URL [ST_google_maps_url]
 - Type: Short answer
 - Required: no
 - Validation: URL
 - Prisma mapping: `Studio.google_maps_url`
 
-10. Yandex Maps URL [ST_yandex_maps_url]
+9. Yandex Maps URL [ST_yandex_maps_url]
 - Type: Short answer
 - Required: no
 - Validation: URL
 - Prisma mapping: `Studio.yandex_maps_url`
 
-11. Logo URL [ST_logo_url]
+10. Logo URL [ST_logo_url]
 - Type: Short answer
 - Required: no
 - Validation: URL
 - Prisma mapping: `Studio.logo_url`
 
-12. Working hours (main language) [ST_working_hours]
+11. Working hours (main language) [ST_working_hours]
 - Type: Short answer
 - Required: no
 - Prisma mapping: `Studio.working_hours_i18n.ru`

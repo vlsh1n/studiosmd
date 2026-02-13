@@ -171,8 +171,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   }
   const cardItems: HallCardItem[] = displayedHalls.map((hall) => {
     const hallImages = getImagesFromJson(hall.images);
-    const studioImages = getImagesFromJson(hall.studio.cover_images);
-    const image = hallImages[0] ?? studioImages[0] ?? null;
+    const image = hallImages[0] ?? null;
     const tagLabels = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]).slice(0, 4);
     const flashAvailable = hall.flash_light === true;
     const continuousAvailable = hall.continuous_light === true;
