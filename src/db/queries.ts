@@ -67,22 +67,32 @@ export async function listHalls(params: ListHallsParams) {
   if (params.facts && params.facts.length > 0) {
     for (const fact of params.facts) {
       if (fact === "daylight") {
-        andFilters.push({ daylight: "yes" });
+        andFilters.push({ daylight: true });
+        continue;
+      }
+      if (fact === "blackout") {
+        andFilters.push({ blackout: true });
+        continue;
+      }
+      if (fact === "parking") {
+        andFilters.push({ parking: true });
+        continue;
+      }
+      if (fact === "changing_room") {
+        andFilters.push({ changing_room: true });
         continue;
       }
       if (fact === "furniture") {
-        andFilters.push({ props_available: true });
+        andFilters.push({ furniture: true });
         continue;
       }
       if (fact === "flash_light") {
-        andFilters.push({ flash_available: true });
+        andFilters.push({ flash_light: true });
         continue;
       }
       if (fact === "continuous_light") {
-        andFilters.push({ continuous_available: true });
-        continue;
+        andFilters.push({ continuous_light: true });
       }
-      andFilters.push({ tags: { has: fact } });
     }
   }
 

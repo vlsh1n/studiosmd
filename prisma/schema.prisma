@@ -21,16 +21,6 @@ enum DistrictKey {
   riscani
 }
 
-enum Daylight {
-  no
-  yes
-}
-
-enum VideoFriendly {
-  no
-  yes
-}
-
 model Studio {
   id                 String      @id @default(cuid())
   name_i18n          Json
@@ -47,20 +37,22 @@ model Studio {
 }
 
 model Hall {
-  id             String   @id @default(cuid())
-  studioId       String
-  name_i18n      Json
-  images         Json
-  area_sqm       Int?
-  high_ceiling   Int?
-  weekend_price  Int?
-  daylight       Daylight @default(no)
-  video_friendly VideoFriendly @default(no)
-  props_available Boolean @default(false)
-  flash_available Boolean @default(false)
-  continuous_available Boolean @default(false)
-  tags           String[]
-  price_per_hour Int
+  id               String   @id @default(cuid())
+  studioId         String
+  name_i18n        Json
+  images           Json
+  area_sqm         Int?
+  high_ceiling     Int?
+  weekend_price    Int?
+  daylight         Boolean  @default(false)
+  blackout         Boolean  @default(false)
+  parking          Boolean  @default(false)
+  changing_room    Boolean  @default(false)
+  furniture        Boolean  @default(false)
+  flash_light      Boolean  @default(false)
+  continuous_light Boolean  @default(false)
+  tags             String[]
+  price_per_hour   Int
 
   studio Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
 }

@@ -171,9 +171,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const studioImages = getImagesFromJson(hall.studio.cover_images);
     const image = hallImages[0] ?? studioImages[0] ?? null;
     const tagLabels = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]).slice(0, 4);
-    const hallTagSet = new Set(hall.tags);
-    const flashAvailable = hall.flash_available === true;
-    const continuousAvailable = hall.continuous_available === true;
+    const flashAvailable = hall.flash_light === true;
+    const continuousAvailable = hall.continuous_light === true;
     const weekendPriceLine =
       typeof hall.weekend_price === "number" && hall.weekend_price > 0
         ? `${hall.weekend_price}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`
@@ -191,31 +190,31 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     const hallHref = `/${locale}/studios/${hall.studio.id}?hallId=${hallId}#hall-${hallId}`;
 
     const factItems: HallFactItem[] = [];
-    if (hall.daylight === "yes") {
+    if (hall.daylight === true) {
       factItems.push({
         key: "daylight",
         label: UI_STRINGS.daylight_fact_label[locale],
       });
     }
-    if (hallTagSet.has("blackout")) {
+    if (hall.blackout === true) {
       factItems.push({
         key: "blackout",
         label: UI_STRINGS.blackout_fact_label[locale],
       });
     }
-    if (hallTagSet.has("parking")) {
+    if (hall.parking === true) {
       factItems.push({
         key: "parking",
         label: UI_STRINGS.parking_fact_label[locale],
       });
     }
-    if (hallTagSet.has("changing_room")) {
+    if (hall.changing_room === true) {
       factItems.push({
         key: "changing_room",
         label: UI_STRINGS.changing_room_fact_label[locale],
       });
     }
-    if (hall.props_available === true) {
+    if (hall.furniture === true) {
       factItems.push({
         key: "furniture",
         label: UI_STRINGS.furniture_label[locale],
