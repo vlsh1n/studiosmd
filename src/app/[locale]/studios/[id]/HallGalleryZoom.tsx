@@ -1,7 +1,14 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useRef, useState, type TouchEvent } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type SyntheticEvent,
+  type TouchEvent,
+} from "react";
 import { createPortal } from "react-dom";
 import useEmblaCarousel from "embla-carousel-react";
 
@@ -26,6 +33,7 @@ function HallGalleryZoomContent({ images, alt }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
+  const [inlinePortraitByIndex, setInlinePortraitByIndex] = useState<Record<number, boolean>>({});
   const maxIndex = images.length - 1;
   const hasMultiple = images.length > 1;
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: false });
@@ -94,6 +102,20 @@ function HallGalleryZoomContent({ images, alt }: Props) {
     changeModalSlide(deltaX > 0 ? -1 : 1);
   }, [changeModalSlide]);
 
+  const handleInlineImageLoad = useCallback(
+    (index: number, event: SyntheticEvent<HTMLImageElement>) => {
+      const imageElement = event.currentTarget;
+      const isPortrait = imageElement.naturalHeight > imageElement.naturalWidth;
+      setInlinePortraitByIndex((current) => {
+        if (current[index] === isPortrait) {
+          return current;
+        }
+        return { ...current, [index]: isPortrait };
+      });
+    },
+    []
+  );
+
   useEffect(() => {
     if (!isModalOpen) return;
 
@@ -142,23 +164,30 @@ function HallGalleryZoomContent({ images, alt }: Props) {
       <div className="relative">
         <div className="w-full touch-pan-y overflow-hidden rounded" ref={emblaRef}>
           <div className="flex">
-            {images.map((image, index) => (
-              <div key={`${image}-${index}`} className="flex-none w-full">
-                <button
-                  type="button"
-                  onClick={() => openModal(index)}
-                  className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]"
-                >
-                  <img
-                    src={image}
-                    alt={alt}
-                    loading="lazy"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover object-center"
-                  />
-                </button>
-              </div>
-            ))}
+            {images.map((image, index) => {
+              const useContain = inlinePortraitByIndex[index] === true;
+
+              return (
+                <div key={`${image}-${index}`} className="flex-none w-full">
+                  <button
+                    type="button"
+                    onClick={() => openModal(index)}
+                    className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]"
+                  >
+                    <img
+                      src={image}
+                      alt={alt}
+                      loading="lazy"
+                      decoding="async"
+                      onLoad={(event) => handleInlineImageLoad(index, event)}
+                      className={`absolute inset-0 h-full w-full object-center ${
+                        useContain ? "object-contain" : "object-cover"
+                      }`}
+                    />
+                  </button>
+                </div>
+              );
+            })}
           </div>
         </div>
 
