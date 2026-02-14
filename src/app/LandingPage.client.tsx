@@ -22,7 +22,54 @@ export default function LandingPage() {
       <section className="panel landing-hero">
         <header className="landing-hero-header">
           <p className="landing-hero-brand">STUDIOS.MD</p>
-          <div className="landing-hero-controls">
+          <div className="sm:hidden inline-flex items-center gap-3 ml-auto">
+            <a
+              href={contactsHref}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label={UI_STRINGS.contacts_cta[locale]}
+              title={UI_STRINGS.contacts_cta[locale]}
+              className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full transition hover:bg-black/5 active:translate-y-px"
+            >
+              <img
+                src="/icons/telegram.png"
+                alt=""
+                aria-hidden="true"
+                className="h-14 w-14 object-contain brightness-0 transition"
+                loading="lazy"
+              />
+            </a>
+            <div className="relative flex items-center">
+              <select
+                id="landing-locale-switcher-compact"
+                value={locale}
+                onChange={(event) => setLocale(event.target.value as Locale)}
+                className="select h-11 w-[5.9rem] appearance-none rounded-full bg-[var(--surface)] py-2 pl-3 pr-8 text-sm font-semibold leading-none shadow-sm"
+              >
+                {LOCALES.map((code) => (
+                  <option key={code} value={code}>
+                    {code.toUpperCase()}
+                  </option>
+                ))}
+              </select>
+              <svg
+                viewBox="0 0 20 20"
+                fill="none"
+                aria-hidden="true"
+                className="pointer-events-none absolute right-3 h-4 w-4 text-gray-600"
+              >
+                <path
+                  d="M5 8l5 5 5-5"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+          </div>
+
+          <div className="landing-hero-controls hidden sm:inline-flex">
             <a
               href={contactsHref}
               target="_blank"
