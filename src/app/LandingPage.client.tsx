@@ -15,25 +15,48 @@ const LOCALES: Locale[] = ["ru", "ro", "en"];
 
 export default function LandingPage() {
   const [locale, setLocale] = useState<Locale>("ru");
+  const contactsHref = "https://t.me/studiosmd";
 
   return (
     <div className="page">
       <section className="panel landing-hero">
         <header className="landing-hero-header">
           <p className="landing-hero-brand">STUDIOS.MD</p>
-          <div className="landing-hero-locales">
-            {LOCALES.map((code) => (
-              <button
-                key={code}
-                type="button"
-                onClick={() => setLocale(code)}
-                className={`pill ui-pill-control text-sm font-semibold${code === locale ? " ui-pill-control-active" : ""}`}
-                aria-pressed={code === locale}
-                data-active={code === locale ? "true" : "false"}
-              >
-                {code.toUpperCase()}
-              </button>
-            ))}
+          <div className="landing-hero-controls">
+            <a
+              href={contactsHref}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label={UI_STRINGS.contacts_cta[locale]}
+              title={UI_STRINGS.contacts_cta[locale]}
+              className="pill ui-pill-control group h-11 shrink-0 justify-center px-3 sm:px-4"
+            >
+              <img
+                src="/icons/telegram.png"
+                alt=""
+                aria-hidden="true"
+                className="h-5 w-5 object-contain brightness-0 transition group-hover:invert"
+                loading="lazy"
+              />
+              <span className="hidden sm:inline text-sm font-medium">
+                {UI_STRINGS.contacts_cta[locale]}
+              </span>
+            </a>
+
+            <div className="landing-hero-locales">
+              {LOCALES.map((code) => (
+                <button
+                  key={code}
+                  type="button"
+                  onClick={() => setLocale(code)}
+                  className={`pill ui-pill-control text-sm font-semibold${code === locale ? " ui-pill-control-active" : ""}`}
+                  aria-pressed={code === locale}
+                  data-active={code === locale ? "true" : "false"}
+                >
+                  {code.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
         </header>
 

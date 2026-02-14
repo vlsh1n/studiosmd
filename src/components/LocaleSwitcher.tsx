@@ -31,12 +31,12 @@ export function LocaleSwitcher({ locale, compact = false }: Props) {
     }
 
     return (
-      <div className="flex items-center">
+      <div className="relative flex items-center">
         <select
           id="locale-switcher-compact"
           value={locale}
           onChange={onChangeLocale}
-          className="select h-9 w-[4.8rem] rounded-full py-1 pl-2 pr-7 text-xs font-semibold leading-none"
+          className="select h-11 w-[5.9rem] appearance-none rounded-full bg-[var(--surface)] py-2 pl-3 pr-8 text-sm font-semibold leading-none shadow-sm"
         >
           {locales.map((nextLocale) => (
             <option key={nextLocale} value={nextLocale}>
@@ -44,6 +44,20 @@ export function LocaleSwitcher({ locale, compact = false }: Props) {
             </option>
           ))}
         </select>
+        <svg
+          viewBox="0 0 20 20"
+          fill="none"
+          aria-hidden="true"
+          className="pointer-events-none absolute right-3 h-4 w-4 text-gray-600"
+        >
+          <path
+            d="M5 8l5 5 5-5"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </div>
     );
   }

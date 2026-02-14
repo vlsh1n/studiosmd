@@ -29,7 +29,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           >
             {t(locale, "projectName")}
           </Link>
-          <div className="sm:hidden w-full flex items-center gap-2">
+          <div className="sm:hidden w-full flex items-center gap-3">
             <KofiMobileHeaderButton />
             <a
               href={contactsHref}
@@ -37,13 +37,13 @@ export default async function LocaleLayout({ children, params }: Props) {
               rel="noreferrer noopener"
               aria-label={contactsLabel}
               title={contactsLabel}
-              className="pill ui-pill-control h-10 w-10 justify-center p-0"
+              className="pill ui-pill-control h-11 w-11 shrink-0 justify-center p-0"
             >
               <img
                 src="/icons/telegram.png"
                 alt=""
                 aria-hidden="true"
-                className="h-5 w-5 object-contain brightness-0 transition"
+                className="h-6 w-6 object-contain brightness-0 transition"
                 loading="lazy"
               />
             </a>
@@ -56,13 +56,13 @@ export default async function LocaleLayout({ children, params }: Props) {
               href={contactsHref}
               target="_blank"
               rel="noreferrer noopener"
-              className="pill ui-pill-control text-sm font-medium"
+              className="pill ui-pill-control group text-sm font-medium"
             >
               <img
                 src="/icons/telegram.png"
                 alt=""
                 aria-hidden="true"
-                className="h-4 w-4 object-contain brightness-0 transition"
+                className="h-4 w-4 object-contain brightness-0 transition group-hover:invert"
                 loading="lazy"
               />
               <span>{contactsLabel}</span>

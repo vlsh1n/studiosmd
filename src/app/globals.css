@@ -288,6 +288,12 @@
     display: inline-flex;
     align-items: center;
     gap: 0.42rem;
+  }
+
+  .landing-hero-controls {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     margin-left: auto;
   }
 
