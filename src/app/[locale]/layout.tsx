@@ -37,7 +37,7 @@ export default async function LocaleLayout({ children, params }: Props) {
               rel="noreferrer noopener"
               aria-label={contactsLabel}
               title={contactsLabel}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition hover:bg-black/5 active:translate-y-px"
+              className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full transition hover:bg-black/5 active:translate-y-px"
             >
               <img
                 src="/icons/telegram.png"
