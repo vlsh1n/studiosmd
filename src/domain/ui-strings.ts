@@ -153,6 +153,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Telefon",
     en: "Phone",
   },
+  contacts_cta: {
+    ru: "Контакты",
+    ro: "Contacte",
+    en: "Contacts",
+  },
   working_hours_label: {
     ru: "График:",
     ro: "Program:",
