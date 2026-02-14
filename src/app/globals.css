@@ -331,6 +331,13 @@
     margin-top: 0.25rem;
   }
 
+  .landing-hero-cta-btn:hover {
+    background: var(--glass-bg);
+    color: var(--text);
+    border-color: var(--glass-border);
+    box-shadow: var(--glass-shadow);
+  }
+
   .landing-gallery {
     position: relative;
     margin-top: 0.9rem;

@@ -111,7 +111,7 @@ export default function LandingPage() {
           <h1 className="landing-hero-title">{UI_STRINGS.landing_title[locale]}</h1>
           <p className="landing-hero-body muted">{UI_STRINGS.landing_body[locale]}</p>
           <div className="landing-hero-cta-wrap">
-            <Link href={`/${locale}`} className="btn btn-primary">
+            <Link href={`/${locale}`} className="btn btn-primary landing-hero-cta-btn">
               {UI_STRINGS.landing_cta[locale]}
             </Link>
           </div>
