@@ -24,9 +24,9 @@ export const UI_STRINGS: UiStrings = {
     en: "Photo studios directory in Chișinău",
   },
   catalog_intro: {
-    ru: "Подберите студию и зал по фото, цене, району и фактам.",
+    ru: "Подберите студию и зал по фото, цене, району и опциям.",
     ro: "Alegeți studioul și sala după poze, preț, sector și opțiuni.",
-    en: "Pick a studio and hall by photos, price, district, and facts.",
+    en: "Pick a studio and hall by photos, price, district, and options.",
   },
   search_placeholder: {
     ru: "Поиск по студиям и залам",
@@ -45,7 +45,7 @@ export const UI_STRINGS: UiStrings = {
   },
   districts_title: {
     ru: "Районы",
-    ro: "Cartiere",
+    ro: "Sectoare",
     en: "Districts",
   },
   filters_params_title: {

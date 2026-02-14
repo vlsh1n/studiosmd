@@ -8,7 +8,7 @@ const ROOT_LANGUAGES = Object.fromEntries(
 
 export const metadata: Metadata = {
   title: `${SITE_NAME} — Photo studios directory in Chișinău`,
-  description: "Choose a locale and browse photo studios in Chișinău by price, district, and tags.",
+  description: "Choose a locale and browse photo studios in Chișinău by price, district, and options.",
   alternates: {
     canonical: absUrl("/"),
     languages: {

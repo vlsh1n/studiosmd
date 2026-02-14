@@ -50,19 +50,19 @@ const FACT_LABEL_BY_KEY: Record<HallFactItem["key"], (locale: Locale) => string>
 
 const CATALOG_SEO_COPY: Record<Locale, { title: string; description: string }> = {
   ru: {
-    title: `Каталог фотостудий в Кишинёве — цены, районы, теги | ${SITE_NAME}`,
+    title: `Каталог фотостудий в Кишинёве — цены, районы, опции | ${SITE_NAME}`,
     description:
-      "Подберите фотостудию в Кишинёве по фото, цене, району и тегам. Сравнивайте залы и переходите к карточке студии.",
+      "Подберите фотостудию в Кишинёве по фото, цене, району и опциям. Сравнивайте залы и переходите к карточке студии.",
   },
   ro: {
-    title: `Catalog de studiouri foto în Chișinău — prețuri, sectoare, taguri | ${SITE_NAME}`,
+    title: `Catalog de studiouri foto în Chișinău — prețuri, sectoare, opțiuni | ${SITE_NAME}`,
     description:
-      "Alegeți un studio foto în Chișinău după poze, preț, sector și taguri. Comparați sălile și deschideți pagina studioului.",
+      "Alegeți un studio foto în Chișinău după poze, preț, sector și opțiuni. Comparați sălile și deschideți pagina studioului.",
   },
   en: {
-    title: `Photo studios directory in Chișinău — prices, districts, tags | ${SITE_NAME}`,
+    title: `Photo studios directory in Chișinău — prices, districts, options | ${SITE_NAME}`,
     description:
-      "Choose a photo studio in Chișinău by photos, price, district, and tags. Compare halls and open each studio page for details.",
+      "Choose a photo studio in Chișinău by photos, price, district, and options. Compare halls and open each studio page for details.",
   },
 };
 
