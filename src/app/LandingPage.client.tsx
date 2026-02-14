@@ -29,13 +29,13 @@ export default function LandingPage() {
               rel="noreferrer noopener"
               aria-label={UI_STRINGS.contacts_cta[locale]}
               title={UI_STRINGS.contacts_cta[locale]}
-              className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full transition hover:bg-black/5 active:translate-y-px"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition hover:bg-black/5 active:translate-y-px"
             >
               <img
                 src="/icons/telegram.png"
                 alt=""
                 aria-hidden="true"
-                className="h-14 w-14 object-contain brightness-0 transition"
+                className="h-10 w-10 object-contain brightness-0 transition"
                 loading="lazy"
               />
             </a>
