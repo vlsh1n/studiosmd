@@ -31,6 +31,14 @@ const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
 };
 const STUDIO_SOCIAL_IMAGE_URL = absUrl("/og-image");
 
+function formatHourlyPrice(pricePerHour: number | null | undefined, locale: Locale) {
+  if (typeof pricePerHour === "number" && pricePerHour > 0) {
+    return `${pricePerHour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`;
+  }
+
+  return UI_STRINGS.price_on_request[locale];
+}
+
 type ResolvedStudioRoute = {
   studio: StudioRecord;
   canonicalSegment: string;
@@ -110,7 +118,7 @@ function getNormalizedTagKeys(tags: string[]) {
   return Array.from(new Set(normalized));
 }
 
-function getStudioPriceRange(halls: Array<{ price_per_hour: number }>) {
+function getStudioPriceRange(halls: Array<{ price_per_hour: number | null }>) {
   if (halls.length === 0) {
     return null;
   }
@@ -550,7 +558,7 @@ export default async function StudioPage({ params, searchParams }: Props) {
     return {
       id: hall.id,
       name: hall.name,
-      priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
+      priceLine: formatHourlyPrice(hall.price_per_hour, locale),
       weekendPriceLine,
       spaceLine,
       factItems,

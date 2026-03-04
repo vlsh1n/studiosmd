@@ -146,6 +146,14 @@ const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
   en: "Weekends:",
 };
 
+function formatHourlyPrice(pricePerHour: number | null | undefined, locale: Locale) {
+  if (typeof pricePerHour === "number" && pricePerHour > 0) {
+    return `${pricePerHour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`;
+  }
+
+  return UI_STRINGS.price_on_request[locale];
+}
+
 function parseCsvParam(value?: string | string[]) {
   if (!value) return [];
   const items = Array.isArray(value) ? value : [value];
@@ -346,7 +354,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       hallHref,
       studioLine: DISTRICTS[hall.studio.district_key][locale],
       spaceLine,
-      priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
+      priceLine: formatHourlyPrice(hall.price_per_hour, locale),
       weekendPriceLine,
       tagLabels,
       factItems,

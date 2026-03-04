@@ -144,7 +144,12 @@ export async function listHalls(params: ListHallsParams) {
       },
     },
     orderBy: [
-      { price_per_hour: params.sort === "price_desc" ? "desc" : "asc" },
+      {
+        price_per_hour: {
+          sort: params.sort === "price_desc" ? "desc" : "asc",
+          nulls: "last",
+        },
+      },
       { id: "asc" },
     ],
     take: params.take,
@@ -168,9 +173,17 @@ export async function getStudioById(id: string, locale: Locale) {
     where: { id },
     include: {
       halls: {
-        orderBy: {
-          price_per_hour: "asc",
-        },
+        orderBy: [
+          {
+            price_per_hour: {
+              sort: "asc",
+              nulls: "last",
+            },
+          },
+          {
+            id: "asc",
+          },
+        ],
       },
     },
   });

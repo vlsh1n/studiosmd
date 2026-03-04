@@ -1,435 +1,277 @@
 # studiosmap — Technical Specification (Current State)
 
-Документ фиксирует текущее техническое состояние проекта `studiosmap` по коду в репозитории на текущий момент.
+Документ описывает фактическое состояние кода проекта `studiosmap`.
 
 ## 0) Purpose
 
-- Зафиксировать текущую архитектуру, ограничения и принятые решения.
-- Упростить онбординг и планирование следующих задач.
-- Держать единый источник правды по фактическому состоянию кода.
+- Зафиксировать текущую архитектуру и поведение.
+- Синхронизировать продуктовые и технические решения.
+- Упростить планирование следующих задач и онбординг.
 
 ## 1) Product Scope
 
-- Продукт: мультиязычный каталог фотостудий Кишинёва.
-- Поддерживаемые локали: `ru`, `ro`, `en`.
-- Главная сущность выбора: `Hall` (зал).
-- Основные пользовательские сценарии:
-  - Landing на `/` с переключением языка и CTA в каталог.
-  - Каталог `/{locale}` с поиском, фильтрами, сортировкой и пагинацией.
-  - Страница студии `/{locale}/studios/[id]` с карточкой студии и списком залов.
-  - Deep-link фокус на зал через `hallId`.
-  - Галерея зала: inline carousel + fullscreen modal.
-  - Donate интеграция через Ko-fi (desktop overlay + mobile header button).
+- Продукт: мультиязычный каталог фотостудий и залов в Кишинёве.
+- Локали: `ro`, `ru`, `en`.
+- Основной flow:
+  - `/` — landing с выбором языка.
+  - `/{locale}` — каталог (поиск/фильтры/сортировка/пагинация).
+  - `/{locale}/studios/{id}-{slug}` — страница студии.
+  - `/{locale}/studios/{studioSlug}/{hallSlug}` — человекочитаемый вход на конкретный зал с фокусом.
 
-## 2) Tech Stack
+## 2) Stack
 
-- Framework: `next@16.1.6` (App Router).
-- UI runtime: `react@19.2.3`, `react-dom@19.2.3`.
-- Language: TypeScript (`typescript@5`).
-- Styling: Tailwind CSS v4 + `src/app/globals.css`.
-- Motion & gallery: `framer-motion`, `embla-carousel-react`.
-- Data layer: Prisma + PostgreSQL (`prisma`, `@prisma/client`).
+- `next@16.1.6` (App Router)
+- `react@19.2.3`, `react-dom@19.2.3`
+- TypeScript 5
+- Tailwind CSS v4
+- Prisma + PostgreSQL
+- Framer Motion + Embla Carousel
 
-## 3) Scripts and Quality Gate
+## 3) Routing and Layout
 
-- `npm run dev` — локальный dev сервер.
-- `npm run lint` — ESLint.
-- `npm run build` — `npm run lint && next build`.
-- `npm start` — запуск production build.
-- `npm run prisma:generate` — Prisma Client generate.
-- `npm run db:migrate` — `prisma migrate deploy`.
-- `npm run db:seed` — `prisma db seed` (`tsx prisma/seed.ts`).
-
-Quality gate:
-
-- Build блокируется lint errors.
-- Lint warnings не блокируют build.
-
-## 4) Routing and Layout
-
-### 4.1 Routes
+### 3.1 Routes
 
 - `/` — landing page.
-- `/[locale]` — локализованный каталог.
-- `/[locale]/studios/[id]` — страница студии.
-- `/robots.txt` — robots rules.
-- `/sitemap.xml` — sitemap со страницами локалей и студий.
+- `/[locale]` — каталог.
+- `/[locale]/studios/[studioSlug]` — студия (включая поддержку legacy id/id-slug через resolver).
+- `/[locale]/studios/[studioSlug]/[hallSlug]` — hall-friendly URL.
+- `/robots.txt` — правила индексации.
+- `/sitemap.xml` — sitemap.
+- `/og-image` — динамическая social image.
 
-### 4.2 App structure
+### 3.2 Root layout (`src/app/layout.tsx`)
 
-- `src/app/layout.tsx`
-  - Читает `x-locale` из `headers()`.
-  - Проставляет `<html lang>`.
-  - Рендерит `KofiOverlay` в конце `<body>`.
-- `src/app/page.tsx`
-  - Server wrapper landing + metadata для `/`.
-- `src/app/LandingPage.client.tsx`
-  - Client landing с локальным переключателем языка.
-- `src/app/[locale]/layout.tsx`
-  - Валидация локали.
-  - Header с брендом `studiosmap`, `LocaleSwitcher`.
-  - Мобильная donate-кнопка в header.
-- `src/app/[locale]/page.tsx`
-  - Каталог.
-- `src/app/[locale]/studios/[id]/page.tsx`
-  - Страница студии.
-- `src/app/robots.ts`
-  - Генерация `robots.txt`.
-- `src/app/sitemap.ts`
-  - Генерация `sitemap.xml`.
+- Устанавливает `metadataBase` из `NEXT_PUBLIC_SITE_URL` fallback.
+- Подключает favicon/apple icons и `site.webmanifest`.
+- Подключает GA4 через `next/script` (`afterInteractive`) при наличии `NEXT_PUBLIC_GA_MEASUREMENT_ID`.
+- Проставляет `<html lang>` на основе `x-locale` из middleware.
+- Рендерит `KofiOverlay`.
 
-### 4.3 Middleware
+### 3.3 Locale layout (`src/app/[locale]/layout.tsx`)
 
-Файл: `middleware.ts`.
+- Валидация локали.
+- Header: бренд, переключатель языка, Telegram contacts CTA.
+- Donate-кнопки в mobile header нет.
+- Footer: disclaimer на всех локалях (`UI_STRINGS.footer_disclaimer`).
 
-- Определяет локаль из первого сегмента пути.
-- Пишет `x-locale` в request headers.
-- Default locale: `ru`.
+## 4) Middleware (`middleware.ts`)
 
-## 5) i18n
+- Поддерживаемые локали: `ro`, `ru`, `en`.
+- Default locale fallback: `ro`.
+- Пишет `x-locale` в request headers для server components/layout.
+- Rate limiting (best-effort in-memory per instance):
+  - `RATE_LIMIT_WINDOW_MS` (default `60000`)
+  - `RATE_LIMIT_MAX_REQUESTS` (default `240`)
+- На лимите возвращает `429` + rate-limit headers.
+- Выставляет rate-limit headers и на обычные ответы.
 
-- Источник локалей: `src/i18n/index.ts`.
-- Локали: `ru`, `ro`, `en`.
-- Базовые словари проекта (`projectName`) в `src/i18n/*.ts`.
-- UI copy в `src/domain/ui-strings.ts`.
-- Словари районов и тегов в `src/domain/dictionaries.ts`.
+## 5) i18n and Dictionaries
+
+- `src/i18n/index.ts`:
+  - `locales = ["ro", "ru", "en"]`
+  - `projectName = "studiosmap"` для всех локалей.
+- `src/domain/ui-strings.ts`:
+  - Полный UI copy для landing, catalog, studio.
+  - `support_project_cta` и `footer_disclaimer` на всех локалях.
+- `src/domain/dictionaries.ts`:
+  - Районы (`DISTRICTS`) и теги (`TAGS`).
+  - Тег `wedding` присутствует и локализован.
 
 ## 6) Data Model (Prisma)
 
 Файл: `prisma/schema.prisma`.
 
-### 6.1 Enums
+### 6.1 `Studio`
 
-- `DistrictKey`: `botanica | ciocana | centru | buiucani | riscani`.
+- `id`, `name_i18n`, `address_i18n`, `district_key`
+- `phone`, `instagram_nickname`, `google_maps_url`, `yandex_maps_url`
+- `logo_url`, `working_hours_i18n`
+- relation: `halls`
 
-Примечание:
+### 6.2 `Hall`
 
-- `daylight` и другие hall-факты сейчас хранятся как `Boolean` в `Hall`.
-- Enum-ы `Daylight` и `VideoFriendly` удалены.
+- `id`, `studioId`, `name_i18n`, `images`
+- `area_sqm`, `high_ceiling`, `weekend_price`
+- boolean facts:
+  - `daylight`, `blackout`, `parking`, `changing_room`
+  - `furniture`, `flash_light`, `continuous_light`, `cyclorama`
+- `tags` (`String[]`), `price_per_hour` (`Int?`, nullable)
 
-### 6.2 Model: Studio
+Price notes:
 
-- `id: String @id @default(cuid())`
-- `name_i18n: Json`
-- `address_i18n: Json`
-- `district_key: DistrictKey`
-- `phone: String?`
-- `instagram_nickname: String?`
-- `google_maps_url: String?`
-- `yandex_maps_url: String?`
-- `logo_url: String?`
-- `working_hours_i18n: Json?`
-- relation: `halls: Hall[]`
+- Часовая цена может отсутствовать (`NULL` в БД).
+- Для отсутствующей цены UI показывает явный fallback:
+  - `ru`: `Цена по запросу`
+  - `ro`: `Preț la cerere`
+  - `en`: `Price on request`
 
-Примечание:
+Migration notes:
 
-- Старое поле `contacts` удалено миграцией `20260210212000_day7_studio_info_fields`.
+- `20260304224937_make_hall_price_nullable`:
+  - служебная миграция, удалившая часть индексов.
+- `20260305005500_make_hall_price_nullable_and_restore_indexes`:
+  - делает `Hall.price_per_hour` nullable,
+  - восстанавливает индексы каталога.
 
-### 6.3 Model: Hall
+## 7) Query Layer (`src/db/queries.ts`)
 
-- `id: String @id @default(cuid())`
-- `studioId: String`
-- `name_i18n: Json`
-- `images: Json`
-- `area_sqm: Int?`
-- `high_ceiling: Int?`
-- `weekend_price: Int?`
-- `daylight: Boolean @default(false)`
-- `blackout: Boolean @default(false)`
-- `parking: Boolean @default(false)`
-- `changing_room: Boolean @default(false)`
-- `furniture: Boolean @default(false)`
-- `flash_light: Boolean @default(false)`
-- `continuous_light: Boolean @default(false)`
-- `cyclorama: Boolean @default(false)`
-- `tags: String[]`
-- `price_per_hour: Int`
-- relation: `studio` (`onDelete: Cascade`)
-
-Примечание:
-
-- `cyclorama` перенесен из `tags` в отдельную boolean-колонку.
-
-### 6.4 Catalog indexes
-
-Миграция: `prisma/migrations/20260208173000_add_catalog_indexes/migration.sql`.
-
-- `Hall(price_per_hour)`
-- `Hall(studioId)`
-- `Studio(district_key)`
-- `Hall(tags)` через GIN
-
-Актуальные миграции по hall-фактам:
-
-- `prisma/migrations/20260213120000_hall_filters_to_boolean/migration.sql`
-  - перевод фактов каталога в boolean-колонки `Hall`
-  - удаление `video_friendly`
-- `prisma/migrations/20260213212824_move_cyclorama_to_hall_fact/migration.sql`
-  - перенос `cyclorama` из `tags` в `Hall.cyclorama`
-
-## 7) Query Layer
-
-Файл: `src/db/queries.ts`.
-
-### 7.1 `listHalls(params)`
-
-Параметры:
-
-- `locale`
-- `q?`
-- `district_keys?`
-- `tags?`
-- `facts?`:
-  - `daylight`
-  - `blackout`
-  - `parking`
-  - `changing_room`
-  - `furniture`
-  - `flash_light`
-  - `continuous_light`
-  - `cyclorama`
-- `sort?: price_asc | price_desc`
-- `take?`, `skip?`
-
-Поведение:
-
-- `tags` фильтруются через `hasEvery` (AND semantics).
-- `facts` фильтруются напрямую по boolean-колонкам `Hall`.
-- Поиск по `name_i18n` зала и студии (JSON path, insensitive).
-- Сортировка: `price_per_hour` + стабильный tie-breaker `id`.
-- Возврат: локализованные `hall.name`, `studio.name`, `studio.address`.
-
-### 7.2 `getStudioById(id, locale)`
-
-- `findUnique` по `Studio.id` + include `halls`.
-- `halls` сортируются по `price_per_hour asc`.
-- Локализация названия/адреса студии и названий залов.
+- `listHalls(params)`:
+  - filters by district/tags/facts/search
+  - supports sort `price_asc | price_desc`
+  - сортировка цен использует `nulls: last`
+  - returns localized hall/studio fields
+- `getStudioById(id, locale)`:
+  - loads studio + halls, localizes output
+  - сортировка залов по цене также с `nulls: last`
+- `listHallRouteEntries(locale)`:
+  - route helper для hall-friendly URL resolution
+  - возвращает `hall.id`, `hall.name`, `studio.id`, `studio.name`
 
 ## 8) Catalog Page (`src/app/[locale]/page.tsx`)
 
-### 8.1 Query contract
-
-- `q` — поисковый запрос (trim + limit 80).
-- `page` — номер страницы (`>=1`).
-- `districts` — CSV и/или repeated params.
-- `tags` — CSV и/или repeated params.
-- `facts` — CSV и/или repeated params.
-- `sort` — `random | price_asc | price_desc`.
-
-### 8.2 Pagination
-
+- Параметры query:
+  - `q`, `page`, `districts`, `tags`, `facts`, `sort`
 - `PAGE_SIZE = 12`.
-- В `listHalls` передаётся `take = PAGE_SIZE + 1` для `hasNext`.
-- `skip = (page - 1) * PAGE_SIZE`.
-- Prev/Next сохраняют текущие фильтры в query string.
+- Сортировка:
+  - `price_asc`, `price_desc` в БД
+  - `NULL` цены всегда в конце списка
+  - `random` — server-side shuffle текущей страницы
+- UI tags filter секция скрыта (`SHOW_TAG_FILTERS = false`), backend tags filter активен.
+- В карточках каталога:
+  - title: `"{hallName} | {studioName}"`
+  - studio name убран из блока под заголовком
+  - при `price_per_hour = null` отображается локализованное `price_on_request`
+  - CTA ведет на hall-friendly URL:
+    - `/{locale}/studios/{studioSlug}/{hallSlug}`
+- Tracking:
+  - `search_used`
+  - `filter_used`
+  - `hall_clicked`
 
-### 8.3 Sorting
+## 9) Studio Pages
 
-- `price_asc`, `price_desc` — на уровне БД.
-- `random` — перемешивание текущей страницы на сервере (`shuffleArray`).
-- Default сортировка в UI: `random`.
+### 9.1 Canonical studio route (`src/app/[locale]/studios/[studioSlug]/page.tsx`)
 
-### 8.4 Filters UI
+- Принимает `studioSlug`, резолвит:
+  - legacy id
+  - id-slug
+- Канонизирует URL:
+  - permanent redirect на `/{locale}/studios/{id}-{normalized-studio-slug}` при неканоничном сегменте.
+- Рендерит:
+  - карточку студии (logo/address/hours)
+  - контактные CTA (Instagram/Phone/Yandex/Google)
+  - список залов с галереей и фактами
+  - при `price_per_hour = null` в карточке зала показывается локализованное `price_on_request`
+- Фокус на зал:
+  - по `hallId` (query), компонент `HallFocus`.
+- Tracking кликов по контактам:
+  - event: `studio_contact_clicked`
+  - placements: `studio_header`, `hall_card_footer`.
+- JSON-LD:
+  - `LocalBusiness` (`application/ld+json`) на странице студии.
 
-- Районы: pills-чекбоксы.
-- Опции (`facts`): pills-чекбоксы с иконками (`/public/icons/*`).
-  - `daylight`, `blackout`, `parking`, `changing_room`,
-  - `furniture`, `flash_light`, `continuous_light`, `cyclorama`
-- Теги: backend поддержан, но UI скрыт (`SHOW_TAG_FILTERS = false`).
+### 9.2 Hall-friendly route (`src/app/[locale]/studios/[studioSlug]/[hallSlug]/page.tsx`)
 
-### 8.5 Catalog cards
+- Резолвит `studioSlug/hallSlug` через `listHallRouteEntries`.
+- Делегирует рендер на canonical studio page + передает `hallId` для фокуса.
+- Метадата наследуется от студийной страницы.
+- Специального SEO для hall pages не добавлено (канонический документ — страница студии).
 
-- Фолбек изображения: `hall.images[0]` -> placeholder.
-- Факты карточки собираются из boolean-колонок `Hall`.
-- Теги карточки рендерятся отдельно из `Hall.tags` (без факт-тегов).
-- CTA ведет в студию с deep-link:
-  - `/{locale}/studios/{studioId}?hallId={hallId}#hall-{hallId}`.
+## 10) SEO
 
-## 9) Studio Page (`src/app/[locale]/studios/[id]/page.tsx`)
+### 10.1 Global helpers (`src/seo/site.ts`, `src/seo/studio.ts`)
 
-### 9.1 Studio info card
+- `SITE_NAME = studiosmap`
+- `DEFAULT_LOCALE = ro`
+- `absUrl`, `localePath`
+- studio/hall slug builders and parsers
 
-- Лого 1:1 (`logo_url`) или локализованный placeholder.
-- Плашки: район и количество залов.
-- Текстом: адрес + график работы.
-- График fallback: `UI_STRINGS.working_hours_fallback`.
+### 10.2 Metadata coverage
 
-### 9.2 Studio CTA pills
+- `/`:
+  - localized-friendly title/description (RO copy)
+  - canonical + hreflang + `x-default -> /ro`
+  - OpenGraph + Twitter
+- `/{locale}`:
+  - localized title/description
+  - canonical + hreflang + `x-default`
+  - OpenGraph + Twitter
+  - `noindex,follow` when filter/search query exists
+- `/{locale}/studios/{id}-{slug}`:
+  - data-driven localized title/description
+  - canonical + hreflang + `x-default`
+  - OpenGraph + Twitter
+  - JSON-LD LocalBusiness
 
-- Instagram
-- Телефон (`tel:`), в кнопке отображается номер
-- Yandex Maps
-- Google Maps
+### 10.3 Robots and Sitemap
 
-Правила:
+- `src/app/robots.ts`:
+  - allow `*`
+  - explicit disallow for selected AI crawlers (`GPTBot`, `ClaudeBot`, `Bytespider`, `CCBot`, etc.)
+- `src/app/sitemap.ts`:
+  - locale roots and canonical studio URLs only
+  - alternates with `x-default`
+  - hall-friendly URLs intentionally не включены
 
-- Instagram в БД хранится как nickname; на странице приводится к `https://instagram.com/{nickname}`.
-- Внешние URL проходят через `safeExternalUrl`.
+## 11) Analytics
 
-### 9.3 Hall cards on studio page
+- GA4:
+  - `gtag.js` в root layout через `next/script`.
+- Event helper:
+  - `src/lib/analytics.ts` (`trackEvent`).
+- Кастомные события:
+  - `search_used`
+  - `filter_used`
+  - `hall_clicked`
+  - `studio_contact_clicked`
 
-- Галерея зала + инфо-блок (цена, площадь/высота, теги, факты).
-- Факты карточек на странице студии также строятся из boolean-колонок `Hall` (включая `cyclorama`).
-- Нижний блок CTA: icon-only pills (Instagram/Phone/Yandex/Google), выравнивание по центру, hover inversion.
+## 12) Brand, Assets, and Verification
 
-Примечание:
+- Бренд в UI и SEO: `studiosmap`.
+- Domain source: `NEXT_PUBLIC_SITE_URL` (e.g. `https://studiosmap.co`).
+- Favicons/manifest подключены через metadata в root layout.
+- Public verification files:
+  - `public/google67b22732033f93ac.html`
+  - `public/yandex_01966a39087652e3.html`
 
-- Старый отдельный блок cover-фото студии удален.
+## 13) Landing and Donations
 
-## 10) Hall Gallery (`HallGalleryZoom.tsx`)
+- Landing расположен на `/` (без редиректа в каталог).
+- На landing есть:
+  - `Find a studio` CTA
+  - `Support project` CTA (localized)
+- Desktop Ko-fi overlay активен через `KofiOverlay`.
+- Legacy `KofiMobileHeaderButton` компонент присутствует в репозитории, но в layout не используется.
 
-- Inline gallery: Embla carousel, стрелки (desktop), счетчик.
-- Fullscreen modal:
-  - `createPortal` в `document.body`
-  - `AnimatePresence` + motion transitions
-  - keyboard nav (`Esc`, `ArrowLeft`, `ArrowRight`)
-  - body scroll lock
-- Mobile swipe в modal:
-  - horizontal swipe threshold `42px`
-  - перелистывание влево/вправо.
-- Если `images.length === 0`, компонент возвращает `null`.
+## 14) Environment Variables
 
-## 11) Landing Page (`src/app/page.tsx`, `src/app/LandingPage.client.tsx`)
+Обязательные/используемые:
 
-- `src/app/page.tsx` — server wrapper с metadata для root (`/`).
-- `src/app/LandingPage.client.tsx` — client page с локальным `useState` для выбора локали (без URL смены до нажатия CTA).
-- Тексты `landing_title`, `landing_body`, `landing_cta` берутся из `UI_STRINGS`.
-- CTA ведет на `/{locale}`.
-- В header используется бренд `studiosmap`.
+- `DATABASE_URL`
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` (optional)
+- `RATE_LIMIT_WINDOW_MS` (optional)
+- `RATE_LIMIT_MAX_REQUESTS` (optional)
 
-### 11.1 Landing media
+## 15) Build and Deployment
 
-- Используются локальные assets:
-  - `design/central.png`
-  - `design/hall1.png`
-  - `design/hall2.png`
-  - `design/hall3.png`
-  - `design/hall4.png`
+Scripts:
 
-### 11.2 Landing responsive layout
+- `npm run dev`
+- `npm run lint`
+- `npm run build`
+- `npm start`
+- `npm run db:migrate`
+- `npm run db:seed`
 
-- `<1024`: показывается центральное изображение, боковые карточки скрыты.
-- `1024–1279`: fallback desktop layout с абсолютным позиционированием и увеличенной высотой сцены.
-- `>=1280`: координатный desktop layout (Figma-like) через проценты и `aspect-ratio` сцены.
-- Изображения настроены через `object-position: center top`, верхний crop минимизирован.
-
-## 12) Ko-fi Integration
-
-### 12.1 Desktop
-
-Файл: `src/components/KofiOverlay.client.tsx`.
-
-- Подключается скрипт `https://storage.ko-fi.com/cdn/scripts/overlay-widget.js` (`afterInteractive`).
-- На `>=640px` рисуется overlay donate widget (`floating-chat`).
-- Защита от двойного draw через `window.__kofiOverlayMounted`.
-
-### 12.2 Mobile
-
-Файл: `src/components/KofiMobileHeaderButton.client.tsx`.
-
-- В header локализованного layout показывается компактная кнопка `Donate`.
-- Ссылка: `https://ko-fi.com/voloshinw`.
-
-### 12.3 CSS guard for overlay
-
-Файл: `src/app/globals.css`.
-
-- Чтобы overlay не ломал stacking контексты приложения:
-  - `body > div[id^="kofi-widget-overlay-"] { position: static !important; z-index: auto !important; }`
-
-## 13) URL Safety and Data Hygiene
-
-Файл: `src/lib/url.ts`.
-
-`safeExternalUrl(value)`:
-
-- принимает только непустые строки;
-- парсит через `new URL(...)`;
-- разрешает только `http:` / `https:`;
-- иначе возвращает `null`.
-
-Используется для:
-
-- внешних ссылок студии (`google_maps_url`, `yandex_maps_url`, `logo_url`),
-- изображений залов/студий,
-- других внешних URL в UI.
-
-## 14) Styling System (studiosmap)
-
-Файл: `src/app/globals.css`.
-
-- Семантические классы: `.page`, `.panel`, `.card`, `.pill`, `.btn`, `.btn-primary`, `.input`, `.select`, `.muted`, `.stack`.
-- Базовый визуал: мягкий glass-like стиль, rounded surfaces, спокойные тени.
-- Глобальные интерактивные состояния для кликабельных контролов:
-  - hover inversion
-  - active/selected инверсионный вариант.
-
-## 15) Seed Data
-
-Файл: `prisma/seed.ts`.
-
-- Создает 5 студий и 10 залов.
-- Перед сидированием очищает `Hall`, затем `Studio`.
-- Для `Hall` использует актуальные boolean-факты:
-  - `daylight`, `blackout`, `parking`, `changing_room`,
-  - `furniture`, `flash_light`, `continuous_light`, `cyclorama`.
-- Использует актуальные поля `Studio`:
-  - `phone`, `instagram_nickname`, `google_maps_url`, `yandex_maps_url`, `logo_url`, `working_hours_i18n`.
-
-## 16) Environment and Deployment
-
-### 16.1 Environment variables
-
-- `DATABASE_URL` — required.
-- `NEXT_PUBLIC_SITE_URL` — required for SEO metadata (`canonical`, `hreflang`, `robots`, `sitemap`).
-
-Примечание:
-
-- `NEXT_PUBLIC_KOFI_URL` в текущем коде не используется.
-
-### 16.2 Deployment (Railway)
+Deployment (Railway or similar):
 
 - Build: `npm run build`
 - Start: `npm start`
 - Migrations: `npm run db:migrate`
-- Seed: `npm run db:seed` при явной необходимости
 
-## 17) Known Limitations
+## 16) Known Limitations
 
-- `eslint` warnings по `@next/next/no-img-element` в ряде компонентов (осознанно используется `<img>`).
-- В `src/db/prisma.ts` остается предупреждение про `eslint-disable no-var`.
-- Теги в query поддерживаются, но UI секция тегов скрыта (`SHOW_TAG_FILTERS = false`).
-- Для landing используются локальные файлы `design/*.png`; эти assets должны присутствовать в рабочем дереве для корректного build.
-
-## 18) SEO (Current State + Next Steps)
-
-### 18.1 Implemented now
-
-- Единый SEO-конфиг: `src/seo/site.ts` (`SITE_NAME`, `DEFAULT_LOCALE`, `LOCALES`, `SITE_URL`, `absUrl`, `localePath`).
-- Для `/` добавлены:
-  - canonical,
-  - hreflang (`ru`, `ro`, `en`, `x-default`).
-- Для `/{locale}` добавлены:
-  - локализованные `title`/`description`,
-  - canonical и hreflang,
-  - `robots: noindex,follow` при наличии query-параметров фильтра.
-- Для `/{locale}/studios/[id]` добавлены:
-  - data-driven локализованные `title`/`description`,
-  - canonical и hreflang.
-- Добавлены file-convention routes:
-  - `src/app/robots.ts` (`/robots.txt`),
-  - `src/app/sitemap.ts` (`/sitemap.xml`).
-- На странице каталога добавлен явный `h1`:
-  - «Каталог фотостудий в Кишинёве» (+ `ro/en` локализации).
-
-### 18.2 To Do (post-MVP SEO)
-
-- Добавить `openGraph` и `twitter` metadata для `/{locale}` и `/{locale}/studios/[id]`.
-- Добавить JSON-LD (`LocalBusiness`) на страницу студии без выдуманных полей.
-- Перейти на URL-формат студии `/{locale}/studios/{id}-{slug}` с обратной совместимостью.
-- Улучшить image SEO:
-  - языковые `alt` на ключевых изображениях,
-  - стабильные размеры/`next/image` для ключевых блоков.
-- Добавить индексируемые SEO-лендинги:
-  - `/{locale}/district/{districtKey}`,
-  - `/{locale}/tag/{tagKey}`.
+- Lint warnings по `no-img-element` остаются (не блокируют build).
+- Rate limit store in-memory (не shared между инстансами).
+- Hall-friendly route resolution использует match по локализованным slug имени студии/зала; при дублях имен возможны коллизии.

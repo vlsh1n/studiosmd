@@ -33,6 +33,8 @@ model Studio {
   logo_url           String?
   working_hours_i18n Json?
   halls              Hall[]
+
+  @@index([district_key], map: "Studio_district_key_idx")
 }
 
 model Hall {
@@ -52,7 +54,11 @@ model Hall {
   continuous_light Boolean  @default(false)
   cyclorama        Boolean  @default(false)
   tags             String[]
-  price_per_hour   Int
+  price_per_hour   Int?
 
   studio Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
+
+  @@index([price_per_hour], map: "Hall_price_per_hour_idx")
+  @@index([studioId], map: "Hall_studioId_idx")
+  @@index([tags], type: Gin, map: "Hall_tags_gin_idx")
 }

@@ -19,7 +19,7 @@ type HallSeed = {
   continuous_light: boolean;
   cyclorama?: boolean;
   tags: string[];
-  price_per_hour: number;
+  price_per_hour?: number | null;
 };
 
 type StudioSeed = {

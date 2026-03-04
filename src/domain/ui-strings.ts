@@ -208,4 +208,9 @@ export const UI_STRINGS: UiStrings = {
     ro: "pe oră",
     en: "per hour",
   },
+  price_on_request: {
+    ru: "Цена по запросу",
+    ro: "Preț la cerere",
+    en: "Price on request",
+  },
 };

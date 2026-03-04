@@ -1,16 +1,22 @@
 # studiosmap
 
-A multilingual catalog of photo studio halls in Chisinau.
+Multilingual catalog of photo studios and halls in Chișinău.
 
-studiosmap helps users quickly find a hall by price, district, tags, and key hall facts, then jump directly to the studio page with the selected hall in focus.
+`studiosmap` helps users find a hall by photos, price, district, and options, then open the studio page with the selected hall in focus.
 
-## What You Get
+## Features
 
-- Locale-aware UI (`ru`, `ro`, `en`)
-- Catalog with search, filters, sorting, and pagination
-- Studio page with hall list and deep-link focus (`?hallId=...`)
-- Hall gallery (inline carousel + fullscreen modal)
-- PostgreSQL + Prisma data layer with production migrations
+- Locales: `ro` (default), `ru`, `en`
+- Landing page on `/` with locale selector and CTA
+- Catalog page with search, filters, sorting, and pagination
+- Studio page with hall cards, gallery zoom, and contact CTAs
+- Human-readable hall links: `/{locale}/studios/{studioSlug}/{hallSlug}`
+- Canonical studio URLs: `/{locale}/studios/{id}-{studio-slug}` with redirect from legacy forms
+- SEO metadata: canonical, hreflang, OpenGraph, Twitter
+- JSON-LD `LocalBusiness` on studio pages
+- GA4 events: `search_used`, `filter_used`, `hall_clicked`, `studio_contact_clicked`
+- Middleware rate limiting and locale header propagation (`x-locale`)
+- Robots policy with AI crawler blocking list
 
 ## Tech Stack
 
@@ -33,16 +39,15 @@ studiosmap helps users quickly find a hall by price, district, tags, and key hal
 npm i
 ```
 
-2. Generate Prisma client
-```bash
-npm run prisma:generate
-```
-
-3. Configure environment
+2. Configure environment
 ```bash
 cp .env.example .env
 ```
-Set `DATABASE_URL` in `.env`.
+
+3. Generate Prisma client
+```bash
+npm run prisma:generate
+```
 
 4. Apply local migrations
 ```bash
@@ -54,79 +59,94 @@ npx prisma migrate dev
 npm run db:seed
 ```
 
-6. Run development server
+6. Start dev server
 ```bash
 npm run dev
 ```
 
-App will be available at `http://localhost:3000`.
+App runs at `http://localhost:3000`.
 
 ## Scripts
 
-- `npm run dev` — start local dev server
-- `npm run lint` — run ESLint
-- `npm run build` — run lint and production build
+- `npm run dev` — local dev server
+- `npm run lint` — ESLint
+- `npm run build` — lint + production build
 - `npm start` — start production server
 - `npm run prisma:generate` — regenerate Prisma client
-- `npm run db:migrate` — apply existing migrations (`prisma migrate deploy`)
-- `npm run db:seed` — run seed script
+- `npm run db:migrate` — apply committed migrations (`prisma migrate deploy`)
+- `npm run db:seed` — seed demo data
 
 ## Routes
 
-- `/` — landing page (locale switch + CTA)
-- `/ru`, `/ro`, `/en` — localized catalog
-- `/{locale}/studios/[id]` — studio details page
+- `/` — landing page
+- `/{locale}` — localized catalog
+- `/{locale}/studios/{id}-{studio-slug}` — canonical studio page
+- `/{locale}/studios/{studio-slug}/{hall-slug}` — hall-friendly entry URL
+
+Notes:
+
+- Hall-friendly route resolves to the same studio page and focuses a selected hall.
+- Hall-friendly URLs are convenience URLs; the canonical target remains the studio URL.
 
 ## Environment Variables
 
 Defined in `.env.example`:
 
 - `DATABASE_URL` (required)
-- `NEXT_PUBLIC_SITE_URL` (optional)
+- `NEXT_PUBLIC_SITE_URL` (recommended, used by SEO URLs)
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` (optional, enables GA4 script/events)
 
-## Database Workflow
+Also supported by middleware:
 
-### Local development
+- `RATE_LIMIT_WINDOW_MS` (optional, default `60000`)
+- `RATE_LIMIT_MAX_REQUESTS` (optional, default `240`)
 
-Use:
-```bash
-npx prisma migrate dev
-```
+## SEO Overview
 
-### Production deployment
-
-Use:
-```bash
-npm run db:migrate
-```
-This applies committed migrations without creating new ones.
-
-## Railway Deployment
-
-Recommended settings:
-
-- Build command: `npm run build`
-- Start command: `npm start`
-- Migration step: `npm run db:migrate`
-- Seed: run `npm run db:seed` only when explicitly needed
+- Root, catalog, and studio pages have localized metadata.
+- `x-default` points to Romanian locale (`/ro`).
+- `sitemap.xml` contains locale roots and canonical studio URLs.
+- `robots.txt` allows regular crawlers and blocks listed AI crawlers.
 
 ## Project Structure
 
 ```text
 src/
   app/
-    page.tsx                          # landing
-    [locale]/page.tsx                 # catalog
-    [locale]/layout.tsx               # locale shell
-    [locale]/studios/[id]/page.tsx    # studio page
+    layout.tsx
+    page.tsx
+    robots.ts
+    sitemap.ts
+    og-image/route.tsx
+    [locale]/
+      layout.tsx
+      page.tsx
+      CatalogTracking.client.tsx
+      HallCardList.client.tsx
+      studios/
+        [studioSlug]/
+          page.tsx
+          HallCardList.client.tsx
+          HallGalleryZoom.tsx
+          StudioContacts.client.tsx
+          [hallSlug]/page.tsx
+  components/
+    HallFocus.tsx
+    LocaleSwitcher.tsx
+    KofiOverlay.client.tsx
   db/
-    prisma.ts                         # Prisma client singleton
-    queries.ts                        # query layer
+    prisma.ts
+    queries.ts
   domain/
-    ui-strings.ts                     # localized UI copy
-    dictionaries.ts                   # districts/tags dictionaries
+    ui-strings.ts
+    dictionaries.ts
+  seo/
+    site.ts
+    studio.ts
   lib/
-    url.ts                            # safeExternalUrl helper
+    analytics.ts
+    url.ts
+middleware.ts
 prisma/
   schema.prisma
   migrations/
@@ -135,6 +155,6 @@ prisma/
 
 ## Notes
 
-- `npm run build` currently passes with lint warnings (no lint errors).
-- If schema changes, always commit migrations together with code.
-- For a full technical state snapshot, see `techspec.md`.
+- Current build passes with lint warnings only (`no-img-element`, unused eslint-disable in Prisma singleton).
+- Rate limiting is best-effort in-memory per runtime instance.
+- Keep migrations committed together with schema/code changes.
