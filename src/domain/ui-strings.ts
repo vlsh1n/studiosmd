@@ -18,6 +18,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Caută studio",
     en: "Find a studio",
   },
+  support_project_cta: {
+    ru: "Поддержать проект",
+    ro: "Susține proiectul",
+    en: "Support project",
+  },
   catalog_h1: {
     ru: "Каталог фотостудий в Кишинёве",
     ro: "Catalog de studiouri foto din Chișinău",

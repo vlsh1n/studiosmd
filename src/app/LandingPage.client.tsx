@@ -16,6 +16,7 @@ const LOCALES: Locale[] = ["ro", "ru", "en"];
 export default function LandingPage() {
   const [locale, setLocale] = useState<Locale>("ro");
   const contactsHref = "https://t.me/studiosmap";
+  const supportProjectHref = "https://ko-fi.com/voloshinw";
 
   return (
     <div className="page">
@@ -114,6 +115,14 @@ export default function LandingPage() {
             <Link href={`/${locale}`} className="btn btn-primary">
               {UI_STRINGS.landing_cta[locale]}
             </Link>
+            <a
+              href={supportProjectHref}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="btn"
+            >
+              {UI_STRINGS.support_project_cta[locale]}
+            </a>
           </div>
         </div>
 

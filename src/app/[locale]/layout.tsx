@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import KofiMobileHeaderButton from "@/components/KofiMobileHeaderButton.client";
 import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, t } from "@/i18n";
@@ -46,7 +45,6 @@ export default async function LocaleLayout({ children, params }: Props) {
                 loading="lazy"
               />
             </a>
-            <KofiMobileHeaderButton />
             <div className="ml-auto">
               <LocaleSwitcher locale={locale} compact />
             </div>

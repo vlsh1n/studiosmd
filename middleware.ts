@@ -5,10 +5,6 @@ const SUPPORTED_LOCALES = new Set(["ru", "ro", "en"]);
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  if (pathname === "/") {
-    return NextResponse.redirect(new URL("/ro", request.url));
-  }
-
   const segment = pathname.split("/").filter(Boolean)[0];
   const locale = segment && SUPPORTED_LOCALES.has(segment) ? segment : "ro";
 
