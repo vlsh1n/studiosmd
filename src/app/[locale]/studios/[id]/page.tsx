@@ -1,23 +1,28 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { getStudioById } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, type Locale } from "@/i18n";
 import { safeExternalUrl } from "@/lib/url";
 import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
+import { buildStudioPath, buildStudioSegment, parseStudioSegment } from "@/seo/studio";
 import HallCardList, {
   type StudioHallCardItem,
 } from "@/app/[locale]/studios/[id]/HallCardList.client";
 import StudioContacts from "@/app/[locale]/studios/[id]/StudioContacts.client";
 import HallFocus from "@/components/HallFocus";
 
+type PageSearchParams = { [key: string]: string | string[] | undefined };
+
 type Props = {
   params: { locale: string; id: string };
+  searchParams?: PageSearchParams;
 };
 
 type JsonArray = unknown[] | null | undefined;
 type JsonObject = Record<string, unknown> | null | undefined;
+type StudioRecord = NonNullable<Awaited<ReturnType<typeof getStudioById>>>;
 
 const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
   ru: "В выходные:",
@@ -25,6 +30,13 @@ const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
   en: "Weekends:",
 };
 const STUDIO_SOCIAL_IMAGE_URL = absUrl("/og-image");
+
+type ResolvedStudioRoute = {
+  studio: StudioRecord;
+  canonicalSegment: string;
+  canonicalPath: string;
+  shouldRedirect: boolean;
+};
 
 function getStringsFromJson(value: JsonArray) {
   if (!Array.isArray(value)) return [];
@@ -58,6 +70,20 @@ function getStringValue(value: unknown) {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
+}
+
+function getLocalizedString(value: JsonObject, locale: Locale, fallback: string) {
+  if (!value || typeof value !== "object") {
+    return fallback;
+  }
+
+  const localizedValue = value[locale];
+  if (typeof localizedValue !== "string") {
+    return fallback;
+  }
+
+  const trimmed = localizedValue.trim();
+  return trimmed.length > 0 ? trimmed : fallback;
 }
 
 function sanitizePhoneForTel(value: string) {
@@ -173,6 +199,153 @@ function getStudioSeo(studio: NonNullable<Awaited<ReturnType<typeof getStudioByI
   return { title, description: descriptionParts.join(" ") };
 }
 
+function getStudioNameForLocale(studio: StudioRecord, locale: Locale) {
+  return getLocalizedString(studio.name_i18n as JsonObject, locale, studio.name);
+}
+
+function getStudioPathsByLocale(studio: StudioRecord) {
+  return Object.fromEntries(
+    LOCALES.map((languageLocale) => [
+      languageLocale,
+      buildStudioPath(studio.id, getStudioNameForLocale(studio, languageLocale)),
+    ])
+  ) as Record<Locale, string>;
+}
+
+function buildSearchSuffix(searchParams: PageSearchParams) {
+  const query = new URLSearchParams();
+
+  for (const [key, value] of Object.entries(searchParams)) {
+    if (typeof value === "string") {
+      query.append(key, value);
+      continue;
+    }
+
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        if (typeof item === "string") {
+          query.append(key, item);
+        }
+      }
+    }
+  }
+
+  const encoded = query.toString();
+  return encoded.length > 0 ? `?${encoded}` : "";
+}
+
+async function resolveStudioRoute(segment: string, locale: Locale): Promise<ResolvedStudioRoute | null> {
+  const requestedSegment = segment.trim();
+  if (requestedSegment.length === 0) {
+    return null;
+  }
+
+  const directMatch = await getStudioById(requestedSegment, locale);
+  if (directMatch) {
+    const canonicalSegment = buildStudioSegment(
+      directMatch.id,
+      getStudioNameForLocale(directMatch, locale)
+    );
+    return {
+      studio: directMatch,
+      canonicalSegment,
+      canonicalPath: `/studios/${canonicalSegment}`,
+      shouldRedirect: requestedSegment !== canonicalSegment,
+    };
+  }
+
+  const parsed = parseStudioSegment(requestedSegment);
+  if (!parsed.id) {
+    return null;
+  }
+
+  const parsedMatch = await getStudioById(parsed.id, locale);
+  if (!parsedMatch) {
+    return null;
+  }
+
+  const canonicalSegment = buildStudioSegment(
+    parsedMatch.id,
+    getStudioNameForLocale(parsedMatch, locale)
+  );
+
+  return {
+    studio: parsedMatch,
+    canonicalSegment,
+    canonicalPath: `/studios/${canonicalSegment}`,
+    shouldRedirect: requestedSegment !== canonicalSegment,
+  };
+}
+
+function buildLocalBusinessJsonLd({
+  studio,
+  canonicalUrl,
+  description,
+  logoUrl,
+  phone,
+  instagramHref,
+  yandexMapsHref,
+  googleMapsHref,
+}: {
+  studio: StudioRecord;
+  canonicalUrl: string;
+  description: string;
+  logoUrl: string | null;
+  phone: string | null;
+  instagramHref: string | null;
+  yandexMapsHref: string | null;
+  googleMapsHref: string | null;
+}) {
+  const sameAs = [instagramHref, yandexMapsHref, googleMapsHref].filter(
+    (item): item is string => typeof item === "string" && item.length > 0
+  );
+  const priceRange = getStudioPriceRange(studio.halls);
+
+  const localBusiness: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${canonicalUrl}#localbusiness`,
+    name: studio.name,
+    description,
+    url: canonicalUrl,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: studio.address,
+      addressLocality: "Chișinău",
+      addressCountry: "MD",
+    },
+    areaServed: {
+      "@type": "City",
+      name: "Chișinău",
+    },
+  };
+
+  if (logoUrl) {
+    localBusiness.image = logoUrl;
+  }
+
+  if (phone) {
+    localBusiness.telephone = phone;
+  }
+
+  if (sameAs.length > 0) {
+    localBusiness.sameAs = sameAs;
+  }
+
+  if (priceRange) {
+    localBusiness.priceRange =
+      priceRange.min === priceRange.max
+        ? `${priceRange.min} MDL`
+        : `${priceRange.min}-${priceRange.max} MDL`;
+  }
+
+  return localBusiness;
+}
+
+function stringifyJsonLd(data: Record<string, unknown>) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -180,9 +353,9 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, id } = await params;
   const currentLocale = isLocale(locale) ? locale : DEFAULT_LOCALE;
-  const studio = await getStudioById(id, currentLocale);
+  const resolved = await resolveStudioRoute(id, currentLocale);
 
-  if (!studio) {
+  if (!resolved) {
     return {
       title: SITE_NAME,
       robots: {
@@ -192,11 +365,13 @@ export async function generateMetadata({
     };
   }
 
+  const studio = resolved.studio;
   const seo = getStudioSeo(studio, currentLocale);
-  const canonicalUrl = absUrl(localePath(currentLocale, `/studios/${studio.id}`));
+  const studioPathsByLocale = getStudioPathsByLocale(studio);
+  const canonicalUrl = absUrl(localePath(currentLocale, studioPathsByLocale[currentLocale]));
   const languageAlternates = Object.fromEntries(
     LOCALES.map((languageLocale) =>
-      [languageLocale, absUrl(localePath(languageLocale, `/studios/${studio.id}`))]
+      [languageLocale, absUrl(localePath(languageLocale, studioPathsByLocale[languageLocale]))]
     )
   );
 
@@ -207,7 +382,7 @@ export async function generateMetadata({
       canonical: canonicalUrl,
       languages: {
         ...languageAlternates,
-        "x-default": absUrl(localePath(DEFAULT_LOCALE, `/studios/${studio.id}`)),
+        "x-default": absUrl(localePath(DEFAULT_LOCALE, studioPathsByLocale[DEFAULT_LOCALE])),
       },
     },
     openGraph: {
@@ -239,16 +414,25 @@ export async function generateMetadata({
   };
 }
 
-export default async function StudioPage({ params }: Props) {
+export default async function StudioPage({ params, searchParams }: Props) {
   const { locale, id } = await params;
   if (!isLocale(locale)) {
     notFound();
   }
 
-  const studio = await getStudioById(id, locale);
-  if (!studio) {
+  const resolved = await resolveStudioRoute(id, locale);
+  if (!resolved) {
     notFound();
   }
+
+  if (resolved.shouldRedirect) {
+    const searchSuffix = buildSearchSuffix((await searchParams) ?? {});
+    permanentRedirect(`${localePath(locale, resolved.canonicalPath)}${searchSuffix}`);
+  }
+
+  const studio = resolved.studio;
+  const canonicalUrl = absUrl(localePath(locale, resolved.canonicalPath));
+  const studioSeo = getStudioSeo(studio, locale);
 
   const phone = getStringValue(studio.phone);
   const phoneHref = phone ? sanitizePhoneForTel(phone) : null;
@@ -259,6 +443,16 @@ export default async function StudioPage({ params }: Props) {
   const yandexMapsHref = safeExternalUrl(studio.yandex_maps_url);
   const googleMapsHref = safeExternalUrl(studio.google_maps_url);
   const logoUrl = safeExternalUrl(studio.logo_url);
+  const localBusinessJsonLd = buildLocalBusinessJsonLd({
+    studio,
+    canonicalUrl,
+    description: studioSeo.description,
+    logoUrl,
+    phone: phoneHref,
+    instagramHref,
+    yandexMapsHref,
+    googleMapsHref,
+  });
   const workingHours =
     getLocalizedText(studio.working_hours_i18n as JsonObject, locale) ??
     UI_STRINGS.working_hours_fallback[locale];
@@ -345,6 +539,11 @@ export default async function StudioPage({ params }: Props) {
 
   return (
     <div className="stack">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(localBusinessJsonLd) }}
+      />
+
       <section className="card p-4 sm:p-5">
         <div className="stack gap-4">
           <div className="flex items-start gap-3 sm:gap-4">
