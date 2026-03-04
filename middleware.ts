@@ -34,13 +34,17 @@ function getClientIdentifier(request: NextRequest) {
     if (firstHop) return `ip:${firstHop}`;
   }
 
-  const realIp = request.headers.get("x-real-ip") ?? request.headers.get("cf-connecting-ip");
-  if (realIp && realIp.trim().length > 0) {
-    return `ip:${realIp.trim()}`;
+  const fallbackIpHeaders = ["x-real-ip", "cf-connecting-ip", "x-vercel-forwarded-for"] as const;
+  for (const headerName of fallbackIpHeaders) {
+    const headerValue = request.headers.get(headerName);
+    if (headerValue && headerValue.trim().length > 0) {
+      return `ip:${headerValue.trim()}`;
+    }
   }
 
-  if (request.ip && request.ip.trim().length > 0) {
-    return `ip:${request.ip.trim()}`;
+  const userAgent = request.headers.get("user-agent");
+  if (userAgent && userAgent.trim().length > 0) {
+    return `ua:${userAgent.trim().slice(0, 128)}`;
   }
 
   return null;

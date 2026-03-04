@@ -22,9 +22,10 @@ export default function CatalogTracking({ locale, formId }: Props) {
     if (!(formElement instanceof HTMLFormElement)) {
       return;
     }
+    const form = formElement;
 
     function onSubmit() {
-      const formData = new FormData(formElement);
+      const formData = new FormData(form);
       const query = String(formData.get("q") ?? "").trim();
       const districtKeys = getStringValues(formData, "districts");
       const tagKeys = getStringValues(formData, "tags");
@@ -55,12 +56,11 @@ export default function CatalogTracking({ locale, formId }: Props) {
       }
     }
 
-    formElement.addEventListener("submit", onSubmit);
+    form.addEventListener("submit", onSubmit);
     return () => {
-      formElement.removeEventListener("submit", onSubmit);
+      form.removeEventListener("submit", onSubmit);
     };
   }, [formId, locale]);
 
   return null;
 }
-
