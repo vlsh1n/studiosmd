@@ -3,7 +3,7 @@ import { ro } from "@/i18n/ro";
 import { ru } from "@/i18n/ru";
 
 export const dictionaries = { en, ro, ru } as const;
-export const locales = ["ru", "ro", "en"] as const;
+export const locales = ["ro", "ru", "en"] as const;
 
 export type Locale = (typeof locales)[number];
 export type DictionaryKey = keyof typeof ru;

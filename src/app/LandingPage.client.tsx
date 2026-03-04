@@ -11,10 +11,10 @@ import hall2Image from "../../design/hall2.png";
 import hall3Image from "../../design/hall3.png";
 import hall4Image from "../../design/hall4.png";
 
-const LOCALES: Locale[] = ["ru", "ro", "en"];
+const LOCALES: Locale[] = ["ro", "ru", "en"];
 
 export default function LandingPage() {
-  const [locale, setLocale] = useState<Locale>("ru");
+  const [locale, setLocale] = useState<Locale>("ro");
   const contactsHref = "https://t.me/studiosmap";
 
   return (

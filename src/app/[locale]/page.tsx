@@ -93,7 +93,7 @@ export async function generateMetadata({
       canonical: absUrl(localePath(currentLocale)),
       languages: {
         ...languageAlternates,
-        "x-default": absUrl("/"),
+        "x-default": absUrl(localePath(DEFAULT_LOCALE)),
       },
     },
     robots: shouldNoIndex
