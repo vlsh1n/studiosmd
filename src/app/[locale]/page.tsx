@@ -158,6 +158,13 @@ function isTagKey(value: string): value is keyof typeof TAGS {
   return value in TAGS;
 }
 
+function getNormalizedTagKeys(tags: string[]) {
+  const normalized = tags
+    .map((tag) => tag.trim().toLowerCase())
+    .filter(isTagKey);
+  return Array.from(new Set(normalized));
+}
+
 function isFactKey(value: string): value is HallFactItem["key"] {
   return factKeys.includes(value as HallFactItem["key"]);
 }
@@ -234,7 +241,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const cardItems: HallCardItem[] = displayedHalls.map((hall) => {
     const hallImages = getImagesFromJson(hall.images);
     const image = hallImages[0] ?? null;
-    const tagLabels = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]).slice(0, 4);
+    const tagLabels = getNormalizedTagKeys(hall.tags).map((tag) => TAGS[tag][locale]);
     const flashAvailable = hall.flash_light === true;
     const continuousAvailable = hall.continuous_light === true;
     const weekendPriceLine =

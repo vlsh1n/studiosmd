@@ -75,6 +75,13 @@ function isTagKey(value: string): value is keyof typeof TAGS {
   return value in TAGS;
 }
 
+function getNormalizedTagKeys(tags: string[]) {
+  const normalized = tags
+    .map((tag) => tag.trim().toLowerCase())
+    .filter(isTagKey);
+  return Array.from(new Set(normalized));
+}
+
 function getStudioPriceRange(halls: Array<{ price_per_hour: number }>) {
   if (halls.length === 0) {
     return null;
@@ -234,7 +241,7 @@ export default async function StudioPage({ params }: Props) {
   const hasStudioCta = Boolean(instagramHref || phoneHref || yandexMapsHref || googleMapsHref);
   const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
     const images = getImageList(hall.images as JsonArray);
-    const tags = hall.tags.filter(isTagKey).map((tag) => TAGS[tag][locale]);
+    const tags = getNormalizedTagKeys(hall.tags).map((tag) => TAGS[tag][locale]);
     const flashAvailable = hall.flash_light === true;
     const continuousAvailable = hall.continuous_light === true;
     const weekendPriceLine =
