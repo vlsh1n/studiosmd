@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { trackEvent } from "@/lib/analytics";
 
 export type HallFactKey =
   | "daylight"
@@ -59,6 +60,13 @@ export default function HallCardList({ items, weekendLabel }: Props) {
           metaParts.push(item.spaceLine);
         }
         const metaLine = metaParts.join(" • ");
+        const handleHallClick = () => {
+          trackEvent("hall_clicked", {
+            hall_id: item.id,
+            destination: item.hallHref,
+            source: "catalog",
+          });
+        };
 
         return (
           <motion.article
@@ -96,7 +104,7 @@ export default function HallCardList({ items, weekendLabel }: Props) {
               <div className="flex h-full min-w-0 flex-col gap-3">
                 <div className="space-y-1">
                   <h2 className="text-base font-semibold text-gray-900 sm:text-lg">
-                    <Link href={item.hallHref} className="underline">
+                    <Link href={item.hallHref} className="underline" onClick={handleHallClick}>
                       {item.name}
                     </Link>
                   </h2>
@@ -145,7 +153,11 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                 )}
 
                 <div className="mt-auto pt-1">
-                  <Link href={item.hallHref} className="btn btn-primary w-full">
+                  <Link
+                    href={item.hallHref}
+                    className="btn btn-primary w-full"
+                    onClick={handleHallClick}
+                  >
                     {item.ctaLabel}
                   </Link>
                 </div>

@@ -2,6 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import HallGalleryZoom from "@/app/[locale]/studios/[id]/HallGalleryZoom";
+import { trackEvent } from "@/lib/analytics";
 
 export type StudioHallFactKey =
   | "daylight"
@@ -42,6 +43,8 @@ export type StudioHallCardItem = {
 
 type Props = {
   halls: StudioHallCardItem[];
+  studioId: string;
+  locale: string;
   weekendLabel: string;
   instagramHref: string | null;
   phoneHref: string | null;
@@ -55,6 +58,8 @@ type Props = {
 
 export default function HallCardList({
   halls,
+  studioId,
+  locale,
   weekendLabel,
   instagramHref,
   phoneHref,
@@ -66,6 +71,14 @@ export default function HallCardList({
   googleMapsLabel,
 }: Props) {
   const shouldReduceMotion = useReducedMotion();
+  function handleContactClick(contactType: "instagram" | "phone" | "yandex_maps" | "google_maps") {
+    trackEvent("studio_contact_clicked", {
+      studio_id: studioId,
+      locale,
+      contact_type: contactType,
+      placement: "hall_card_footer",
+    });
+  }
 
   return (
     <div className="grid w-full max-w-5xl mx-auto gap-6">
@@ -154,6 +167,7 @@ export default function HallCardList({
                         aria-label={instagramLabel}
                         title={instagramLabel}
                         className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
+                        onClick={() => handleContactClick("instagram")}
                       >
                         <img
                           src="/icons/instagram.png"
@@ -170,6 +184,7 @@ export default function HallCardList({
                         aria-label={phoneText}
                         title={phoneText}
                         className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
+                        onClick={() => handleContactClick("phone")}
                       >
                         <img
                           src="/icons/telephone.png"
@@ -188,6 +203,7 @@ export default function HallCardList({
                         aria-label={yandexMapsLabel}
                         title={yandexMapsLabel}
                         className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
+                        onClick={() => handleContactClick("yandex_maps")}
                       >
                         <img
                           src="/icons/yandex_maps.png"
@@ -206,6 +222,7 @@ export default function HallCardList({
                         aria-label={googleMapsLabel}
                         title={googleMapsLabel}
                         className="pill group h-12 w-12 justify-center p-0 transition-colors hover:bg-[var(--text)] hover:text-white active:translate-y-px"
+                        onClick={() => handleContactClick("google_maps")}
                       >
                         <img
                           src="/icons/google_maps.png"

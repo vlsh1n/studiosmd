@@ -9,6 +9,7 @@ import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/si
 import HallCardList, {
   type StudioHallCardItem,
 } from "@/app/[locale]/studios/[id]/HallCardList.client";
+import StudioContacts from "@/app/[locale]/studios/[id]/StudioContacts.client";
 import HallFocus from "@/components/HallFocus";
 
 type Props = {
@@ -262,7 +263,6 @@ export default async function StudioPage({ params }: Props) {
     getLocalizedText(studio.working_hours_i18n as JsonObject, locale) ??
     UI_STRINGS.working_hours_fallback[locale];
   const hallCountLabel = UI_STRINGS.halls_count[locale].replace("{count}", String(studio.halls.length));
-  const hasStudioCta = Boolean(instagramHref || phoneHref || yandexMapsHref || googleMapsHref);
   const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
     const images = getImageList(hall.images as JsonArray);
     const tags = getNormalizedTagKeys(hall.tags).map((tag) => TAGS[tag][locale]);
@@ -379,79 +379,18 @@ export default async function StudioPage({ params }: Props) {
             </div>
           </div>
 
-          {hasStudioCta && (
-            <div className="flex flex-wrap gap-2">
-              {instagramHref && (
-                <a
-                  href={instagramHref}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="pill ui-pill-control text-sm font-medium"
-                >
-                  <img
-                    src="/icons/instagram.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4 w-4 object-contain"
-                    loading="lazy"
-                  />
-                  <span>{UI_STRINGS.instagram_cta[locale]}</span>
-                </a>
-              )}
-
-              {phone && phoneHref && (
-                <a
-                  href={`tel:${phoneHref}`}
-                  className="pill ui-pill-control text-sm font-medium"
-                >
-                  <img
-                    src="/icons/telephone.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4 w-4 object-contain"
-                    loading="lazy"
-                  />
-                  <span>{phone}</span>
-                </a>
-              )}
-
-              {yandexMapsHref && (
-                <a
-                  href={yandexMapsHref}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="pill ui-pill-control text-sm font-medium"
-                >
-                  <img
-                    src="/icons/yandex_maps.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4 w-4 object-contain"
-                    loading="lazy"
-                  />
-                  <span>{UI_STRINGS.yandex_maps_cta[locale]}</span>
-                </a>
-              )}
-
-              {googleMapsHref && (
-                <a
-                  href={googleMapsHref}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  className="pill ui-pill-control text-sm font-medium"
-                >
-                  <img
-                    src="/icons/google_maps.png"
-                    alt=""
-                    aria-hidden="true"
-                    className="h-4 w-4 object-contain"
-                    loading="lazy"
-                  />
-                  <span>{UI_STRINGS.google_maps_cta[locale]}</span>
-                </a>
-              )}
-            </div>
-          )}
+          <StudioContacts
+            studioId={studio.id}
+            locale={locale}
+            instagramHref={instagramHref}
+            phoneHref={phoneHref}
+            phoneText={phone}
+            yandexMapsHref={yandexMapsHref}
+            googleMapsHref={googleMapsHref}
+            instagramLabel={UI_STRINGS.instagram_cta[locale]}
+            yandexMapsLabel={UI_STRINGS.yandex_maps_cta[locale]}
+            googleMapsLabel={UI_STRINGS.google_maps_cta[locale]}
+          />
         </div>
       </section>
 
@@ -459,6 +398,8 @@ export default async function StudioPage({ params }: Props) {
       <section className="stack">
         <HallCardList
           halls={hallCards}
+          studioId={studio.id}
+          locale={locale}
           weekendLabel={WEEKEND_PRICE_LABEL[locale]}
           instagramHref={instagramHref}
           phoneHref={phoneHref ? `tel:${phoneHref}` : null}

@@ -7,6 +7,7 @@ import HallCardList, {
   type HallCardItem,
   type HallFactItem,
 } from "@/app/[locale]/HallCardList.client";
+import CatalogTracking from "@/app/[locale]/CatalogTracking.client";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, Locale } from "@/i18n";
@@ -16,6 +17,7 @@ import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/si
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
 const PAGE_SIZE = 12;
+const CATALOG_FILTER_FORM_ID = "catalog-filter-form";
 const SHOW_TAG_FILTERS = false;
 const factKeys: HallFactItem["key"][] = [
   "daylight",
@@ -351,6 +353,8 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   return (
     <div className="stack">
+      <CatalogTracking locale={locale} formId={CATALOG_FILTER_FORM_ID} />
+
       <section className="card p-4 sm:p-5">
         <h1 className="text-xl font-semibold text-gray-900 sm:text-2xl">
           {UI_STRINGS.catalog_h1[locale]}
@@ -358,7 +362,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
         <p className="mt-2 text-sm muted">{UI_STRINGS.catalog_intro[locale]}</p>
       </section>
 
-      <form className="stack" method="get">
+      <form id={CATALOG_FILTER_FORM_ID} className="stack" method="get">
         <div className="card p-4">
           <input
             type="search"
