@@ -15,13 +15,13 @@ const LOCALES: Locale[] = ["ru", "ro", "en"];
 
 export default function LandingPage() {
   const [locale, setLocale] = useState<Locale>("ru");
-  const contactsHref = "https://t.me/studiosmd";
+  const contactsHref = "https://t.me/studiosmap";
 
   return (
     <div className="page">
       <section className="panel landing-hero">
         <header className="landing-hero-header">
-          <p className="landing-hero-brand">STUDIOS.MD</p>
+          <p className="landing-hero-brand">studiosmap</p>
           <div className="sm:hidden inline-flex items-center gap-3 ml-auto">
             <a
               href={contactsHref}

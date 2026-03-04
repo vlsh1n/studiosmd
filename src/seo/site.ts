@@ -1,6 +1,6 @@
 import { locales, type Locale } from "@/i18n";
 
-export const SITE_NAME = "StudiosMD";
+export const SITE_NAME = "studiosmap";
 export const DEFAULT_LOCALE: Locale = "ru";
 export const LOCALES = locales;
 

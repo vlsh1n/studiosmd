@@ -21,7 +21,7 @@ This workflow is for adding real studios/halls into Railway DB without seed.
 3. You send the payload to assistant with this prompt:
 
 ```
-Convert this form response to Prisma-ready payload for StudiosMD.
+Convert this form response to Prisma-ready payload for studiosmap.
 Rules:
 1) Build i18n JSON for ru/ro/en (source language is ru).
 2) Keep district_key exactly from allowed enum.

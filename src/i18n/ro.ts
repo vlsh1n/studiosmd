@@ -1,3 +1,3 @@
 export const ro = {
-  projectName: "STUDIOS.MD",
+  projectName: "studiosmap",
 } as const;

@@ -17,7 +17,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     notFound();
   }
   const contactsLabel = UI_STRINGS.contacts_cta[locale];
-  const contactsHref = "https://t.me/studiosmd";
+  const contactsHref = "https://t.me/studiosmap";
 
   return (
     <div className="page">

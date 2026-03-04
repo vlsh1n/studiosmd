@@ -1,6 +1,6 @@
-# studiosmd — Technical Specification (Current State)
+# studiosmap — Technical Specification (Current State)
 
-Документ фиксирует текущее техническое состояние проекта `studiosmd` по коду в репозитории на текущий момент.
+Документ фиксирует текущее техническое состояние проекта `studiosmap` по коду в репозитории на текущий момент.
 
 ## 0) Purpose
 
@@ -67,7 +67,7 @@ Quality gate:
   - Client landing с локальным переключателем языка.
 - `src/app/[locale]/layout.tsx`
   - Валидация локали.
-  - Header с брендом `STUDIOS.MD`, `LocaleSwitcher`.
+  - Header с брендом `studiosmap`, `LocaleSwitcher`.
   - Мобильная donate-кнопка в header.
 - `src/app/[locale]/page.tsx`
   - Каталог.
@@ -295,7 +295,7 @@ Quality gate:
 - `src/app/LandingPage.client.tsx` — client page с локальным `useState` для выбора локали (без URL смены до нажатия CTA).
 - Тексты `landing_title`, `landing_body`, `landing_cta` берутся из `UI_STRINGS`.
 - CTA ведет на `/{locale}`.
-- В header используется бренд `STUDIOS.MD`.
+- В header используется бренд `studiosmap`.
 
 ### 11.1 Landing media
 
@@ -354,7 +354,7 @@ Quality gate:
 - изображений залов/студий,
 - других внешних URL в UI.
 
-## 14) Styling System (StudiosMD)
+## 14) Styling System (studiosmap)
 
 Файл: `src/app/globals.css`.
 

@@ -1,4 +1,4 @@
-# Project Context — studiosmd
+# Project Context — studiosmap
 
 ## What this is
 A multilingual (RU/RO/EN) directory for photo studios in Chișinău.

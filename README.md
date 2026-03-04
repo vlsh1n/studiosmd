@@ -1,8 +1,8 @@
-# StudiosMD
+# studiosmap
 
 A multilingual catalog of photo studio halls in Chisinau.
 
-StudiosMD helps users quickly find a hall by price, district, tags, and key hall facts, then jump directly to the studio page with the selected hall in focus.
+studiosmap helps users quickly find a hall by price, district, tags, and key hall facts, then jump directly to the studio page with the selected hall in focus.
 
 ## What You Get
 

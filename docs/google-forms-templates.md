@@ -1,4 +1,4 @@
-# Google Forms Templates For StudiosMD
+# Google Forms Templates For studiosmap
 
 This file contains ready-to-copy templates for two Google Forms:
 - Studio Intake (one response = one studio)
@@ -9,7 +9,7 @@ Use internal field codes in square brackets in each question title. They simplif
 ## 1) Form: Studio Intake
 
 Form title:
-- StudiosMD - Studio Intake
+- studiosmap - Studio Intake
 
 Form description:
 - Fill this form once for your studio. Halls are added in a separate Hall Intake form.
@@ -81,7 +81,7 @@ Questions:
 ## 2) Form: Hall Intake
 
 Form title:
-- StudiosMD - Hall Intake
+- studiosmap - Hall Intake
 
 Form description:
 - One response = one hall in one existing studio.
