@@ -9,14 +9,14 @@ import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/si
 import { buildStudioPath, buildStudioSegment, parseStudioSegment } from "@/seo/studio";
 import HallCardList, {
   type StudioHallCardItem,
-} from "@/app/[locale]/studios/[id]/HallCardList.client";
-import StudioContacts from "@/app/[locale]/studios/[id]/StudioContacts.client";
+} from "@/app/[locale]/studios/[studioSlug]/HallCardList.client";
+import StudioContacts from "@/app/[locale]/studios/[studioSlug]/StudioContacts.client";
 import HallFocus from "@/components/HallFocus";
 
 type PageSearchParams = { [key: string]: string | string[] | undefined };
 
 type Props = {
-  params: { locale: string; id: string };
+  params: { locale: string; studioSlug: string };
   searchParams?: PageSearchParams;
 };
 
@@ -234,6 +234,23 @@ function buildSearchSuffix(searchParams: PageSearchParams) {
   return encoded.length > 0 ? `?${encoded}` : "";
 }
 
+function getFirstSearchParamValue(
+  searchParams: PageSearchParams,
+  key: string
+) {
+  const value = searchParams[key];
+  if (typeof value === "string") {
+    return value;
+  }
+
+  if (Array.isArray(value)) {
+    const first = value.find((item): item is string => typeof item === "string");
+    return first ?? null;
+  }
+
+  return null;
+}
+
 async function resolveStudioRoute(segment: string, locale: Locale): Promise<ResolvedStudioRoute | null> {
   const requestedSegment = segment.trim();
   if (requestedSegment.length === 0) {
@@ -349,11 +366,11 @@ function stringifyJsonLd(data: Record<string, unknown>) {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; id: string }>;
+  params: Promise<{ locale: string; studioSlug: string }>;
 }): Promise<Metadata> {
-  const { locale, id } = await params;
+  const { locale, studioSlug } = await params;
   const currentLocale = isLocale(locale) ? locale : DEFAULT_LOCALE;
-  const resolved = await resolveStudioRoute(id, currentLocale);
+  const resolved = await resolveStudioRoute(studioSlug, currentLocale);
 
   if (!resolved) {
     return {
@@ -415,18 +432,19 @@ export async function generateMetadata({
 }
 
 export default async function StudioPage({ params, searchParams }: Props) {
-  const { locale, id } = await params;
+  const { locale, studioSlug } = await params;
   if (!isLocale(locale)) {
     notFound();
   }
+  const resolvedSearchParams = (await searchParams) ?? {};
 
-  const resolved = await resolveStudioRoute(id, locale);
+  const resolved = await resolveStudioRoute(studioSlug, locale);
   if (!resolved) {
     notFound();
   }
 
   if (resolved.shouldRedirect) {
-    const searchSuffix = buildSearchSuffix((await searchParams) ?? {});
+    const searchSuffix = buildSearchSuffix(resolvedSearchParams);
     permanentRedirect(`${localePath(locale, resolved.canonicalPath)}${searchSuffix}`);
   }
 
@@ -453,6 +471,10 @@ export default async function StudioPage({ params, searchParams }: Props) {
     yandexMapsHref,
     googleMapsHref,
   });
+  const requestedHallId = getFirstSearchParamValue(resolvedSearchParams, "hallId");
+  const selectedHallId = requestedHallId && studio.halls.some((hall) => hall.id === requestedHallId)
+    ? requestedHallId
+    : null;
   const workingHours =
     getLocalizedText(studio.working_hours_i18n as JsonObject, locale) ??
     UI_STRINGS.working_hours_fallback[locale];
@@ -593,7 +615,7 @@ export default async function StudioPage({ params, searchParams }: Props) {
         </div>
       </section>
 
-      <HallFocus />
+      <HallFocus hallId={selectedHallId} />
       <section className="stack">
         <HallCardList
           halls={hallCards}

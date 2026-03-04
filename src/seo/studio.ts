@@ -13,12 +13,20 @@ export function slugifyStudioName(name: string) {
   return normalized.length > 0 ? normalized : DEFAULT_STUDIO_SLUG;
 }
 
+export function normalizeStudioSlug(slug: string) {
+  return slugifyStudioName(slug);
+}
+
 export function buildStudioSegment(id: string, name: string) {
   return `${id}-${slugifyStudioName(name)}`;
 }
 
 export function buildStudioPath(id: string, name: string) {
   return `/studios/${buildStudioSegment(id, name)}`;
+}
+
+export function buildStudioHallPath(studioName: string, hallName: string) {
+  return `/studios/${slugifyStudioName(studioName)}/${slugifyStudioName(hallName)}`;
 }
 
 export function parseStudioSegment(segment: string) {

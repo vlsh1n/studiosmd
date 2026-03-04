@@ -189,3 +189,30 @@ export async function getStudioById(id: string, locale: Locale) {
     })),
   };
 }
+
+export async function listHallRouteEntries(locale: Locale) {
+  const halls = await prisma.hall.findMany({
+    select: {
+      id: true,
+      name_i18n: true,
+      studio: {
+        select: {
+          id: true,
+          name_i18n: true,
+        },
+      },
+    },
+    orderBy: {
+      id: "asc",
+    },
+  });
+
+  return halls.map((hall) => ({
+    id: hall.id,
+    name: getI18n(hall.name_i18n as I18nObject, locale),
+    studio: {
+      id: hall.studio.id,
+      name: getI18n(hall.studio.name_i18n as I18nObject, locale),
+    },
+  }));
+}

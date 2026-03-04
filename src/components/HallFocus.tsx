@@ -11,9 +11,13 @@ const highlightClasses = [
   "transition",
 ];
 
-export default function HallFocus() {
+type Props = {
+  hallId?: string | null;
+};
+
+export default function HallFocus({ hallId: hallIdProp = null }: Props) {
   const searchParams = useSearchParams();
-  const hallId = searchParams.get("hallId");
+  const hallId = hallIdProp ?? searchParams.get("hallId");
 
   useEffect(() => {
     if (!hallId) return;

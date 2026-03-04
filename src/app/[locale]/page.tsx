@@ -13,7 +13,7 @@ import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, Locale } from "@/i18n";
 import { safeExternalUrl } from "@/lib/url";
 import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
-import { buildStudioPath } from "@/seo/studio";
+import { buildStudioHallPath } from "@/seo/studio";
 
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
@@ -284,9 +284,10 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     }
     const spaceLine = areaParts.length > 0 ? areaParts.join(" · ") : null;
 
-    const hallId = encodeURIComponent(hall.id);
-    const hallStudioPath = buildStudioPath(hall.studio.id, hall.studio.name);
-    const hallHref = `${localePath(locale, hallStudioPath)}?hallId=${hallId}#hall-${hallId}`;
+    const hallHref = localePath(
+      locale,
+      buildStudioHallPath(hall.studio.name, hall.name)
+    );
 
     const factItems: HallFactItem[] = [];
     if (hall.daylight === true) {

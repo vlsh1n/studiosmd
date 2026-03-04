@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
-import HallGalleryZoom from "@/app/[locale]/studios/[id]/HallGalleryZoom";
+import HallGalleryZoom from "@/app/[locale]/studios/[studioSlug]/HallGalleryZoom";
 import { trackEvent } from "@/lib/analytics";
 
 export type StudioHallFactKey =
