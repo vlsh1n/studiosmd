@@ -23,6 +23,7 @@ const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
   ro: "În weekend:",
   en: "Weekends:",
 };
+const STUDIO_SOCIAL_IMAGE_URL = absUrl("/og-image");
 
 function getStringsFromJson(value: JsonArray) {
   if (!Array.isArray(value)) return [];
@@ -191,6 +192,7 @@ export async function generateMetadata({
   }
 
   const seo = getStudioSeo(studio, currentLocale);
+  const canonicalUrl = absUrl(localePath(currentLocale, `/studios/${studio.id}`));
   const languageAlternates = Object.fromEntries(
     LOCALES.map((languageLocale) =>
       [languageLocale, absUrl(localePath(languageLocale, `/studios/${studio.id}`))]
@@ -201,11 +203,33 @@ export async function generateMetadata({
     title: seo.title,
     description: seo.description,
     alternates: {
-      canonical: absUrl(localePath(currentLocale, `/studios/${studio.id}`)),
+      canonical: canonicalUrl,
       languages: {
         ...languageAlternates,
         "x-default": absUrl(localePath(DEFAULT_LOCALE, `/studios/${studio.id}`)),
       },
+    },
+    openGraph: {
+      type: "website",
+      url: canonicalUrl,
+      siteName: SITE_NAME,
+      title: seo.title,
+      description: seo.description,
+      images: [
+        {
+          url: STUDIO_SOCIAL_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: "Catalog de studiouri foto în Chișinău",
+        },
+      ],
+      locale: currentLocale,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      images: [STUDIO_SOCIAL_IMAGE_URL],
     },
     robots: {
       index: true,

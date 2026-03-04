@@ -65,6 +65,7 @@ const CATALOG_SEO_COPY: Record<Locale, { title: string; description: string }> =
       "Choose a photo studio in Chișinău by photos, price, district, and options. Compare halls and open each studio page for details.",
   },
 };
+const CATALOG_SOCIAL_IMAGE_URL = absUrl("/og-image");
 
 function hasSearchParams(query: { [key: string]: string | string[] | undefined }) {
   return Object.keys(query).length > 0;
@@ -85,16 +86,39 @@ export async function generateMetadata({
     LOCALES.map((languageLocale) => [languageLocale, absUrl(localePath(languageLocale))])
   );
   const seo = CATALOG_SEO_COPY[currentLocale];
+  const canonicalUrl = absUrl(localePath(currentLocale));
 
   return {
     title: seo.title,
     description: seo.description,
     alternates: {
-      canonical: absUrl(localePath(currentLocale)),
+      canonical: canonicalUrl,
       languages: {
         ...languageAlternates,
         "x-default": absUrl(localePath(DEFAULT_LOCALE)),
       },
+    },
+    openGraph: {
+      type: "website",
+      url: canonicalUrl,
+      siteName: SITE_NAME,
+      title: seo.title,
+      description: seo.description,
+      images: [
+        {
+          url: CATALOG_SOCIAL_IMAGE_URL,
+          width: 1200,
+          height: 630,
+          alt: "Catalog de studiouri foto în Chișinău",
+        },
+      ],
+      locale: currentLocale,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      images: [CATALOG_SOCIAL_IMAGE_URL],
     },
     robots: shouldNoIndex
       ? {
