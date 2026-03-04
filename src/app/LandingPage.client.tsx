@@ -145,6 +145,10 @@ export default function LandingPage() {
             <Image src={hall4Image} alt="" className="landing-gallery-image" />
           </figure>
         </div>
+
+        <footer className="mt-6 border-t border-[var(--glass-border)] pt-4">
+          <p className="text-xs leading-relaxed muted">{UI_STRINGS.footer_disclaimer[locale]}</p>
+        </footer>
       </section>
     </div>
   );

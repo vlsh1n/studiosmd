@@ -23,6 +23,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Susține proiectul",
     en: "Support project",
   },
+  footer_disclaimer: {
+    ru: "Указанные цены не являются публичной офертой. Некоторые цены могут быть не актуальны. Актуальные цены уточняйте используя контакты фотостудий. Вся доступная информация получена из открытых источников.",
+    ro: "Prețurile indicate nu constituie o ofertă publică. Unele prețuri pot să nu fie actuale. Pentru prețurile actuale, vă rugăm să folosiți contactele studiourilor foto. Toate informațiile disponibile sunt obținute din surse publice.",
+    en: "The listed prices do not constitute a public offer. Some prices may be outdated. Please use photo studio contacts to confirm current prices. All available information is collected from public sources.",
+  },
   catalog_h1: {
     ru: "Каталог фотостудий в Кишинёве",
     ro: "Catalog de studiouri foto din Chișinău",

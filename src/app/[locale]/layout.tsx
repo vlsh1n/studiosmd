@@ -69,6 +69,9 @@ export default async function LocaleLayout({ children, params }: Props) {
           </div>
         </header>
         <main className="stack pt-6">{children}</main>
+        <footer className="mt-6 border-t border-[var(--glass-border)] pt-4">
+          <p className="text-xs leading-relaxed muted">{UI_STRINGS.footer_disclaimer[locale]}</p>
+        </footer>
       </div>
     </div>
   );

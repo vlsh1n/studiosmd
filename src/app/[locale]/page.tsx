@@ -305,10 +305,10 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
     return {
       id: hall.id,
-      name: hall.name,
+      name: `${hall.name} | ${hall.studio.name}`,
       image,
       hallHref,
-      studioLine: `${DISTRICTS[hall.studio.district_key][locale]} • ${hall.studio.name}`,
+      studioLine: DISTRICTS[hall.studio.district_key][locale],
       spaceLine,
       priceLine: `${hall.price_per_hour}\u00A0MDL ${UI_STRINGS.per_hour[locale]}`,
       weekendPriceLine,
