@@ -57,6 +57,11 @@ export const TAGS = {
     ro: "Sedinte de familie",
     en: "Family",
   },
+  wedding: {
+    ru: "Свадебный",
+    ro: "Nuntă",
+    en: "Wedding",
+  },
   product: {
     ru: "Предметная съёмка",
     ro: "Foto produs",
