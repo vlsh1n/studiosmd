@@ -44,7 +44,7 @@
 - Устанавливает `metadataBase` из `NEXT_PUBLIC_SITE_URL` fallback.
 - Подключает favicon/apple icons и `site.webmanifest`.
 - Подключает GA4 через `next/script` (`afterInteractive`) при наличии `NEXT_PUBLIC_GA_MEASUREMENT_ID`.
-- Проставляет `<html lang>` на основе `x-locale` из middleware.
+- Проставляет `<html lang>` на основе `x-locale` из `src/proxy.ts`.
 - Рендерит `KofiOverlay`.
 
 ### 3.3 Locale layout (`src/app/[locale]/layout.tsx`)
@@ -53,8 +53,9 @@
 - Header: бренд, переключатель языка, Telegram contacts CTA.
 - Donate-кнопки в mobile header нет.
 - Footer: disclaimer на всех локалях (`UI_STRINGS.footer_disclaimer`).
+- Подключает `HtmlLangSync.client.tsx`, который синхронизирует `document.documentElement.lang` на client-side переходах между локалями.
 
-## 4) Middleware (`middleware.ts`)
+## 4) Proxy (`src/proxy.ts`)
 
 - Поддерживаемые локали: `ro`, `ru`, `en`.
 - Default locale fallback: `ro`.
@@ -64,6 +65,7 @@
   - `RATE_LIMIT_MAX_REQUESTS` (default `240`)
 - На лимите возвращает `429` + rate-limit headers.
 - Выставляет rate-limit headers и на обычные ответы.
+- Работает через file convention Next.js 16 (`proxy.ts`), legacy `middleware.ts` в проекте не используется.
 
 ## 5) i18n and Dictionaries
 

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import HtmlLangSync from "@/components/HtmlLangSync.client";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { type Locale } from "@/i18n";
 import centralImage from "../../design/central.png";
@@ -20,6 +21,7 @@ export default function LandingPage() {
 
   return (
     <div className="page">
+      <HtmlLangSync locale={locale} />
       <section className="panel landing-hero">
         <header className="landing-hero-header">
           <p className="landing-hero-brand">studiosmap</p>

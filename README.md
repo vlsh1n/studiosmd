@@ -15,7 +15,8 @@ Multilingual catalog of photo studios and halls in Chișinău.
 - SEO metadata: canonical, hreflang, OpenGraph, Twitter
 - JSON-LD `LocalBusiness` on studio pages
 - GA4 events: `search_used`, `filter_used`, `hall_clicked`, `studio_contact_clicked`
-- Middleware rate limiting and locale header propagation (`x-locale`)
+- Proxy-based rate limiting and locale header propagation (`x-locale`)
+- Client-side `<html lang>` sync on locale switch (`HtmlLangSync`)
 - Robots policy with AI crawler blocking list
 
 ## Tech Stack
@@ -96,7 +97,7 @@ Defined in `.env.example`:
 - `NEXT_PUBLIC_SITE_URL` (recommended, used by SEO URLs)
 - `NEXT_PUBLIC_GA_MEASUREMENT_ID` (optional, enables GA4 script/events)
 
-Also supported by middleware:
+Also supported by proxy (`src/proxy.ts`):
 
 - `RATE_LIMIT_WINDOW_MS` (optional, default `60000`)
 - `RATE_LIMIT_MAX_REQUESTS` (optional, default `240`)
@@ -132,6 +133,7 @@ src/
           [hallSlug]/page.tsx
   components/
     HallFocus.tsx
+    HtmlLangSync.client.tsx
     LocaleSwitcher.tsx
     KofiOverlay.client.tsx
   db/
@@ -146,7 +148,7 @@ src/
   lib/
     analytics.ts
     url.ts
-middleware.ts
+  proxy.ts
 prisma/
   schema.prisma
   migrations/
