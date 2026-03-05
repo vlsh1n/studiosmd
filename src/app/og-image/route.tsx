@@ -45,7 +45,7 @@ export async function GET() {
               opacity: 0.9,
             }}
           >
-            studiosmap.co
+            studiosmap.app
           </div>
         </div>
 
