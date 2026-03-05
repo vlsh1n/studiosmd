@@ -87,7 +87,7 @@ function consumeRateLimitToken(request: NextRequest) {
   };
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const rateLimit = consumeRateLimitToken(request);
   if (rateLimit.limited) {
     return new NextResponse("Too many requests. Please try again later.", {
