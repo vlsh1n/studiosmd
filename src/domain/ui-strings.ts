@@ -168,6 +168,16 @@ export const UI_STRINGS: UiStrings = {
     ro: "Contacte",
     en: "Contacts",
   },
+  support_cta: {
+    ru: "Поддержка",
+    ro: "Suport",
+    en: "Support",
+  },
+  telegram_cta: {
+    ru: "Telegram",
+    ro: "Telegram",
+    en: "Telegram",
+  },
   working_hours_label: {
     ru: "График:",
     ro: "Program:",

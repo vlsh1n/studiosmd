@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import HtmlLangSync from "@/components/HtmlLangSync.client";
+import { SupportMenu } from "@/components/SupportMenu.client";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { type Locale } from "@/i18n";
 import centralImage from "../../design/central.png";
@@ -16,7 +17,6 @@ const LOCALES: Locale[] = ["ro", "ru", "en"];
 
 export default function LandingPage() {
   const [locale, setLocale] = useState<Locale>("ro");
-  const contactsHref = "https://t.me/studiosmap";
   const supportProjectHref = "https://ko-fi.com/voloshinw";
 
   return (
@@ -26,22 +26,7 @@ export default function LandingPage() {
         <header className="landing-hero-header">
           <p className="landing-hero-brand">studiosmap</p>
           <div className="sm:hidden inline-flex items-center gap-3 ml-auto">
-            <a
-              href={contactsHref}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label={UI_STRINGS.contacts_cta[locale]}
-              title={UI_STRINGS.contacts_cta[locale]}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition hover:bg-black/5 active:translate-y-px"
-            >
-              <img
-                src="/icons/telegram.png"
-                alt=""
-                aria-hidden="true"
-                className="h-10 w-10 object-contain brightness-0 transition"
-                loading="lazy"
-              />
-            </a>
+            <SupportMenu locale={locale} align="center" iconOnly />
             <div className="relative flex items-center">
               <select
                 id="landing-locale-switcher-compact"
@@ -73,25 +58,7 @@ export default function LandingPage() {
           </div>
 
           <div className="landing-hero-controls hidden sm:inline-flex">
-            <a
-              href={contactsHref}
-              target="_blank"
-              rel="noreferrer noopener"
-              aria-label={UI_STRINGS.contacts_cta[locale]}
-              title={UI_STRINGS.contacts_cta[locale]}
-              className="pill ui-pill-control group h-11 shrink-0 justify-center px-3 sm:px-4"
-            >
-              <img
-                src="/icons/telegram.png"
-                alt=""
-                aria-hidden="true"
-                className="h-5 w-5 object-contain brightness-0 transition group-hover:invert"
-                loading="lazy"
-              />
-              <span className="hidden sm:inline text-sm font-medium">
-                {UI_STRINGS.contacts_cta[locale]}
-              </span>
-            </a>
+            <SupportMenu locale={locale} />
 
             <div className="landing-hero-locales">
               {LOCALES.map((code) => (
