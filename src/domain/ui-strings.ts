@@ -135,12 +135,12 @@ export const UI_STRINGS: UiStrings = {
   },
   cyclorama_fact_label: {
     ru: "Циклорама",
-    ro: "Cyclorama",
+    ro: "Ciclorama",
     en: "Cyclorama",
   },
   view_hall_cta: {
     ru: "Посмотреть",
-    ro: "Vezi",
+    ro: "Află mai mult",
     en: "View",
   },
   instagram_cta: {
