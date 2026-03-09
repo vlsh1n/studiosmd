@@ -11,7 +11,7 @@ function buildAlternates(path: string): Record<string, string> {
     ...Object.fromEntries(
       LOCALES.map((locale) => [locale, absUrl(localePath(locale, path))])
     ),
-    "x-default": absUrl(localePath(DEFAULT_LOCALE, path)),
+    "x-default": path ? absUrl(localePath(DEFAULT_LOCALE, path)) : absUrl("/"),
   };
 }
 
@@ -42,13 +42,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const rootAlternates = buildAlternates("");
-  const rootEntries: MetadataRoute.Sitemap = LOCALES.map((locale) => ({
-    url: absUrl(localePath(locale)),
-    lastModified: now,
-    alternates: {
-      languages: rootAlternates,
+  const rootEntries: MetadataRoute.Sitemap = [
+    {
+      url: absUrl("/"),
+      lastModified: now,
+      alternates: {
+        languages: rootAlternates,
+      },
     },
-  }));
+    ...LOCALES.map((locale) => ({
+      url: absUrl(localePath(locale)),
+      lastModified: now,
+      alternates: {
+        languages: rootAlternates,
+      },
+    })),
+  ];
 
   const studioEntries: MetadataRoute.Sitemap = studios.flatMap((studio) => {
     const studioPaths = Object.fromEntries(
