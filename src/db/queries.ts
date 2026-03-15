@@ -224,9 +224,9 @@ export async function getStudioBySlug(slug: string, locale: Locale) {
   });
 
   const match = studios.find((studio) => {
-    const nameRo = (studio.name_i18n as Record<string, string>)?.ro ?? studio.name;
-    const nameRu = (studio.name_i18n as Record<string, string>)?.ru ?? studio.name;
-    const nameEn = (studio.name_i18n as Record<string, string>)?.en ?? studio.name;
+    const nameRo = getI18n(studio.name_i18n as I18nObject, "ro");
+    const nameRu = getI18n(studio.name_i18n as I18nObject, "ru");
+    const nameEn = getI18n(studio.name_i18n as I18nObject, "en");
     return (
       slugifyStudioName(nameRo) === slug ||
       slugifyStudioName(nameRu) === slug ||
