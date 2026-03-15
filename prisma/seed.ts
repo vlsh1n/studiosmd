@@ -23,6 +23,7 @@ type HallSeed = {
 };
 
 type StudioSeed = {
+  slug: string;
   district_key: DistrictKey;
   name_i18n: Record<LocaleKey, string>;
   address_i18n: Record<LocaleKey, string>;
@@ -37,6 +38,7 @@ type StudioSeed = {
 
 const studios: StudioSeed[] = [
   {
+    slug: "studio-aurora",
     district_key: DistrictKey.botanica,
     name_i18n: {
       ru: "Студия Aurora",
@@ -108,6 +110,7 @@ const studios: StudioSeed[] = [
     ],
   },
   {
+    slug: "studio-lumi",
     district_key: DistrictKey.ciocana,
     name_i18n: {
       ru: "Студия Lumi",
@@ -181,6 +184,7 @@ const studios: StudioSeed[] = [
     ],
   },
   {
+    slug: "studio-central",
     district_key: DistrictKey.centru,
     name_i18n: {
       ru: "Студия Central",
@@ -253,6 +257,7 @@ const studios: StudioSeed[] = [
     ],
   },
   {
+    slug: "studio-loftic",
     district_key: DistrictKey.buiucani,
     name_i18n: {
       ru: "Студия Loftic",
@@ -323,6 +328,7 @@ const studios: StudioSeed[] = [
     ],
   },
   {
+    slug: "studio-nord",
     district_key: DistrictKey.riscani,
     name_i18n: {
       ru: "Студия North",
@@ -410,6 +416,7 @@ async function main() {
   for (const studio of studios) {
     await prisma.studio.create({
       data: {
+        slug: studio.slug,
         name_i18n: studio.name_i18n,
         address_i18n: studio.address_i18n,
         district_key: studio.district_key,

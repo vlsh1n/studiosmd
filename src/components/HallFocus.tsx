@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
 
 const highlightClasses = [
   "ring-2",
@@ -15,9 +14,7 @@ type Props = {
   hallId?: string | null;
 };
 
-export default function HallFocus({ hallId: hallIdProp = null }: Props) {
-  const searchParams = useSearchParams();
-  const hallId = hallIdProp ?? searchParams.get("hallId");
+export default function HallFocus({ hallId = null }: Props) {
 
   useEffect(() => {
     if (!hallId) return;

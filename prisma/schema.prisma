@@ -23,6 +23,7 @@ enum DistrictKey {
 
 model Studio {
   id                 String      @id @default(cuid())
+  slug               String      @unique
   name_i18n          Json
   address_i18n       Json
   district_key       DistrictKey

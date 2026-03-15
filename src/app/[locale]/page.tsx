@@ -138,8 +138,8 @@ export async function generateMetadata({
 }
 
 type Props = {
-  params: { locale: string };
-  searchParams?: { [key: string]: string | string[] | undefined };
+  params: Promise<{ locale: string }>;
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 const WEEKEND_PRICE_LABEL: Record<Locale, string> = {

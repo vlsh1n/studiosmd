@@ -20,6 +20,17 @@ type RateLimitEntry = {
 
 // Best-effort in-memory limiter. It works per runtime instance.
 const rateLimitStore = new Map<string, RateLimitEntry>();
+let requestCount = 0;
+const PRUNE_EVERY_N = 500;
+
+function pruneExpiredEntries() {
+  const now = Date.now();
+  for (const [key, entry] of rateLimitStore) {
+    if (now >= entry.resetAt) {
+      rateLimitStore.delete(key);
+    }
+  }
+}
 
 function parsePositiveInt(rawValue: string | undefined, fallback: number) {
   if (!rawValue) return fallback;
@@ -51,6 +62,11 @@ function getClientIdentifier(request: NextRequest) {
 }
 
 function consumeRateLimitToken(request: NextRequest) {
+  requestCount += 1;
+  if (requestCount % PRUNE_EVERY_N === 0) {
+    pruneExpiredEntries();
+  }
+
   const clientId = getClientIdentifier(request);
   if (!clientId) {
     return {
