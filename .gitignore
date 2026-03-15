@@ -44,4 +44,6 @@ next-env.d.ts
 # ide
 /.idea/
 
-# мне пох тип
+# claude
+/.claude/
+/claude-seo/
