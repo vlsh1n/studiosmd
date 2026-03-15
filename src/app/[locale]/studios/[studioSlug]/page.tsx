@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { getStudioById } from "@/db/queries";
+import { getStudioById, getStudioBySlug } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, type Locale } from "@/i18n";
@@ -12,6 +12,8 @@ import HallCardList, {
 } from "@/app/[locale]/studios/[studioSlug]/HallCardList.client";
 import StudioContacts from "@/app/[locale]/studios/[studioSlug]/StudioContacts.client";
 import HallFocus from "@/components/HallFocus";
+
+export const revalidate = 3600;
 
 type PageSearchParams = { [key: string]: string | string[] | undefined };
 
@@ -281,12 +283,39 @@ async function resolveStudioRoute(segment: string, locale: Locale): Promise<Reso
 
   const parsed = parseStudioSegment(requestedSegment);
   if (!parsed.id) {
-    return null;
+    const slugMatch = await getStudioBySlug(requestedSegment, locale);
+    if (!slugMatch) {
+      return null;
+    }
+    const canonicalSegment = buildStudioSegment(
+      slugMatch.id,
+      getStudioNameForLocale(slugMatch, locale)
+    );
+    return {
+      studio: slugMatch,
+      canonicalSegment,
+      canonicalPath: `/studios/${canonicalSegment}`,
+      shouldRedirect: true,
+    };
   }
 
   const parsedMatch = await getStudioById(parsed.id, locale);
   if (!parsedMatch) {
-    return null;
+    const slugCandidate = parsed.slug && parsed.slug.length > 0 ? parsed.slug : requestedSegment;
+    const slugMatch = await getStudioBySlug(slugCandidate, locale);
+    if (!slugMatch) {
+      return null;
+    }
+    const canonicalSegment = buildStudioSegment(
+      slugMatch.id,
+      getStudioNameForLocale(slugMatch, locale)
+    );
+    return {
+      studio: slugMatch,
+      canonicalSegment,
+      canonicalPath: `/studios/${canonicalSegment}`,
+      shouldRedirect: true,
+    };
   }
 
   const canonicalSegment = buildStudioSegment(

@@ -15,6 +15,8 @@ import { safeExternalUrl } from "@/lib/url";
 import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
 import { buildStudioHallPath } from "@/seo/studio";
 
+export const revalidate = 1800;
+
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
 const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
 const PAGE_SIZE = 12;

@@ -1,6 +1,7 @@
 import type { DistrictKey, Prisma } from "@prisma/client";
 import { prisma } from "@/db/prisma";
 import type { Locale } from "@/i18n";
+import { slugifyStudioName } from "@/seo/studio";
 
 type ListHallsParams = {
   locale: Locale;
@@ -197,6 +198,51 @@ export async function getStudioById(id: string, locale: Locale) {
     name: getI18n(studio.name_i18n as I18nObject, locale),
     address: getI18n(studio.address_i18n as I18nObject, locale),
     halls: studio.halls.map((hall) => ({
+      ...hall,
+      name: getI18n(hall.name_i18n as I18nObject, locale),
+    })),
+  };
+}
+
+export async function getStudioBySlug(slug: string, locale: Locale) {
+  const studios = await prisma.studio.findMany({
+    include: {
+      halls: {
+        orderBy: [
+          {
+            price_per_hour: {
+              sort: "asc",
+              nulls: "last",
+            },
+          },
+          {
+            id: "asc",
+          },
+        ],
+      },
+    },
+  });
+
+  const match = studios.find((studio) => {
+    const nameRo = (studio.name_i18n as Record<string, string>)?.ro ?? studio.name;
+    const nameRu = (studio.name_i18n as Record<string, string>)?.ru ?? studio.name;
+    const nameEn = (studio.name_i18n as Record<string, string>)?.en ?? studio.name;
+    return (
+      slugifyStudioName(nameRo) === slug ||
+      slugifyStudioName(nameRu) === slug ||
+      slugifyStudioName(nameEn) === slug
+    );
+  });
+
+  if (!match) {
+    return null;
+  }
+
+  return {
+    ...match,
+    name: getI18n(match.name_i18n as I18nObject, locale),
+    address: getI18n(match.address_i18n as I18nObject, locale),
+    halls: match.halls.map((hall) => ({
       ...hall,
       name: getI18n(hall.name_i18n as I18nObject, locale),
     })),
