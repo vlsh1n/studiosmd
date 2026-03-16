@@ -11,7 +11,7 @@ const csp = [
   "img-src 'self' data: https:",
   "style-src 'self' 'unsafe-inline' https://*.ko-fi.com https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com",
-  "frame-src https://*.ko-fi.com",
+  "frame-src https://ko-fi.com https://*.ko-fi.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
