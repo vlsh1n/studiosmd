@@ -22,7 +22,6 @@ type Props = {
   searchParams?: Promise<PageSearchParams>;
 };
 
-type JsonArray = unknown[] | null | undefined;
 type StudioRecord = NonNullable<Awaited<ReturnType<typeof getStudioBySlug>>>;
 
 const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
@@ -40,25 +39,19 @@ function formatHourlyPrice(pricePerHour: number | null | undefined, locale: Loca
   return UI_STRINGS.price_on_request[locale];
 }
 
-function getStringsFromJson(value: JsonArray) {
-  if (!Array.isArray(value)) return [];
-
-  const urls: string[] = [];
-  for (const item of value) {
-    if (typeof item !== "string") continue;
-    const safeUrl = safeExternalUrl(item);
-    if (safeUrl) {
-      urls.push(safeUrl);
-    }
-  }
-  return urls;
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
 }
 
-function getImageList(value: JsonArray) {
-  return getStringsFromJson(value);
+function getImageList(images: unknown) {
+  if (!isStringArray(images)) return [];
+  return images.flatMap((url) => {
+    const safe = safeExternalUrl(url);
+    return safe ? [safe] : [];
+  });
 }
 
-function getStringValue(value: unknown) {
+function getStringValue(value: string | null | undefined) {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
@@ -68,7 +61,7 @@ function sanitizePhoneForTel(value: string) {
   return value.replace(/[^\d+]/g, "");
 }
 
-function getInstagramNickname(value: unknown) {
+function getInstagramNickname(value: string | null | undefined) {
   const rawValue = getStringValue(value);
   if (!rawValue) return null;
 
@@ -414,7 +407,7 @@ export default async function StudioPage({ params, searchParams }: Props) {
   const workingHours = studio.working_hours ?? UI_STRINGS.working_hours_fallback[locale];
   const hallCountLabel = UI_STRINGS.halls_count[locale].replace("{count}", String(studio.halls.length));
   const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
-    const images = getImageList(hall.images as JsonArray);
+    const images = getImageList(hall.images);
     const tags = getNormalizedTagKeys(hall.tags).map((tag) => TAGS[tag][locale]);
     const flashAvailable = hall.flash_light === true;
     const continuousAvailable = hall.continuous_light === true;

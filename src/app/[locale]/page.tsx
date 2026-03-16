@@ -163,21 +163,16 @@ function parseCsvParam(value?: string | string[]) {
     .filter(Boolean);
 }
 
+function isStringArray(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((item) => typeof item === "string");
+}
+
 function getImagesFromJson(value: unknown) {
-  if (!Array.isArray(value)) {
-    return [];
-  }
-
-  const images: string[] = [];
-  for (const item of value) {
-    if (typeof item !== "string") continue;
-    const safeUrl = safeExternalUrl(item);
-    if (safeUrl) {
-      images.push(safeUrl);
-    }
-  }
-
-  return images;
+  if (!isStringArray(value)) return [];
+  return value.flatMap((url) => {
+    const safe = safeExternalUrl(url);
+    return safe ? [safe] : [];
+  });
 }
 
 function shuffleArray<T>(items: T[]): T[] {
@@ -230,14 +225,14 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       : "random";
   let halls: HallListItem[];
   try {
-    halls = (await listHalls({
+    halls = await listHalls({
       q: q.length > 0 ? q : undefined,
       district_keys,
       facts,
       sort: sort === "random" ? undefined : sort,
       take: PAGE_SIZE + 1,
       skip,
-    })) as HallListItem[];
+    });
   } catch (err) {
     console.error("[CatalogPage] listHalls failed:", err);
     throw err;
