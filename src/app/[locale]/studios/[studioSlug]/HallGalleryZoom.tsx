@@ -12,10 +12,11 @@ import {
 import { createPortal } from "react-dom";
 import useEmblaCarousel from "embla-carousel-react";
 
-type Props = {
+interface Props {
   images: string[];
   alt: string;
-};
+  isHero?: boolean;
+}
 
 function clampIndex(value: number, maxIndex: number) {
   return Math.min(Math.max(value, 0), maxIndex);
@@ -23,13 +24,13 @@ function clampIndex(value: number, maxIndex: number) {
 
 const SWIPE_THRESHOLD_PX = 42;
 
-export default function HallGalleryZoom({ images, alt }: Props) {
+export default function HallGalleryZoom({ images, alt, isHero = false }: Props) {
   if (images.length === 0) return null;
 
-  return <HallGalleryZoomContent images={images} alt={alt} />;
+  return <HallGalleryZoomContent images={images} alt={alt} isHero={isHero} />;
 }
 
-function HallGalleryZoomContent({ images, alt }: Props) {
+function HallGalleryZoomContent({ images, alt, isHero = false }: Props) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalIndex, setModalIndex] = useState(0);
@@ -177,7 +178,8 @@ function HallGalleryZoomContent({ images, alt }: Props) {
                     <img
                       src={image}
                       alt={alt}
-                      loading="lazy"
+                      loading={isHero && index === 0 ? "eager" : "lazy"}
+                      fetchPriority={isHero && index === 0 ? "high" : "auto"}
                       decoding="async"
                       onLoad={(event) => handleInlineImageLoad(index, event)}
                       className={`absolute inset-0 h-full w-full object-center ${

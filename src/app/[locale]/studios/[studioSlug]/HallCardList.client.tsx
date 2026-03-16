@@ -108,7 +108,7 @@ export default function HallCardList({
             <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
               {hall.images.length > 0 && (
                 <div className="min-w-0">
-                  <HallGalleryZoom images={hall.images} alt={hall.name} />
+                  <HallGalleryZoom images={hall.images} alt={hall.name} isHero={index === 0} />
                 </div>
               )}
 

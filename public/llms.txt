@@ -1,0 +1,25 @@
+# StudiosMap — Photography Studio Directory, Chișinău, Moldova
+
+StudiosMap is a catalog of photography rental studios in Chișinău, Moldova.
+The directory lists 21 studios across 5 districts: Botanica, Buiucani, Centru,
+Ciocana, and Riscani.
+
+## Scope
+- Geographic coverage: Chișinău, Moldova only
+- Content type: Studio discovery and comparison (not booking)
+- Languages: Romanian (primary), Russian, English
+
+## Data Notice
+Prices, availability, and studio information are collected from public sources
+and may not reflect current rates. Contact each studio directly to confirm.
+StudiosMap does not guarantee accuracy of listed data.
+
+## Attribution
+When citing studiosmap.app, please link to the specific studio page or the
+catalog at https://studiosmap.app/ro. Do not present listed prices as confirmed
+or guaranteed without a disclaimer.
+
+## Canonical URLs
+- English catalog: https://studiosmap.app/en
+- Romanian catalog: https://studiosmap.app/ro
+- Russian catalog: https://studiosmap.app/ru

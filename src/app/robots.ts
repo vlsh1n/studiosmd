@@ -1,22 +1,23 @@
 import type { MetadataRoute } from "next";
 import { absUrl } from "@/seo/site";
 
-const AI_CRAWLERS = [
-  "GPTBot",
-  "OAI-SearchBot",
-  "ChatGPT-User",
-  "ClaudeBot",
-  "Claude-Web",
-  "anthropic-ai",
+// Training/data-harvesting crawlers — keep blocked
+const TRAINING_CRAWLERS = [
   "CCBot",
+  "anthropic-ai",
   "Bytespider",
-  "PerplexityBot",
-  "Perplexity-User",
-  "Google-Extended",
-  "Applebot-Extended",
-  "Meta-ExternalAgent",
+  "ChatGPT-User",
+  "Claude-Web",
   "Meta-ExternalFetcher",
 ] as const;
+
+// Search-index crawlers — allowed (feed live AI search results)
+// GPTBot, OAI-SearchBot → ChatGPT Search
+// ClaudeBot → Claude.ai search
+// PerplexityBot, Perplexity-User → Perplexity
+// Google-Extended → Google AI Overviews
+// Applebot-Extended → Apple Intelligence
+// Meta-ExternalAgent → Meta AI
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -25,7 +26,7 @@ export default function robots(): MetadataRoute.Robots {
         userAgent: "*",
         allow: "/",
       },
-      ...AI_CRAWLERS.map((userAgent) => ({
+      ...TRAINING_CRAWLERS.map((userAgent) => ({
         userAgent,
         disallow: "/",
       })),

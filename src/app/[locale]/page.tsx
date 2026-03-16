@@ -363,6 +363,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
           {UI_STRINGS.catalog_h1[locale]}
         </h1>
         <p className="mt-2 text-sm muted">{UI_STRINGS.catalog_intro[locale]}</p>
+        <p className="mt-3 text-sm muted">{UI_STRINGS.catalog_body[locale]}</p>
       </section>
 
       <form id={CATALOG_FILTER_FORM_ID} className="stack" method="get">

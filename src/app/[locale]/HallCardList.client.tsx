@@ -89,6 +89,8 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                   <motion.img
                     src={item.image}
                     alt={item.name}
+                    loading={index === 0 ? "eager" : "lazy"}
+                    fetchPriority={index === 0 ? "high" : "auto"}
                     className="absolute inset-0 h-full w-full object-cover object-center"
                     whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
                     transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}

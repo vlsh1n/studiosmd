@@ -38,6 +38,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Alegeți studioul și sala după poze, preț, sector și opțiuni.",
     en: "Pick a studio and hall by photos, price, district, and options.",
   },
+  catalog_body: {
+    ru: "В Кишинёве 21 фотостудия в 5 районах: Ботаника, Буюканы, Центр, Чеканы и Рышкановка. Цены на почасовую аренду варьируются от 500 до 1300 MDL в час. Студии различаются по специализации: портрет, мода, предметные и семейные фотосессии. Самые распространённые удобства — дневной свет, блэкаут, парковка и циклорама. Указанные цены получены из открытых источников — уточняйте актуальные цены напрямую у студий.",
+    ro: "Chișinăul are 21 de studiouri foto în 5 sectoare: Botanica, Buiucani, Centru, Ciocana și Riscani. Prețurile pentru închirierea orară variază de la 500 la 1300 MDL pe oră. Studiourile diferă după specializare: portret, modă, product și ședințe de familie. Cele mai frecvente facilități sunt lumina naturală, opțiunea blackout, parcarea și cyclorama. Prețurile afișate provin din surse publice — contactați studiourile direct pentru confirmare.",
+    en: "Chișinău has 21 photo studios across 5 districts: Botanica, Buiucani, Centru, Ciocana, and Riscani. Hourly rental prices range from 500 to 1,300 MDL per hour. Studios vary by specialisation: portrait, fashion, product shoots, and family sessions. The most common amenities are natural light, blackout option, parking, and cyclorama. Listed prices are sourced from public information — contact studios directly to confirm current rates.",
+  },
   search_placeholder: {
     ru: "Поиск по студиям и залам",
     ro: "Căutare după studiouri și săli",

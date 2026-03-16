@@ -274,6 +274,41 @@ function buildLocalBusinessJsonLd({
   return localBusiness;
 }
 
+function buildBreadcrumbJsonLd({
+  studioName,
+  canonicalUrl,
+  locale,
+}: {
+  studioName: string;
+  canonicalUrl: string;
+  locale: Locale;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: SITE_NAME,
+        item: absUrl("/"),
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: UI_STRINGS.catalog_h1[locale],
+        item: absUrl(localePath(locale)),
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: studioName,
+        item: canonicalUrl,
+      },
+    ],
+  };
+}
+
 function stringifyJsonLd(data: Record<string, unknown>) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
@@ -400,6 +435,11 @@ export default async function StudioPage({ params, searchParams }: Props) {
     yandexMapsHref,
     googleMapsHref,
   });
+  const breadcrumbJsonLd = buildBreadcrumbJsonLd({
+    studioName: studio.name,
+    canonicalUrl,
+    locale,
+  });
   const requestedHallId = getFirstSearchParamValue(resolvedSearchParams, "hallId");
   const selectedHallId = requestedHallId && studio.halls.some((hall) => hall.id === requestedHallId)
     ? requestedHallId
@@ -467,6 +507,10 @@ export default async function StudioPage({ params, searchParams }: Props) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: stringifyJsonLd(localBusinessJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(breadcrumbJsonLd) }}
       />
 
       <section className="card p-4 sm:p-5">
