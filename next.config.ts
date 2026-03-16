@@ -6,12 +6,12 @@ import type { NextConfig } from "next";
 // To remove it, implement CSP nonces via middleware (Next.js docs: /docs/app/building-your-application/configuring/content-security-policy)
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://storage.ko-fi.com",
-  "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://region1.google-analytics.com https://www.googletagmanager.com",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.ko-fi.com https://static.cloudflareinsights.com",
+  "connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://region1.google-analytics.com https://www.googletagmanager.com https://*.ko-fi.com",
   "img-src 'self' data: https:",
-  "style-src 'self' 'unsafe-inline'",
-  "font-src 'self'",
-  "frame-src https://ko-fi.com",
+  "style-src 'self' 'unsafe-inline' https://*.ko-fi.com https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "frame-src https://*.ko-fi.com",
   "object-src 'none'",
   "base-uri 'self'",
   "form-action 'self'",
