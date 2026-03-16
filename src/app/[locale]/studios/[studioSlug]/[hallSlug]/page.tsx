@@ -87,9 +87,7 @@ export default async function StudioHallPage({ params }: Props) {
   }
 
   return StudioByIdPage({
-    params: { locale, studioSlug: resolved.studioSegment },
-    searchParams: {
-      hallId: resolved.hallId,
-    },
+    params: Promise.resolve({ locale, studioSlug: resolved.studioSegment }),
+    searchParams: Promise.resolve({ hallId: resolved.hallId }),
   });
 }

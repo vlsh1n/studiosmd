@@ -234,16 +234,22 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     rawSort === "price_asc" || rawSort === "price_desc" || rawSort === "random"
       ? rawSort
       : "random";
-  const halls = (await listHalls({
-    locale,
-    q: q.length > 0 ? q : undefined,
-    district_keys,
-    tags,
-    facts,
-    sort: sort === "random" ? undefined : sort,
-    take: PAGE_SIZE + 1,
-    skip,
-  })) as HallListItem[];
+  let halls: HallListItem[];
+  try {
+    halls = (await listHalls({
+      locale,
+      q: q.length > 0 ? q : undefined,
+      district_keys,
+      tags,
+      facts,
+      sort: sort === "random" ? undefined : sort,
+      take: PAGE_SIZE + 1,
+      skip,
+    })) as HallListItem[];
+  } catch (err) {
+    console.error("[CatalogPage] listHalls failed:", err);
+    throw err;
+  }
   const hasNext = halls.length > PAGE_SIZE;
   const hasPrev = page > 1;
   const paginatedHalls = halls.slice(0, PAGE_SIZE);

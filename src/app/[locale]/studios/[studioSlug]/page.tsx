@@ -18,8 +18,8 @@ export const revalidate = 3600;
 type PageSearchParams = { [key: string]: string | string[] | undefined };
 
 type Props = {
-  params: { locale: string; studioSlug: string };
-  searchParams?: PageSearchParams;
+  params: Promise<{ locale: string; studioSlug: string }>;
+  searchParams?: Promise<PageSearchParams>;
 };
 
 type JsonArray = unknown[] | null | undefined;
@@ -407,7 +407,14 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, studioSlug } = await params;
   const currentLocale = isLocale(locale) ? locale : DEFAULT_LOCALE;
-  const resolved = await resolveStudioRoute(studioSlug, currentLocale);
+
+  let resolved: ResolvedStudioRoute | null;
+  try {
+    resolved = await resolveStudioRoute(studioSlug, currentLocale);
+  } catch (err) {
+    console.error("[generateMetadata] resolveStudioRoute failed:", err);
+    return { title: SITE_NAME, robots: { index: false, follow: false } };
+  }
 
   if (!resolved) {
     return {
@@ -475,7 +482,13 @@ export default async function StudioPage({ params, searchParams }: Props) {
   }
   const resolvedSearchParams = (await searchParams) ?? {};
 
-  const resolved = await resolveStudioRoute(studioSlug, locale);
+  let resolved: ResolvedStudioRoute | null;
+  try {
+    resolved = await resolveStudioRoute(studioSlug, locale);
+  } catch (err) {
+    console.error("[StudioPage] resolveStudioRoute failed:", err);
+    throw err;
+  }
   if (!resolved) {
     notFound();
   }
