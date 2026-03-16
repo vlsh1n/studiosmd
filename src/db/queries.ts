@@ -1,9 +1,7 @@
 import type { DistrictKey, Prisma } from "@prisma/client";
 import { prisma } from "@/db/prisma";
-import type { Locale } from "@/i18n";
 
 type ListHallsParams = {
-  locale: Locale;
   q?: string;
   district_keys?: DistrictKey[];
   tags?: string[];
@@ -28,32 +26,15 @@ type HallWithStudio = Prisma.HallGetPayload<{
     studio: {
       select: {
         id: true;
-        name_i18n: true;
-        address_i18n: true;
+        name: true;
+        address: true;
         district_key: true;
       };
     };
   };
 }>;
 
-export type HallListItem = Omit<HallWithStudio, "studio"> & {
-  name: string;
-  studio: HallWithStudio["studio"] & {
-    name: string;
-    address: string;
-  };
-};
-
-type I18nObject = Record<string, unknown> | null | undefined;
-
-export function getI18n(obj: I18nObject, locale: Locale): string {
-  if (!obj || typeof obj !== "object") {
-    return "";
-  }
-
-  const value = obj[locale];
-  return typeof value === "string" ? value : "";
-}
+export type HallListItem = HallWithStudio;
 
 export async function listHalls(params: ListHallsParams) {
   const where: Prisma.HallWhereInput = {};
@@ -108,22 +89,8 @@ export async function listHalls(params: ListHallsParams) {
 
   if (query) {
     where.OR = [
-      {
-        name_i18n: {
-          path: [params.locale],
-          string_contains: query,
-          mode: "insensitive",
-        },
-      },
-      {
-        studio: {
-          name_i18n: {
-            path: [params.locale],
-            string_contains: query,
-            mode: "insensitive",
-          },
-        },
-      },
+      { name: { contains: query, mode: "insensitive" } },
+      { studio: { name: { contains: query, mode: "insensitive" } } },
     ];
   }
 
@@ -131,14 +98,14 @@ export async function listHalls(params: ListHallsParams) {
     where.AND = andFilters;
   }
 
-  const halls = await prisma.hall.findMany({
+  return prisma.hall.findMany({
     where,
     include: {
       studio: {
         select: {
           id: true,
-          name_i18n: true,
-          address_i18n: true,
+          name: true,
+          address: true,
           district_key: true,
         },
       },
@@ -155,112 +122,36 @@ export async function listHalls(params: ListHallsParams) {
     take: params.take,
     skip: params.skip,
   });
-
-  return halls.map((hall) => ({
-    ...hall,
-    area_sqm: hall.area_sqm,
-    name: getI18n(hall.name_i18n as I18nObject, params.locale),
-    studio: {
-      ...hall.studio,
-      name: getI18n(hall.studio?.name_i18n as I18nObject, params.locale),
-      address: getI18n(hall.studio?.address_i18n as I18nObject, params.locale),
-    },
-  }));
 }
 
-export async function getStudioById(id: string, locale: Locale) {
-  const studio = await prisma.studio.findUnique({
-    where: { id },
-    include: {
-      halls: {
-        orderBy: [
-          {
-            price_per_hour: {
-              sort: "asc",
-              nulls: "last",
-            },
-          },
-          {
-            id: "asc",
-          },
-        ],
-      },
-    },
-  });
-
-  if (!studio) {
-    return null;
-  }
-
-  return {
-    ...studio,
-    name: getI18n(studio.name_i18n as I18nObject, locale),
-    address: getI18n(studio.address_i18n as I18nObject, locale),
-    halls: studio.halls.map((hall) => ({
-      ...hall,
-      name: getI18n(hall.name_i18n as I18nObject, locale),
-    })),
-  };
-}
-
-export async function getStudioBySlug(slug: string, locale: Locale) {
-  const studio = await prisma.studio.findUnique({
+export async function getStudioBySlug(slug: string) {
+  return prisma.studio.findUnique({
     where: { slug },
     include: {
       halls: {
         orderBy: [
-          {
-            price_per_hour: {
-              sort: "asc",
-              nulls: "last",
-            },
-          },
-          {
-            id: "asc",
-          },
+          { price_per_hour: { sort: "asc", nulls: "last" } },
+          { id: "asc" },
         ],
       },
     },
   });
-
-  if (!studio) {
-    return null;
-  }
-
-  return {
-    ...studio,
-    name: getI18n(studio.name_i18n as I18nObject, locale),
-    address: getI18n(studio.address_i18n as I18nObject, locale),
-    halls: studio.halls.map((hall) => ({
-      ...hall,
-      name: getI18n(hall.name_i18n as I18nObject, locale),
-    })),
-  };
 }
 
-export async function listHallRouteEntries(locale: Locale) {
+export async function listHallRouteEntries() {
   const halls = await prisma.hall.findMany({
     select: {
       id: true,
-      name_i18n: true,
+      name: true,
       studio: {
         select: {
           id: true,
-          name_i18n: true,
+          slug: true,
         },
       },
     },
-    orderBy: {
-      id: "asc",
-    },
+    orderBy: { id: "asc" },
   });
 
-  return halls.map((hall) => ({
-    id: hall.id,
-    name: getI18n(hall.name_i18n as I18nObject, locale),
-    studio: {
-      id: hall.studio.id,
-      name: getI18n(hall.studio.name_i18n as I18nObject, locale),
-    },
-  }));
+  return halls;
 }

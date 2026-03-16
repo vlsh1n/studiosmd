@@ -17,40 +17,10 @@ export function normalizeStudioSlug(slug: string) {
   return slugifyStudioName(slug);
 }
 
-export function buildStudioSegment(id: string, name: string) {
-  return `${id}-${slugifyStudioName(name)}`;
-}
-
-export function buildStudioPath(id: string, name: string) {
-  return `/studios/${buildStudioSegment(id, name)}`;
+export function buildStudioPath(slug: string) {
+  return `/studios/${slug}`;
 }
 
 export function buildStudioHallPath(studioName: string, hallName: string) {
   return `/studios/${slugifyStudioName(studioName)}/${slugifyStudioName(hallName)}`;
-}
-
-export function parseStudioSegment(segment: string) {
-  const trimmed = segment.trim();
-  if (trimmed.length === 0) {
-    return {
-      id: null,
-      slug: null,
-    };
-  }
-
-  const separatorIndex = trimmed.indexOf("-");
-  if (separatorIndex === -1) {
-    return {
-      id: trimmed,
-      slug: null,
-    };
-  }
-
-  const id = trimmed.slice(0, separatorIndex).trim();
-  const slug = trimmed.slice(separatorIndex + 1).trim();
-
-  return {
-    id: id.length > 0 ? id : null,
-    slug: slug.length > 0 ? slug : null,
-  };
 }

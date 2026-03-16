@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { getStudioById, getStudioBySlug } from "@/db/queries";
+import { getStudioBySlug } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, type Locale } from "@/i18n";
 import { safeExternalUrl } from "@/lib/url";
 import { DEFAULT_CITY, DEFAULT_COUNTRY, DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
-import { buildStudioPath, buildStudioSegment, parseStudioSegment } from "@/seo/studio";
+import { buildStudioPath } from "@/seo/studio";
 import HallCardList, {
   type StudioHallCardItem,
 } from "@/app/[locale]/studios/[studioSlug]/HallCardList.client";
@@ -23,8 +23,7 @@ type Props = {
 };
 
 type JsonArray = unknown[] | null | undefined;
-type JsonObject = Record<string, unknown> | null | undefined;
-type StudioRecord = NonNullable<Awaited<ReturnType<typeof getStudioById>>>;
+type StudioRecord = NonNullable<Awaited<ReturnType<typeof getStudioBySlug>>>;
 
 const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
   ru: "В выходные:",
@@ -40,13 +39,6 @@ function formatHourlyPrice(pricePerHour: number | null | undefined, locale: Loca
 
   return UI_STRINGS.price_on_request[locale];
 }
-
-type ResolvedStudioRoute = {
-  studio: StudioRecord;
-  canonicalSegment: string;
-  canonicalPath: string;
-  shouldRedirect: boolean;
-};
 
 function getStringsFromJson(value: JsonArray) {
   if (!Array.isArray(value)) return [];
@@ -66,34 +58,10 @@ function getImageList(value: JsonArray) {
   return getStringsFromJson(value);
 }
 
-function getLocalizedText(value: JsonObject, locale: Locale) {
-  if (!value || typeof value !== "object") return null;
-
-  const localizedValue = value[locale];
-  if (typeof localizedValue !== "string") return null;
-
-  const trimmed = localizedValue.trim();
-  return trimmed.length > 0 ? trimmed : null;
-}
-
 function getStringValue(value: unknown) {
   if (typeof value !== "string") return null;
   const trimmed = value.trim();
   return trimmed.length > 0 ? trimmed : null;
-}
-
-function getLocalizedString(value: JsonObject, locale: Locale, fallback: string) {
-  if (!value || typeof value !== "object") {
-    return fallback;
-  }
-
-  const localizedValue = value[locale];
-  if (typeof localizedValue !== "string") {
-    return fallback;
-  }
-
-  const trimmed = localizedValue.trim();
-  return trimmed.length > 0 ? trimmed : fallback;
 }
 
 function sanitizePhoneForTel(value: string) {
@@ -169,7 +137,7 @@ function getStudioFactsSummary(
   return `Available: ${labels.join(", ")}.`;
 }
 
-function getStudioSeo(studio: NonNullable<Awaited<ReturnType<typeof getStudioById>>>, locale: Locale) {
+function getStudioSeo(studio: StudioRecord, locale: Locale) {
   const districtLabel = DISTRICTS[studio.district_key][locale];
   const priceRange = getStudioPriceRange(studio.halls);
   const factsSummary = getStudioFactsSummary(studio.halls, locale);
@@ -209,19 +177,6 @@ function getStudioSeo(studio: NonNullable<Awaited<ReturnType<typeof getStudioByI
   return { title, description: descriptionParts.join(" ") };
 }
 
-function getStudioNameForLocale(studio: StudioRecord, locale: Locale) {
-  return getLocalizedString(studio.name_i18n as JsonObject, locale, studio.name);
-}
-
-function getStudioPathsByLocale(studio: StudioRecord) {
-  return Object.fromEntries(
-    LOCALES.map((languageLocale) => [
-      languageLocale,
-      buildStudioPath(studio.id, getStudioNameForLocale(studio, languageLocale)),
-    ])
-  ) as Record<Locale, string>;
-}
-
 function buildSearchSuffix(searchParams: PageSearchParams) {
   const query = new URLSearchParams();
 
@@ -259,76 +214,6 @@ function getFirstSearchParamValue(
   }
 
   return null;
-}
-
-async function resolveStudioRoute(segment: string, locale: Locale): Promise<ResolvedStudioRoute | null> {
-  const requestedSegment = segment.trim();
-  if (requestedSegment.length === 0) {
-    return null;
-  }
-
-  const directMatch = await getStudioById(requestedSegment, locale);
-  if (directMatch) {
-    const canonicalSegment = buildStudioSegment(
-      directMatch.id,
-      getStudioNameForLocale(directMatch, locale)
-    );
-    return {
-      studio: directMatch,
-      canonicalSegment,
-      canonicalPath: `/studios/${canonicalSegment}`,
-      shouldRedirect: requestedSegment !== canonicalSegment,
-    };
-  }
-
-  const parsed = parseStudioSegment(requestedSegment);
-  if (!parsed.id) {
-    const slugMatch = await getStudioBySlug(requestedSegment, locale);
-    if (!slugMatch) {
-      return null;
-    }
-    const canonicalSegment = buildStudioSegment(
-      slugMatch.id,
-      getStudioNameForLocale(slugMatch, locale)
-    );
-    return {
-      studio: slugMatch,
-      canonicalSegment,
-      canonicalPath: `/studios/${canonicalSegment}`,
-      shouldRedirect: true,
-    };
-  }
-
-  const parsedMatch = await getStudioById(parsed.id, locale);
-  if (!parsedMatch) {
-    const slugCandidate = parsed.slug && parsed.slug.length > 0 ? parsed.slug : requestedSegment;
-    const slugMatch = await getStudioBySlug(slugCandidate, locale);
-    if (!slugMatch) {
-      return null;
-    }
-    const canonicalSegment = buildStudioSegment(
-      slugMatch.id,
-      getStudioNameForLocale(slugMatch, locale)
-    );
-    return {
-      studio: slugMatch,
-      canonicalSegment,
-      canonicalPath: `/studios/${canonicalSegment}`,
-      shouldRedirect: true,
-    };
-  }
-
-  const canonicalSegment = buildStudioSegment(
-    parsedMatch.id,
-    getStudioNameForLocale(parsedMatch, locale)
-  );
-
-  return {
-    studio: parsedMatch,
-    canonicalSegment,
-    canonicalPath: `/studios/${canonicalSegment}`,
-    shouldRedirect: requestedSegment !== canonicalSegment,
-  };
 }
 
 function buildLocalBusinessJsonLd({
@@ -400,6 +285,10 @@ function stringifyJsonLd(data: Record<string, unknown>) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
 
+function getStudioCanonicalPath(studio: StudioRecord) {
+  return buildStudioPath(studio.slug);
+}
+
 export async function generateMetadata({
   params,
 }: {
@@ -408,15 +297,15 @@ export async function generateMetadata({
   const { locale, studioSlug } = await params;
   const currentLocale = isLocale(locale) ? locale : DEFAULT_LOCALE;
 
-  let resolved: ResolvedStudioRoute | null;
+  let studio: StudioRecord | null;
   try {
-    resolved = await resolveStudioRoute(studioSlug, currentLocale);
+    studio = await getStudioBySlug(studioSlug);
   } catch (err) {
-    console.error("[generateMetadata] resolveStudioRoute failed:", err);
+    console.error("[generateMetadata] getStudioBySlug failed:", err);
     return { title: SITE_NAME, robots: { index: false, follow: false } };
   }
 
-  if (!resolved) {
+  if (!studio) {
     return {
       title: SITE_NAME,
       robots: {
@@ -426,14 +315,11 @@ export async function generateMetadata({
     };
   }
 
-  const studio = resolved.studio;
   const seo = getStudioSeo(studio, currentLocale);
-  const studioPathsByLocale = getStudioPathsByLocale(studio);
-  const canonicalUrl = absUrl(localePath(currentLocale, studioPathsByLocale[currentLocale]));
+  const studioPath = getStudioCanonicalPath(studio);
+  const canonicalUrl = absUrl(localePath(currentLocale, studioPath));
   const languageAlternates = Object.fromEntries(
-    LOCALES.map((languageLocale) =>
-      [languageLocale, absUrl(localePath(languageLocale, studioPathsByLocale[languageLocale]))]
-    )
+    LOCALES.map((loc) => [loc, absUrl(localePath(loc, studioPath))])
   );
 
   return {
@@ -443,7 +329,7 @@ export async function generateMetadata({
       canonical: canonicalUrl,
       languages: {
         ...languageAlternates,
-        "x-default": absUrl(localePath(DEFAULT_LOCALE, studioPathsByLocale[DEFAULT_LOCALE])),
+        "x-default": absUrl(localePath(DEFAULT_LOCALE, studioPath)),
       },
     },
     openGraph: {
@@ -482,24 +368,24 @@ export default async function StudioPage({ params, searchParams }: Props) {
   }
   const resolvedSearchParams = (await searchParams) ?? {};
 
-  let resolved: ResolvedStudioRoute | null;
+  let studio: StudioRecord | null;
   try {
-    resolved = await resolveStudioRoute(studioSlug, locale);
+    studio = await getStudioBySlug(studioSlug);
   } catch (err) {
-    console.error("[StudioPage] resolveStudioRoute failed:", err);
+    console.error("[StudioPage] getStudioBySlug failed:", err);
     throw err;
   }
-  if (!resolved) {
+  if (!studio) {
     notFound();
   }
 
-  if (resolved.shouldRedirect) {
+  const canonicalPath = getStudioCanonicalPath(studio);
+  if (studioSlug !== studio.slug) {
     const searchSuffix = buildSearchSuffix(resolvedSearchParams);
-    permanentRedirect(`${localePath(locale, resolved.canonicalPath)}${searchSuffix}`);
+    permanentRedirect(`${localePath(locale, canonicalPath)}${searchSuffix}`);
   }
 
-  const studio = resolved.studio;
-  const canonicalUrl = absUrl(localePath(locale, resolved.canonicalPath));
+  const canonicalUrl = absUrl(localePath(locale, canonicalPath));
   const studioSeo = getStudioSeo(studio, locale);
 
   const phone = getStringValue(studio.phone);
@@ -525,9 +411,7 @@ export default async function StudioPage({ params, searchParams }: Props) {
   const selectedHallId = requestedHallId && studio.halls.some((hall) => hall.id === requestedHallId)
     ? requestedHallId
     : null;
-  const workingHours =
-    getLocalizedText(studio.working_hours_i18n as JsonObject, locale) ??
-    UI_STRINGS.working_hours_fallback[locale];
+  const workingHours = studio.working_hours ?? UI_STRINGS.working_hours_fallback[locale];
   const hallCountLabel = UI_STRINGS.halls_count[locale].replace("{count}", String(studio.halls.length));
   const hallCards: StudioHallCardItem[] = studio.halls.map((hall) => {
     const images = getImageList(hall.images as JsonArray);
@@ -549,52 +433,28 @@ export default async function StudioPage({ params, searchParams }: Props) {
 
     const factItems: StudioHallCardItem["factItems"] = [];
     if (hall.daylight === true) {
-      factItems.push({
-        key: "daylight",
-        label: UI_STRINGS.daylight_fact_label[locale],
-      });
+      factItems.push({ key: "daylight", label: UI_STRINGS.daylight_fact_label[locale] });
     }
     if (hall.blackout === true) {
-      factItems.push({
-        key: "blackout",
-        label: UI_STRINGS.blackout_fact_label[locale],
-      });
+      factItems.push({ key: "blackout", label: UI_STRINGS.blackout_fact_label[locale] });
     }
     if (hall.parking === true) {
-      factItems.push({
-        key: "parking",
-        label: UI_STRINGS.parking_fact_label[locale],
-      });
+      factItems.push({ key: "parking", label: UI_STRINGS.parking_fact_label[locale] });
     }
     if (hall.changing_room === true) {
-      factItems.push({
-        key: "changing_room",
-        label: UI_STRINGS.changing_room_fact_label[locale],
-      });
+      factItems.push({ key: "changing_room", label: UI_STRINGS.changing_room_fact_label[locale] });
     }
     if (hall.furniture === true) {
-      factItems.push({
-        key: "furniture",
-        label: UI_STRINGS.furniture_label[locale],
-      });
+      factItems.push({ key: "furniture", label: UI_STRINGS.furniture_label[locale] });
     }
     if (flashAvailable) {
-      factItems.push({
-        key: "flash_light",
-        label: UI_STRINGS.flash_light_label[locale],
-      });
+      factItems.push({ key: "flash_light", label: UI_STRINGS.flash_light_label[locale] });
     }
     if (continuousAvailable) {
-      factItems.push({
-        key: "continuous_light",
-        label: UI_STRINGS.continuous_light_label[locale],
-      });
+      factItems.push({ key: "continuous_light", label: UI_STRINGS.continuous_light_label[locale] });
     }
     if (hall.cyclorama === true) {
-      factItems.push({
-        key: "cyclorama",
-        label: UI_STRINGS.cyclorama_fact_label[locale],
-      });
+      factItems.push({ key: "cyclorama", label: UI_STRINGS.cyclorama_fact_label[locale] });
     }
 
     return {

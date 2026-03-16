@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { listHallRouteEntries } from "@/db/queries";
 import { isLocale, type Locale } from "@/i18n";
 import { DEFAULT_LOCALE, SITE_NAME } from "@/seo/site";
-import { buildStudioSegment, normalizeStudioSlug } from "@/seo/studio";
+import { normalizeStudioSlug, slugifyStudioName } from "@/seo/studio";
 import StudioByIdPage, {
   generateMetadata as generateStudioByIdMetadata,
 } from "@/app/[locale]/studios/[studioSlug]/page";
@@ -14,7 +14,7 @@ type Props = {
 
 type ResolvedHallRoute = {
   locale: Locale;
-  studioSegment: string;
+  studioSlug: string;
   hallId: string;
 };
 
@@ -29,11 +29,11 @@ async function resolveHallRoute({
 }): Promise<ResolvedHallRoute | null> {
   const normalizedStudioSlug = normalizeStudioSlug(studioSlug);
   const normalizedHallSlug = normalizeStudioSlug(hallSlug);
-  const halls = await listHallRouteEntries(locale);
+  const halls = await listHallRouteEntries();
   const match = halls.find(
     (hall) =>
-      normalizeStudioSlug(hall.studio.name) === normalizedStudioSlug &&
-      normalizeStudioSlug(hall.name) === normalizedHallSlug
+      hall.studio.slug === normalizedStudioSlug &&
+      slugifyStudioName(hall.name) === normalizedHallSlug
   );
 
   if (!match) {
@@ -42,7 +42,7 @@ async function resolveHallRoute({
 
   return {
     locale,
-    studioSegment: buildStudioSegment(match.studio.id, match.studio.name),
+    studioSlug: match.studio.slug,
     hallId: match.id,
   };
 }
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return generateStudioByIdMetadata({
-    params: Promise.resolve({ locale: currentLocale, studioSlug: resolved.studioSegment }),
+    params: Promise.resolve({ locale: currentLocale, studioSlug: resolved.studioSlug }),
   });
 }
 
@@ -87,7 +87,7 @@ export default async function StudioHallPage({ params }: Props) {
   }
 
   return StudioByIdPage({
-    params: Promise.resolve({ locale, studioSlug: resolved.studioSegment }),
+    params: Promise.resolve({ locale, studioSlug: resolved.studioSlug }),
     searchParams: Promise.resolve({ hallId: resolved.hallId }),
   });
 }

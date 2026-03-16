@@ -2,10 +2,8 @@ import { PrismaClient, DistrictKey } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-type LocaleKey = "ru" | "ro" | "en";
-
 type HallSeed = {
-  name_i18n: Record<LocaleKey, string>;
+  name: string;
   images: string[];
   weekend_price?: number;
   daylight: boolean;
@@ -25,48 +23,32 @@ type HallSeed = {
 type StudioSeed = {
   slug: string;
   district_key: DistrictKey;
-  name_i18n: Record<LocaleKey, string>;
-  address_i18n: Record<LocaleKey, string>;
+  name: string;
+  address: string;
   phone: string;
   instagram_nickname: string;
   google_maps_url: string;
   yandex_maps_url: string;
   logo_url: string;
-  working_hours_i18n: Record<LocaleKey, string>;
+  working_hours: string;
   halls: HallSeed[];
 };
 
 const studios: StudioSeed[] = [
   {
-    slug: "studio-aurora",
+    slug: "aurora-studio",
     district_key: DistrictKey.botanica,
-    name_i18n: {
-      ru: "Студия Aurora",
-      ro: "Studio Aurora",
-      en: "Aurora Studio",
-    },
-    address_i18n: {
-      ru: "ул. Дачия, 24",
-      ro: "str. Dacia, 24",
-      en: "Dacia St, 24",
-    },
+    name: "Aurora Studio",
+    address: "Dacia St, 24",
     phone: "+373-68-000-101",
     instagram_nickname: "aurora.studio",
     google_maps_url: "https://maps.google.com/?q=Dacia+24+Chisinau",
     yandex_maps_url: "https://yandex.com/maps/?text=Dacia+24+Chisinau",
     logo_url: "https://images.example.com/studios/aurora/logo.png",
-    working_hours_i18n: {
-      ru: "Пн-Вс: 08:00-22:00",
-      ro: "Lun-Dum: 08:00-22:00",
-      en: "Mon-Sun: 08:00-22:00",
-    },
+    working_hours: "Mon-Sun: 08:00-22:00",
     halls: [
       {
-        name_i18n: {
-          ru: "Светлый зал",
-          ro: "Sala luminoasa",
-          en: "Bright Hall",
-        },
+        name: "Bright Hall",
         images: [
           "https://images.example.com/studios/aurora/hall-bright-1.jpg",
           "https://images.example.com/studios/aurora/hall-bright-2.jpg",
@@ -86,11 +68,7 @@ const studios: StudioSeed[] = [
         price_per_hour: 700,
       },
       {
-        name_i18n: {
-          ru: "Лофт",
-          ro: "Loft",
-          en: "Loft",
-        },
+        name: "Loft",
         images: [
           "https://images.example.com/studios/aurora/hall-loft-1.jpg",
           "https://images.example.com/studios/aurora/hall-loft-2.jpg",
@@ -110,35 +88,19 @@ const studios: StudioSeed[] = [
     ],
   },
   {
-    slug: "studio-lumi",
+    slug: "lumi-studio",
     district_key: DistrictKey.ciocana,
-    name_i18n: {
-      ru: "Студия Lumi",
-      ro: "Studio Lumi",
-      en: "Lumi Studio",
-    },
-    address_i18n: {
-      ru: "ул. Мирчи чел Бэтрын, 12",
-      ro: "str. Mircea cel Batran, 12",
-      en: "Mircea cel Batran St, 12",
-    },
+    name: "Lumi Studio",
+    address: "Mircea cel Batran St, 12",
     phone: "+373-68-000-202",
     instagram_nickname: "lumi.studio",
     google_maps_url: "https://maps.google.com/?q=Mircea+cel+Batran+12+Chisinau",
     yandex_maps_url: "https://yandex.com/maps/?text=Mircea+cel+Batran+12+Chisinau",
     logo_url: "https://images.example.com/studios/lumi/logo.png",
-    working_hours_i18n: {
-      ru: "Пн-Сб: 09:00-21:00, Вс: 10:00-20:00",
-      ro: "Lun-Sam: 09:00-21:00, Dum: 10:00-20:00",
-      en: "Mon-Sat: 09:00-21:00, Sun: 10:00-20:00",
-    },
+    working_hours: "Mon-Sat: 09:00-21:00, Sun: 10:00-20:00",
     halls: [
       {
-        name_i18n: {
-          ru: "Минимал",
-          ro: "Minimal",
-          en: "Minimal",
-        },
+        name: "Minimal",
         images: [
           "https://images.example.com/studios/lumi/hall-minimal-1.jpg",
           "https://images.example.com/studios/lumi/hall-minimal-2.jpg",
@@ -157,11 +119,7 @@ const studios: StudioSeed[] = [
         price_per_hour: 420,
       },
       {
-        name_i18n: {
-          ru: "Циклорама",
-          ro: "Cyclorama",
-          en: "Cyclorama",
-        },
+        name: "Cyclorama",
         images: [
           "https://images.example.com/studios/lumi/hall-cyclo-1.jpg",
           "https://images.example.com/studios/lumi/hall-cyclo-2.jpg",
@@ -184,35 +142,19 @@ const studios: StudioSeed[] = [
     ],
   },
   {
-    slug: "studio-central",
+    slug: "central-studio",
     district_key: DistrictKey.centru,
-    name_i18n: {
-      ru: "Студия Central",
-      ro: "Studio Central",
-      en: "Central Studio",
-    },
-    address_i18n: {
-      ru: "ул. Пушкина, 10",
-      ro: "str. Puskin, 10",
-      en: "Pushkin St, 10",
-    },
+    name: "Central Studio",
+    address: "Pushkin St, 10",
     phone: "+373-68-000-303",
     instagram_nickname: "central.studio",
     google_maps_url: "https://maps.google.com/?q=Pushkin+10+Chisinau",
     yandex_maps_url: "https://yandex.com/maps/?text=Pushkin+10+Chisinau",
     logo_url: "https://images.example.com/studios/central/logo.png",
-    working_hours_i18n: {
-      ru: "Пн-Вс: 08:00-23:00",
-      ro: "Lun-Dum: 08:00-23:00",
-      en: "Mon-Sun: 08:00-23:00",
-    },
+    working_hours: "Mon-Sun: 08:00-23:00",
     halls: [
       {
-        name_i18n: {
-          ru: "Интерьерный",
-          ro: "Interior",
-          en: "Interior",
-        },
+        name: "Interior",
         images: [
           "https://images.example.com/studios/central/hall-interior-1.jpg",
           "https://images.example.com/studios/central/hall-interior-2.jpg",
@@ -230,11 +172,7 @@ const studios: StudioSeed[] = [
         price_per_hour: 480,
       },
       {
-        name_i18n: {
-          ru: "Большой дневной",
-          ro: "Zi mare",
-          en: "Big Daylight",
-        },
+        name: "Big Daylight",
         images: [
           "https://images.example.com/studios/central/hall-daylight-1.jpg",
           "https://images.example.com/studios/central/hall-daylight-2.jpg",
@@ -257,35 +195,19 @@ const studios: StudioSeed[] = [
     ],
   },
   {
-    slug: "studio-loftic",
+    slug: "loftic-studio",
     district_key: DistrictKey.buiucani,
-    name_i18n: {
-      ru: "Студия Loftic",
-      ro: "Studio Loftic",
-      en: "Loftic Studio",
-    },
-    address_i18n: {
-      ru: "ул. Албишоара, 7",
-      ro: "str. Albisoara, 7",
-      en: "Albisoara St, 7",
-    },
+    name: "Loftic Studio",
+    address: "Albisoara St, 7",
     phone: "+373-68-000-404",
     instagram_nickname: "loftic.studio",
     google_maps_url: "https://maps.google.com/?q=Albisoara+7+Chisinau",
     yandex_maps_url: "https://yandex.com/maps/?text=Albisoara+7+Chisinau",
     logo_url: "https://images.example.com/studios/loftic/logo.png",
-    working_hours_i18n: {
-      ru: "Вт-Вс: 10:00-22:00",
-      ro: "Mar-Dum: 10:00-22:00",
-      en: "Tue-Sun: 10:00-22:00",
-    },
+    working_hours: "Tue-Sun: 10:00-22:00",
     halls: [
       {
-        name_i18n: {
-          ru: "Темный лофт",
-          ro: "Loft intunecat",
-          en: "Dark Loft",
-        },
+        name: "Dark Loft",
         images: [
           "https://images.example.com/studios/loftic/hall-dark-1.jpg",
           "https://images.example.com/studios/loftic/hall-dark-2.jpg",
@@ -303,11 +225,7 @@ const studios: StudioSeed[] = [
         price_per_hour: 600,
       },
       {
-        name_i18n: {
-          ru: "Светлый минимал",
-          ro: "Minimal luminos",
-          en: "Bright Minimal",
-        },
+        name: "Bright Minimal",
         images: [
           "https://images.example.com/studios/loftic/hall-minimal-1.jpg",
           "https://images.example.com/studios/loftic/hall-minimal-2.jpg",
@@ -328,35 +246,19 @@ const studios: StudioSeed[] = [
     ],
   },
   {
-    slug: "studio-nord",
+    slug: "north-studio",
     district_key: DistrictKey.riscani,
-    name_i18n: {
-      ru: "Студия North",
-      ro: "Studio Nord",
-      en: "North Studio",
-    },
-    address_i18n: {
-      ru: "ул. Студенческая, 5",
-      ro: "str. Studenteasca, 5",
-      en: "Studenteasca St, 5",
-    },
+    name: "North Studio",
+    address: "Studenteasca St, 5",
     phone: "+373-68-000-505",
     instagram_nickname: "north.studio",
     google_maps_url: "https://maps.google.com/?q=Studenteasca+5+Chisinau",
     yandex_maps_url: "https://yandex.com/maps/?text=Studenteasca+5+Chisinau",
     logo_url: "https://images.example.com/studios/north/logo.png",
-    working_hours_i18n: {
-      ru: "Пн-Пт: 09:00-20:00, Сб-Вс: 10:00-20:00",
-      ro: "Lun-Vin: 09:00-20:00, Sam-Dum: 10:00-20:00",
-      en: "Mon-Fri: 09:00-20:00, Sat-Sun: 10:00-20:00",
-    },
+    working_hours: "Mon-Fri: 09:00-20:00, Sat-Sun: 10:00-20:00",
     halls: [
       {
-        name_i18n: {
-          ru: "Портретный",
-          ro: "Portret",
-          en: "Portrait",
-        },
+        name: "Portrait",
         images: [
           "https://images.example.com/studios/north/hall-portrait-1.jpg",
           "https://images.example.com/studios/north/hall-portrait-2.jpg",
@@ -374,11 +276,7 @@ const studios: StudioSeed[] = [
         price_per_hour: 380,
       },
       {
-        name_i18n: {
-          ru: "Большой видео",
-          ro: "Video mare",
-          en: "Big Video",
-        },
+        name: "Big Video",
         images: [
           "https://images.example.com/studios/north/hall-video-1.jpg",
           "https://images.example.com/studios/north/hall-video-2.jpg",
@@ -417,15 +315,15 @@ async function main() {
     await prisma.studio.create({
       data: {
         slug: studio.slug,
-        name_i18n: studio.name_i18n,
-        address_i18n: studio.address_i18n,
+        name: studio.name,
+        address: studio.address,
         district_key: studio.district_key,
         phone: studio.phone,
         instagram_nickname: studio.instagram_nickname,
         google_maps_url: studio.google_maps_url,
         yandex_maps_url: studio.yandex_maps_url,
         logo_url: studio.logo_url,
-        working_hours_i18n: studio.working_hours_i18n,
+        working_hours: studio.working_hours,
         halls: {
           create: studio.halls,
         },

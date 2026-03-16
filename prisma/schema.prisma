@@ -24,15 +24,15 @@ enum DistrictKey {
 model Studio {
   id                 String      @id @default(cuid())
   slug               String      @unique
-  name_i18n          Json
-  address_i18n       Json
+  name               String
+  address            String
   district_key       DistrictKey
   phone              String?
   instagram_nickname String?
   google_maps_url    String?
   yandex_maps_url    String?
   logo_url           String?
-  working_hours_i18n Json?
+  working_hours      String?
   halls              Hall[]
 
   @@index([district_key], map: "Studio_district_key_idx")
@@ -41,7 +41,7 @@ model Studio {
 model Hall {
   id               String   @id @default(cuid())
   studioId         String
-  name_i18n        Json
+  name             String
   images           Json
   area_sqm         Int?
   high_ceiling     Int?

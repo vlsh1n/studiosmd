@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/db/prisma";
-import type { Locale } from "@/i18n";
 import { DEFAULT_LOCALE, LOCALES, absUrl, localePath } from "@/seo/site";
 import { buildStudioPath } from "@/seo/studio";
 
@@ -15,26 +14,12 @@ function buildAlternates(path: string): Record<string, string> {
   };
 }
 
-function getLocalizedStudioName(nameI18n: unknown, locale: Locale, fallback: string) {
-  if (!nameI18n || typeof nameI18n !== "object") {
-    return fallback;
-  }
-
-  const localizedValue = (nameI18n as Record<string, unknown>)[locale];
-  if (typeof localizedValue !== "string") {
-    return fallback;
-  }
-
-  const trimmed = localizedValue.trim();
-  return trimmed.length > 0 ? trimmed : fallback;
-}
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const studios = await prisma.studio.findMany({
     select: {
       id: true,
-      name_i18n: true,
+      slug: true,
     },
     orderBy: {
       id: "asc",
@@ -60,24 +45,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const studioEntries: MetadataRoute.Sitemap = studios.flatMap((studio) => {
-    const studioPaths = Object.fromEntries(
-      LOCALES.map((locale) => [
-        locale,
-        buildStudioPath(
-          studio.id,
-          getLocalizedStudioName(studio.name_i18n, locale, studio.id)
-        ),
-      ])
-    ) as Record<Locale, string>;
+    const studioPath = buildStudioPath(studio.slug);
     const studioAlternates = {
       ...Object.fromEntries(
-        LOCALES.map((locale) => [locale, absUrl(localePath(locale, studioPaths[locale]))])
+        LOCALES.map((locale) => [locale, absUrl(localePath(locale, studioPath))])
       ),
-      "x-default": absUrl(localePath(DEFAULT_LOCALE, studioPaths[DEFAULT_LOCALE])),
+      "x-default": absUrl(localePath(DEFAULT_LOCALE, studioPath)),
     };
 
     return LOCALES.map((locale) => ({
-      url: absUrl(localePath(locale, studioPaths[locale])),
+      url: absUrl(localePath(locale, studioPath)),
       lastModified: now,
       alternates: {
         languages: studioAlternates,

@@ -231,7 +231,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   let halls: HallListItem[];
   try {
     halls = (await listHalls({
-      locale,
       q: q.length > 0 ? q : undefined,
       district_keys,
       facts,
