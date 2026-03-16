@@ -3,6 +3,8 @@ import { locales, type Locale } from "@/i18n";
 export const SITE_NAME = "studiosmap";
 export const DEFAULT_LOCALE: Locale = "ro";
 export const LOCALES = locales;
+export const DEFAULT_CITY = "Chișinău";
+export const DEFAULT_COUNTRY = "MD";
 
 const FALLBACK_SITE_URL = "http://localhost:3000";
 

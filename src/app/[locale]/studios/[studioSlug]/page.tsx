@@ -5,7 +5,7 @@ import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, type Locale } from "@/i18n";
 import { safeExternalUrl } from "@/lib/url";
-import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
+import { DEFAULT_CITY, DEFAULT_COUNTRY, DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
 import { buildStudioPath, buildStudioSegment, parseStudioSegment } from "@/seo/studio";
 import HallCardList, {
   type StudioHallCardItem,
@@ -365,12 +365,12 @@ function buildLocalBusinessJsonLd({
     address: {
       "@type": "PostalAddress",
       streetAddress: studio.address,
-      addressLocality: "Chișinău",
-      addressCountry: "MD",
+      addressLocality: DEFAULT_CITY,
+      addressCountry: DEFAULT_COUNTRY,
     },
     areaServed: {
       "@type": "City",
-      name: "Chișinău",
+      name: DEFAULT_CITY,
     },
   };
 
