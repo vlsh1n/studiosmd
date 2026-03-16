@@ -11,7 +11,7 @@ Multilingual catalog of photo studios and halls in Chișinău.
 - Catalog page with search, filters, sorting, and pagination
 - Studio page with hall cards, gallery zoom, and contact CTAs
 - Human-readable hall links: `/{locale}/studios/{studioSlug}/{hallSlug}`
-- Canonical studio URLs: `/{locale}/studios/{id}-{studio-slug}` with redirect from legacy forms
+- Studio URLs: `/{locale}/studios/{studioSlug}` (slug-based, permanent redirect on mismatch)
 - SEO metadata: canonical, hreflang, OpenGraph, Twitter
 - JSON-LD `LocalBusiness` on studio pages
 - GA4 events: `search_used`, `filter_used`, `hall_clicked`, `studio_contact_clicked`
@@ -81,8 +81,8 @@ App runs at `http://localhost:3000`.
 
 - `/` — landing page
 - `/{locale}` — localized catalog
-- `/{locale}/studios/{id}-{studio-slug}` — canonical studio page
-- `/{locale}/studios/{studio-slug}/{hall-slug}` — hall-friendly entry URL
+- `/{locale}/studios/{studioSlug}` — studio page
+- `/{locale}/studios/{studioSlug}/{hallSlug}` — hall-friendly entry URL
 
 Notes:
 
