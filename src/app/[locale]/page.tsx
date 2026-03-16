@@ -18,10 +18,8 @@ import { buildStudioHallPath } from "@/seo/studio";
 export const revalidate = 1800;
 
 const districtKeys = Object.keys(DISTRICTS) as Array<keyof typeof DISTRICTS>;
-const tagKeys = Object.keys(TAGS) as Array<keyof typeof TAGS>;
 const PAGE_SIZE = 12;
 const CATALOG_FILTER_FORM_ID = "catalog-filter-form";
-const SHOW_TAG_FILTERS = false;
 const factKeys: HallFactItem["key"][] = [
   "daylight",
   "blackout",
@@ -222,13 +220,9 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const district_keys = parseCsvParam(query.districts).filter((key): key is keyof typeof DISTRICTS =>
     districtKeys.includes(key as keyof typeof DISTRICTS)
   );
-  const tags = parseCsvParam(query.tags).filter((key): key is keyof typeof TAGS =>
-    tagKeys.includes(key as keyof typeof TAGS)
-  );
   const facts = parseCsvParam(query.facts).filter((key): key is HallFactItem["key"] =>
     isFactKey(key)
   );
-  const selectedTagLabels = tags.map((tag) => TAGS[tag][locale]);
   const rawSort = Array.isArray(query.sort) ? query.sort[0] : query.sort;
   const sort =
     rawSort === "price_asc" || rawSort === "price_desc" || rawSort === "random"
@@ -240,7 +234,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
       locale,
       q: q.length > 0 ? q : undefined,
       district_keys,
-      tags,
       facts,
       sort: sort === "random" ? undefined : sort,
       take: PAGE_SIZE + 1,
@@ -262,9 +255,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   }
   for (const district of district_keys) {
     paginationParams.append("districts", district);
-  }
-  for (const tag of tags) {
-    paginationParams.append("tags", tag);
   }
   for (const fact of facts) {
     paginationParams.append("facts", fact);
@@ -422,57 +412,6 @@ export default async function CatalogPage({ params, searchParams }: Props) {
             </div>
           </div>
 
-          {SHOW_TAG_FILTERS && (
-            <details className="stack group">
-              <summary className="flex cursor-pointer items-center justify-between gap-3 py-1 list-none">
-                <span className="text-xs font-semibold uppercase muted">
-                  {UI_STRINGS.filters_params_title[locale]} ({selectedTagLabels.length})
-                </span>
-                <span className="flex min-w-0 items-center gap-2 overflow-hidden">
-                  {selectedTagLabels.slice(0, 3).map((label) => (
-                    <span key={label} className="pill text-xs whitespace-nowrap">
-                      {label}
-                    </span>
-                  ))}
-                  {selectedTagLabels.length > 3 && (
-                    <span className="pill text-xs whitespace-nowrap">
-                      +{selectedTagLabels.length - 3}
-                    </span>
-                  )}
-                </span>
-                <span className="flex h-5 w-5 items-center justify-center text-gray-500 transition-transform group-open:rotate-180">
-                  <svg
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    aria-hidden="true"
-                    className="h-4 w-4"
-                  >
-                    <path
-                      d="M5 8l5 5 5-5"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </span>
-              </summary>
-              <div className="grid gap-2 pt-3 md:grid-cols-3">
-                {tagKeys.map((key) => (
-                  <label key={key} className="flex items-center gap-2 text-sm muted">
-                    <input
-                      type="checkbox"
-                      name="tags"
-                      value={key}
-                      defaultChecked={tags.includes(key)}
-                      className="h-4 w-4"
-                    />
-                    <span>{TAGS[key][locale]}</span>
-                  </label>
-                ))}
-              </div>
-            </details>
-          )}
 
           <div className="stack">
             <div className="text-xs font-semibold uppercase muted">
