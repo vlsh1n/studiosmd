@@ -29,24 +29,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   });
 
   const rootAlternates = buildAlternates("");
+  const aboutAlternates = buildAlternates("/about");
+  const faqAlternates = buildAlternates("/faq");
+
   const rootEntries: MetadataRoute.Sitemap = [
     {
       url: absUrl("/"),
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
-      alternates: {
-        languages: rootAlternates,
-      },
+      alternates: { languages: rootAlternates },
     },
     ...LOCALES.map((locale) => ({
       url: absUrl(localePath(locale)),
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.8,
-      alternates: {
-        languages: rootAlternates,
-      },
+      alternates: { languages: rootAlternates },
+    })),
+    ...LOCALES.map((locale) => ({
+      url: absUrl(localePath(locale, "/about")),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+      alternates: { languages: aboutAlternates },
+    })),
+    ...LOCALES.map((locale) => ({
+      url: absUrl(localePath(locale, "/faq")),
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.4,
+      alternates: { languages: faqAlternates },
     })),
   ];
 

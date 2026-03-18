@@ -608,6 +608,59 @@
   }
 }
 
+/* FAQ accordion */
+.faq-item {
+  border-bottom: 1px solid var(--glass-border);
+}
+.faq-item:last-child {
+  border-bottom: none;
+}
+.faq-q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text);
+  list-style: none;
+  user-select: none;
+  transition: background 0.15s ease;
+}
+.faq-q::-webkit-details-marker {
+  display: none;
+}
+.faq-q:hover {
+  background: rgba(255, 255, 255, 0.45);
+}
+.faq-q-icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: transform 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+details.faq-item[open] .faq-q-icon {
+  transform: rotate(45deg);
+}
+.faq-a-wrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s cubic-bezier(0.23, 1, 0.32, 1);
+}
+details.faq-item[open] .faq-a-wrap {
+  grid-template-rows: 1fr;
+}
+.faq-a {
+  overflow: hidden;
+  padding: 0 1.25rem 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
 /* Animated hamburger icon */
 .nav-trigger-icon {
   position: relative;
