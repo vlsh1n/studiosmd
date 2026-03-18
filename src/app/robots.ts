@@ -9,6 +9,11 @@ const TRAINING_CRAWLERS = [
   "ChatGPT-User",
   "Claude-Web",
   "Meta-ExternalFetcher",
+  "Diffbot",
+  "ImagesiftBot",
+  "omgili",
+  "omgilibot",
+  "YouBot",
 ] as const;
 
 // Search-index crawlers — allowed (feed live AI search results)

@@ -527,6 +527,7 @@ export default async function StudioPage({ params, searchParams }: Props) {
     return {
       id: hall.id,
       name: hall.name,
+      studioName: studio.name,
       priceLine: formatHourlyPrice(hall.price_per_hour, locale),
       weekendPriceLine,
       spaceLine,

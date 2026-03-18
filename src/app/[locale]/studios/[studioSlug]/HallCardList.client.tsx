@@ -14,10 +14,10 @@ export type StudioHallFactKey =
   | "continuous_light"
   | "cyclorama";
 
-export type StudioHallFactItem = {
+export interface StudioHallFactItem {
   key: StudioHallFactKey;
   label: string;
-};
+}
 
 const FACT_ICON_BY_KEY: Record<StudioHallFactKey, string> = {
   daylight: "/icons/daylight.png",
@@ -30,18 +30,19 @@ const FACT_ICON_BY_KEY: Record<StudioHallFactKey, string> = {
   cyclorama: "/icons/cyclorama.png",
 };
 
-export type StudioHallCardItem = {
+export interface StudioHallCardItem {
   id: string;
   name: string;
+  studioName: string;
   priceLine: string;
   weekendPriceLine?: string | null;
   spaceLine?: string | null;
   factItems: StudioHallFactItem[];
   tags: string[];
   images: string[];
-};
+}
 
-type Props = {
+interface Props {
   halls: StudioHallCardItem[];
   studioId: string;
   locale: string;
@@ -108,7 +109,7 @@ export default function HallCardList({
             <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
               {hall.images.length > 0 && (
                 <div className="min-w-0">
-                  <HallGalleryZoom images={hall.images} alt={hall.name} isHero={index === 0} />
+                  <HallGalleryZoom images={hall.images} alt={`${hall.name} — ${hall.studioName} photography studio hall, Chișinău`} isHero={index === 0} />
                 </div>
               )}
 

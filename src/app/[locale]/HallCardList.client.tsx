@@ -94,7 +94,7 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                   <Image
                     fill
                     src={item.image}
-                    alt={item.name}
+                    alt={`${item.name} — photography studio hall, Chișinău`}
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchPriority={index === 0 ? "high" : "auto"}
                     className="object-cover object-center"
