@@ -49,7 +49,7 @@ const FAQ_CONTENT: Record<Locale, FaqContent> = {
       },
       {
         q: "Можно забронировать студию прямо здесь?",
-        a: "Нет, studiosmap — информационный каталог. Бронирование происходит напрямую со студией: через Telegram, телефон или email, указанные на странице студии.",
+        a: "Нет, studiosmap — информационный каталог. Бронирование происходит напрямую со студией: через Instagram, телефон или email, указанные на странице студии.",
       },
       {
         q: "Что такое «дневной свет» и «blackout»?",
@@ -79,7 +79,7 @@ const FAQ_CONTENT: Record<Locale, FaqContent> = {
       },
       {
         q: "Pot rezerva un studio direct pe site?",
-        a: "Nu, studiosmap este un catalog informativ. Rezervările se fac direct cu studiourile — prin Telegram, telefon sau email indicat pe pagina fiecărui studio.",
+        a: "Nu, studiosmap este un catalog informativ. Rezervările se fac direct cu studiourile — prin Instagram, telefon sau email indicat pe pagina fiecărui studio.",
       },
       {
         q: 'Ce înseamnă "lumină naturală" și "blackout"?',
@@ -109,7 +109,7 @@ const FAQ_CONTENT: Record<Locale, FaqContent> = {
       },
       {
         q: "Can I book a studio directly on this site?",
-        a: "No, studiosmap is an informational directory. Bookings are made directly with studios — via Telegram, phone, or email listed on each studio's page.",
+        a: "No, studiosmap is an informational directory. Bookings are made directly with studios — via Instagram, phone, or email listed on each studio's page.",
       },
       {
         q: 'What is "daylight" and "blackout"?',

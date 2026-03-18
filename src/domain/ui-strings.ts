@@ -269,8 +269,8 @@ export const UI_STRINGS: UiStrings = {
     en: "Language",
   },
   nav_section_contact: {
-    ru: "Контакт",
-    ro: "Contact",
-    en: "Contact",
+    ru: "Контакты",
+    ro: "Contacte",
+    en: "Contacts",
   },
 };
