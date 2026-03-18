@@ -6,7 +6,11 @@ import { listStudiosForCatalog } from "@/db/queries";
 import { buildStudioPath } from "@/seo/studio";
 import { DISTRICTS } from "@/domain/dictionaries";
 import { safeExternalUrl } from "@/lib/url";
-import StudioCardList, { type StudioCardItem } from "./StudioCardList.client";
+import StudioCardList, {
+  type FeatureKey,
+  type StudioCardItem,
+  type StudioContactLink,
+} from "./StudioCardList.client";
 
 export const revalidate = 1800;
 
@@ -39,8 +43,7 @@ interface PageContent {
   subtitle: string;
   cta: string;
   hallCount: (n: number) => string;
-  priceFrom: string;
-  priceOnRequest: string;
+
 }
 
 const CONTENT: Record<Locale, PageContent> = {
@@ -49,57 +52,85 @@ const CONTENT: Record<Locale, PageContent> = {
     subtitle: "Все студии Кишинёва — адреса, залы, цены.",
     cta: "Смотреть студию",
     hallCount: (n) => `${n}\u00A0${n === 1 ? "зал" : n < 5 ? "зала" : "залов"}`,
-    priceFrom: "от",
-    priceOnRequest: "Цена по запросу",
   },
   ro: {
     heading: "Studiouri foto",
     subtitle: "Toate studiourile din Chișinău — adrese, săli, prețuri.",
     cta: "Vezi studioul",
     hallCount: (n) => `${n}\u00A0${n === 1 ? "sală" : "săli"}`,
-    priceFrom: "de la",
-    priceOnRequest: "Preț la cerere",
   },
   en: {
     heading: "Photo studios",
     subtitle: "All studios in Chișinău — addresses, halls, prices.",
     cta: "View studio",
     hallCount: (n) => `${n}\u00A0${n === 1 ? "hall" : "halls"}`,
-    priceFrom: "from",
-    priceOnRequest: "Price on request",
   },
 };
 
-function isStringArray(value: unknown): value is string[] {
-  return Array.isArray(value) && value.every((item) => typeof item === "string");
-}
+const FEATURE_ORDER: FeatureKey[] = [
+  "daylight",
+  "blackout",
+  "parking",
+  "changing_room",
+  "cyclorama",
+  "continuous_light",
+  "flash_light",
+  "furniture",
+];
 
-function getCoverImage(halls: Array<{ images: unknown }>): string | null {
+type HallFeatures = {
+  daylight: boolean | null;
+  blackout: boolean | null;
+  parking: boolean | null;
+  changing_room: boolean | null;
+  furniture: boolean | null;
+  flash_light: boolean | null;
+  continuous_light: boolean | null;
+  cyclorama: boolean | null;
+};
+
+function collectFeatures(halls: HallFeatures[]): FeatureKey[] {
+  const present = new Set<FeatureKey>();
   for (const hall of halls) {
-    if (isStringArray(hall.images) && hall.images.length > 0) {
-      const safe = safeExternalUrl(hall.images[0]);
-      if (safe) return safe;
+    for (const key of FEATURE_ORDER) {
+      if (hall[key]) present.add(key);
     }
   }
-  return null;
+  return FEATURE_ORDER.filter((k) => present.has(k));
 }
 
-function getPriceRange(halls: Array<{ price_per_hour: number | null }>) {
-  const prices = halls
-    .map((h) => h.price_per_hour)
-    .filter((p): p is number => typeof p === "number" && p > 0);
-  if (prices.length === 0) return null;
-  return { min: Math.min(...prices), max: Math.max(...prices) };
+function buildContacts(studio: {
+  phone: string | null;
+  instagram_nickname: string | null;
+  google_maps_url: string | null;
+  yandex_maps_url: string | null;
+}): StudioContactLink[] {
+  const links: StudioContactLink[] = [];
+  if (studio.phone) {
+    links.push({
+      href: `tel:${studio.phone}`,
+      label: studio.phone,
+      icon: "/icons/telephone.png",
+    });
+  }
+  if (studio.instagram_nickname) {
+    links.push({
+      href: `https://instagram.com/${studio.instagram_nickname}`,
+      label: `@${studio.instagram_nickname}`,
+      icon: "/icons/instagram.png",
+    });
+  }
+  const gmapsUrl = safeExternalUrl(studio.google_maps_url);
+  if (gmapsUrl) {
+    links.push({ href: gmapsUrl, label: "Google Maps", icon: "/icons/google_maps.png" });
+  }
+  const ymapsUrl = safeExternalUrl(studio.yandex_maps_url);
+  if (ymapsUrl) {
+    links.push({ href: ymapsUrl, label: "Yandex Maps", icon: "/icons/yandex_maps.png" });
+  }
+  return links;
 }
 
-function formatPriceLabel(
-  range: { min: number; max: number } | null,
-  content: PageContent
-): string {
-  if (!range) return content.priceOnRequest;
-  if (range.min === range.max) return `${range.min}\u00A0MDL/h`;
-  return `${content.priceFrom} ${range.min}\u00A0MDL/h`;
-}
 
 function buildItemListJsonLd(
   studios: Array<{ name: string; slug: string }>,
@@ -163,15 +194,16 @@ export default async function StudiosPage({ params }: Props) {
   const canonicalUrl = absUrl(localePath(locale, STUDIOS_PATH));
 
   const cardItems: StudioCardItem[] = studios.map((studio) => {
-    const priceRange = getPriceRange(studio.halls);
     return {
       id: studio.id,
       name: studio.name,
       logoUrl: safeExternalUrl(studio.logo_url),
-      coverImage: getCoverImage(studio.halls),
+      address: studio.address,
       districtLabel: DISTRICTS[studio.district_key][locale],
       hallCountLabel: content.hallCount(studio.halls.length),
-      priceLabel: formatPriceLabel(priceRange, content),
+      workingHours: studio.working_hours,
+      features: collectFeatures(studio.halls),
+      contacts: buildContacts(studio),
       studioHref: localePath(locale, buildStudioPath(studio.slug)),
       ctaLabel: content.cta,
     };

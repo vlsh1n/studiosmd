@@ -140,10 +140,22 @@ export async function listStudiosForCatalog() {
       address: true,
       district_key: true,
       logo_url: true,
+      working_hours: true,
+      phone: true,
+      instagram_nickname: true,
+      google_maps_url: true,
+      yandex_maps_url: true,
       halls: {
         select: {
-          images: true,
           price_per_hour: true,
+          daylight: true,
+          blackout: true,
+          parking: true,
+          changing_room: true,
+          furniture: true,
+          flash_light: true,
+          continuous_light: true,
+          cyclorama: true,
         },
         orderBy: [
           { price_per_hour: { sort: "asc", nulls: "last" } },
