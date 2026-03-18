@@ -66,9 +66,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  return generateStudioByIdMetadata({
+  const studioMetadata = await generateStudioByIdMetadata({
     params: Promise.resolve({ locale: currentLocale, studioSlug: resolved.studioSlug }),
   });
+
+  return {
+    ...studioMetadata,
+    robots: { index: false, follow: true },
+  };
 }
 
 export default async function StudioHallPage({ params }: Props) {
