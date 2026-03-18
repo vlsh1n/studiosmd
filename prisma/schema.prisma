@@ -33,6 +33,7 @@ model Studio {
   yandex_maps_url    String?
   logo_url           String?
   working_hours      String?
+  description        String?
   updatedAt          DateTime    @updatedAt
   halls              Hall[]
 

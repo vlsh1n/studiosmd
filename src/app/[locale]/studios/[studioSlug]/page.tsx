@@ -596,6 +596,11 @@ export default async function StudioPage({ params, searchParams }: Props) {
       </section>
 
       <HallFocus hallId={selectedHallId} />
+      {studio.description && (
+        <section className="card p-4 sm:p-5">
+          <p className="text-sm text-gray-700 leading-relaxed">{studio.description}</p>
+        </section>
+      )}
       <section className="stack">
         <HallCardList
           halls={hallCards}
