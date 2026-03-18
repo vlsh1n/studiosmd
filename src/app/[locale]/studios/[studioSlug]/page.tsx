@@ -209,6 +209,17 @@ function getFirstSearchParamValue(
   return null;
 }
 
+const AMENITY_LABELS: Record<string, string> = {
+  daylight: "Daylight",
+  blackout: "Blackout",
+  parking: "Parking",
+  changing_room: "Changing area",
+  furniture: "Furniture",
+  flash_light: "Flash light",
+  continuous_light: "Continuous light",
+  cyclorama: "Cyclorama",
+};
+
 function buildLocalBusinessJsonLd({
   studio,
   canonicalUrl,
@@ -235,7 +246,7 @@ function buildLocalBusinessJsonLd({
 
   const localBusiness: Record<string, unknown> = {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["LocalBusiness", "PhotographyBusiness"],
     "@id": `${canonicalUrl}#localbusiness`,
     name: studio.name,
     description,
@@ -269,6 +280,28 @@ function buildLocalBusinessJsonLd({
       priceRange.min === priceRange.max
         ? `${priceRange.min} MDL`
         : `${priceRange.min}-${priceRange.max} MDL`;
+  }
+
+  if (studio.working_hours) {
+    localBusiness.openingHoursSpecification = {
+      "@type": "OpeningHoursSpecification",
+      description: studio.working_hours,
+    };
+  }
+
+  if (googleMapsHref) {
+    localBusiness.hasMap = googleMapsHref;
+  }
+
+  const presentAmenities = Object.keys(AMENITY_LABELS).filter((key) =>
+    studio.halls.some((hall) => hall[key as keyof typeof hall] === true)
+  );
+  if (presentAmenities.length > 0) {
+    localBusiness.amenityFeature = presentAmenities.map((key) => ({
+      "@type": "LocationFeatureSpecification",
+      name: AMENITY_LABELS[key],
+      value: true,
+    }));
   }
 
   return localBusiness;

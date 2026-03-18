@@ -20,6 +20,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     select: {
       id: true,
       slug: true,
+      updatedAt: true,
     },
     orderBy: {
       id: "asc",
@@ -55,7 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return LOCALES.map((locale) => ({
       url: absUrl(localePath(locale, studioPath)),
-      lastModified: now,
+      lastModified: studio.updatedAt,
       alternates: {
         languages: studioAlternates,
       },
