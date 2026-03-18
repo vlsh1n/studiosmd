@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import HtmlLangSync from "@/components/HtmlLangSync.client";
-import { LocaleSwitcher } from "@/components/LocaleSwitcher";
-import { SupportMenu } from "@/components/SupportMenu.client";
 import { NavDrawer } from "@/components/NavDrawer.client";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, t } from "@/i18n";
@@ -30,10 +28,6 @@ export default async function LocaleLayout({ children, params }: Props) {
             >
               {t(locale, "projectName")}
             </Link>
-            <div className="hidden sm:flex items-center gap-2 shrink-0">
-              <SupportMenu locale={locale} />
-              <LocaleSwitcher locale={locale} />
-            </div>
             <NavDrawer locale={locale} />
           </header>
           <main className="stack pt-6">{children}</main>

@@ -258,4 +258,19 @@ export const UI_STRINGS: UiStrings = {
     ro: "FAQ",
     en: "FAQ",
   },
+  nav_section_pages: {
+    ru: "Страницы",
+    ro: "Pagini",
+    en: "Pages",
+  },
+  nav_section_language: {
+    ru: "Язык",
+    ro: "Limbă",
+    en: "Language",
+  },
+  nav_section_contact: {
+    ru: "Контакт",
+    ro: "Contact",
+    en: "Contact",
+  },
 };
