@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { trackEvent } from "@/lib/analytics";
@@ -84,16 +85,20 @@ export default function HallCardList({ items, weekendLabel }: Props) {
             style={shouldReduceMotion ? undefined : { willChange: "transform" }}
           >
             <div className="flex flex-col gap-4 lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start">
-              <div className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]">
+              <motion.div
+                className="relative w-full overflow-hidden rounded bg-black/5 aspect-[4/3] sm:aspect-[16/10]"
+                whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
+              >
                 {item.image ? (
-                  <motion.img
+                  <Image
+                    fill
                     src={item.image}
                     alt={item.name}
                     loading={index === 0 ? "eager" : "lazy"}
                     fetchPriority={index === 0 ? "high" : "auto"}
-                    className="absolute inset-0 h-full w-full object-cover object-center"
-                    whileHover={shouldReduceMotion ? undefined : { scale: 1.025 }}
-                    transition={{ duration: shouldReduceMotion ? 0 : 0.2, ease: "easeOut" }}
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 55vw"
                   />
                 ) : (
                   <div
@@ -101,7 +106,7 @@ export default function HallCardList({ items, weekendLabel }: Props) {
                     aria-hidden="true"
                   />
                 )}
-              </div>
+              </motion.div>
 
               <div className="flex h-full min-w-0 flex-col gap-3">
                 <div className="space-y-1">
