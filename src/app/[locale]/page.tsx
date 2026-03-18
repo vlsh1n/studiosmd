@@ -135,10 +135,10 @@ export async function generateMetadata({
   };
 }
 
-type Props = {
+interface Props {
   params: Promise<{ locale: string }>;
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
-};
+}
 
 const WEEKEND_PRICE_LABEL: Record<Locale, string> = {
   ru: "В выходные:",

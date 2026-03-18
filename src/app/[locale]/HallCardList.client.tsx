@@ -15,10 +15,10 @@ export type HallFactKey =
   | "continuous_light"
   | "cyclorama";
 
-export type HallFactItem = {
+export interface HallFactItem {
   key: HallFactKey;
   label: string;
-};
+}
 
 const FACT_ICON_BY_KEY: Record<HallFactKey, string> = {
   daylight: "/icons/daylight.png",
@@ -31,7 +31,7 @@ const FACT_ICON_BY_KEY: Record<HallFactKey, string> = {
   cyclorama: "/icons/cyclorama.png",
 };
 
-export type HallCardItem = {
+export interface HallCardItem {
   id: string;
   name: string;
   image: string | null;
@@ -43,12 +43,12 @@ export type HallCardItem = {
   tagLabels: string[];
   factItems: HallFactItem[];
   ctaLabel: string;
-};
+}
 
-type Props = {
+interface Props {
   items: HallCardItem[];
   weekendLabel: string;
-};
+}
 
 export default function HallCardList({ items, weekendLabel }: Props) {
   const shouldReduceMotion = useReducedMotion();

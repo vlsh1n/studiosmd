@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { getStudioBySlug } from "@/db/queries";
+import { getStudioBySlug, type HallFactFilterKey } from "@/db/queries";
 import { DISTRICTS, TAGS } from "@/domain/dictionaries";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, type Locale } from "@/i18n";
@@ -209,7 +209,7 @@ function getFirstSearchParamValue(
   return null;
 }
 
-const AMENITY_LABELS: Record<string, string> = {
+const AMENITY_LABELS: Record<HallFactFilterKey, string> = {
   daylight: "Daylight",
   blackout: "Blackout",
   parking: "Parking",
@@ -219,6 +219,7 @@ const AMENITY_LABELS: Record<string, string> = {
   continuous_light: "Continuous light",
   cyclorama: "Cyclorama",
 };
+
 
 function buildLocalBusinessJsonLd({
   studio,
@@ -293,8 +294,8 @@ function buildLocalBusinessJsonLd({
     localBusiness.hasMap = googleMapsHref;
   }
 
-  const presentAmenities = Object.keys(AMENITY_LABELS).filter((key) =>
-    studio.halls.some((hall) => hall[key as keyof typeof hall] === true)
+  const presentAmenities = (Object.keys(AMENITY_LABELS) as HallFactFilterKey[]).filter((key) =>
+    studio.halls.some((hall) => hall[key] === true)
   );
   if (presentAmenities.length > 0) {
     localBusiness.amenityFeature = presentAmenities.map((key) => ({

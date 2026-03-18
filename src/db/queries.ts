@@ -1,7 +1,7 @@
 import type { DistrictKey, Prisma } from "@prisma/client";
 import { prisma } from "@/db/prisma";
 
-type ListHallsParams = {
+interface ListHallsParams {
   q?: string;
   district_keys?: DistrictKey[];
   tags?: string[];
@@ -9,9 +9,9 @@ type ListHallsParams = {
   sort?: "price_asc" | "price_desc";
   take?: number;
   skip?: number;
-};
+}
 
-type HallFactFilterKey =
+export type HallFactFilterKey =
   | "daylight"
   | "blackout"
   | "parking"
