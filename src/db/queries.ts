@@ -124,6 +124,13 @@ export async function listHalls(params: ListHallsParams) {
   });
 }
 
+export async function listStudios() {
+  return prisma.studio.findMany({
+    select: { name: true, slug: true },
+    orderBy: { id: "asc" },
+  });
+}
+
 export async function getStudioBySlug(slug: string) {
   return prisma.studio.findUnique({
     where: { slug },

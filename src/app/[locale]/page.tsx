@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { listHalls } from "@/db/queries";
+import { listHalls, listStudios } from "@/db/queries";
 import type { HallListItem } from "@/db/queries";
 import HallCardList, {
   type HallCardItem,
@@ -13,7 +13,7 @@ import { UI_STRINGS } from "@/domain/ui-strings";
 import { isLocale, Locale } from "@/i18n";
 import { safeExternalUrl } from "@/lib/url";
 import { DEFAULT_LOCALE, LOCALES, SITE_NAME, absUrl, localePath } from "@/seo/site";
-import { buildStudioHallPath } from "@/seo/studio";
+import { buildStudioHallPath, buildStudioPath } from "@/seo/studio";
 
 export const revalidate = 1800;
 
@@ -239,6 +239,26 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   }
   const hasNext = halls.length > PAGE_SIZE;
   const hasPrev = page > 1;
+
+  const isUnfilteredFirstPage =
+    page === 1 && !q && district_keys.length === 0 && facts.length === 0;
+  const canonicalUrl = absUrl(localePath(locale));
+  const allStudios = isUnfilteredFirstPage ? await listStudios() : [];
+  const itemListJsonLd = isUnfilteredFirstPage
+    ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: CATALOG_SEO_COPY[locale].title,
+        url: canonicalUrl,
+        numberOfItems: allStudios.length,
+        itemListElement: allStudios.map((studio, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: studio.name,
+          url: absUrl(localePath(locale, buildStudioPath(studio.slug))),
+        })),
+      }
+    : null;
   const paginatedHalls = halls.slice(0, PAGE_SIZE);
   const displayedHalls =
     sort === "random" ? shuffleArray(paginatedHalls) : paginatedHalls;
@@ -356,6 +376,12 @@ export default async function CatalogPage({ params, searchParams }: Props) {
 
   return (
     <div className="stack">
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      )}
       <CatalogTracking locale={locale} formId={CATALOG_FILTER_FORM_ID} />
 
       <section className="card p-4 sm:p-5">
