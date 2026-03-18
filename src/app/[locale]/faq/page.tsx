@@ -204,6 +204,8 @@ export default async function FaqPage({ params }: Props) {
                 viewBox="0 0 12 12"
                 fill="none"
                 aria-hidden="true"
+                width="12"
+                height="12"
                 className="faq-q-icon"
               >
                 <path
