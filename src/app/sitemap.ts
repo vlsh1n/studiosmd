@@ -32,6 +32,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     {
       url: absUrl("/"),
       lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
       alternates: {
         languages: rootAlternates,
       },
@@ -39,6 +41,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...LOCALES.map((locale) => ({
       url: absUrl(localePath(locale)),
       lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
       alternates: {
         languages: rootAlternates,
       },
@@ -57,6 +61,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return LOCALES.map((locale) => ({
       url: absUrl(localePath(locale, studioPath)),
       lastModified: studio.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
       alternates: {
         languages: studioAlternates,
       },
