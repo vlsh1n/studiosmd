@@ -248,6 +248,11 @@ export const UI_STRINGS: UiStrings = {
     ro: "Catalog",
     en: "Catalog",
   },
+  nav_studios: {
+    ru: "Студии",
+    ro: "Studiouri",
+    en: "Studios",
+  },
   nav_about: {
     ru: "О проекте",
     ro: "Despre proiect",

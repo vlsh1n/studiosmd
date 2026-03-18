@@ -131,6 +131,30 @@ export async function listStudios() {
   });
 }
 
+export async function listStudiosForCatalog() {
+  return prisma.studio.findMany({
+    select: {
+      id: true,
+      slug: true,
+      name: true,
+      address: true,
+      district_key: true,
+      logo_url: true,
+      halls: {
+        select: {
+          images: true,
+          price_per_hour: true,
+        },
+        orderBy: [
+          { price_per_hour: { sort: "asc", nulls: "last" } },
+          { id: "asc" },
+        ],
+      },
+    },
+    orderBy: { id: "asc" },
+  });
+}
+
 export async function getStudioBySlug(slug: string) {
   return prisma.studio.findUnique({
     where: { slug },

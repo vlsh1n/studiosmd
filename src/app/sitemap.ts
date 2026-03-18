@@ -31,6 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const rootAlternates = buildAlternates("");
   const aboutAlternates = buildAlternates("/about");
   const faqAlternates = buildAlternates("/faq");
+  const studiosAlternates = buildAlternates("/studios");
 
   const rootEntries: MetadataRoute.Sitemap = [
     {
@@ -60,6 +61,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly" as const,
       priority: 0.4,
       alternates: { languages: faqAlternates },
+    })),
+    ...LOCALES.map((locale) => ({
+      url: absUrl(localePath(locale, "/studios")),
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+      alternates: { languages: studiosAlternates },
     })),
   ];
 

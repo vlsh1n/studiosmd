@@ -74,6 +74,7 @@ export function NavDrawer({ locale }: NavDrawerProps) {
 
   const navItems: NavItem[] = [
     { href: `/${locale}`, label: UI_STRINGS.nav_catalog[locale] },
+    { href: `/${locale}/studios`, label: UI_STRINGS.nav_studios[locale] },
     { href: `/${locale}/about`, label: UI_STRINGS.nav_about[locale] },
     { href: `/${locale}/faq`, label: UI_STRINGS.nav_faq[locale] },
   ];
