@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type Locale } from "@/i18n";
@@ -65,8 +66,11 @@ function ActiveNavLink({
 
 export function NavDrawer({ locale }: NavDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const drawerRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const navItems: NavItem[] = [
     { href: `/${locale}`, label: UI_STRINGS.nav_catalog[locale] },
@@ -162,16 +166,16 @@ export function NavDrawer({ locale }: NavDrawerProps) {
         </div>
       </button>
 
-      {/* Backdrop */}
-      <div
-        className="nav-drawer-backdrop"
-        data-open={String(isOpen)}
-        aria-hidden="true"
-        onPointerDown={close}
-      />
-
-      {/* Drawer */}
-      <aside
+      {/* Backdrop + Drawer — portaled to body to escape backdrop-filter stacking context */}
+      {mounted && createPortal(
+        <>
+          <div
+            className="nav-drawer-backdrop"
+            data-open={String(isOpen)}
+            aria-hidden="true"
+            onPointerDown={close}
+          />
+          <aside
         id="nav-drawer"
         ref={drawerRef}
         className="nav-drawer"
@@ -288,7 +292,10 @@ export function NavDrawer({ locale }: NavDrawerProps) {
             </a>
           </div>
         </div>
-      </aside>
+          </aside>
+        </>,
+        document.body
+      )}
     </>
   );
 }
