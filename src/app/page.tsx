@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import LandingGallery from "@/app/LandingGallery";
 import LandingPage from "@/app/LandingPage.client";
 import { LOCALES, SITE_NAME, DEFAULT_CITY, absUrl, localePath } from "@/seo/site";
 
@@ -88,7 +89,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
       />
-      <LandingPage />
+      <LandingPage gallery={<LandingGallery />} />
     </>
   );
 }

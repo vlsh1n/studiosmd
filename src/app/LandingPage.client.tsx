@@ -1,21 +1,19 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { type ReactNode, useState } from "react";
 import HtmlLangSync from "@/components/HtmlLangSync.client";
 import { SupportMenu } from "@/components/SupportMenu.client";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { type Locale } from "@/i18n";
-import centralImage from "../../design/central.png";
-import hall1Image from "../../design/hall1.png";
-import hall2Image from "../../design/hall2.png";
-import hall3Image from "../../design/hall3.png";
-import hall4Image from "../../design/hall4.png";
 
 const LOCALES: Locale[] = ["ro", "ru", "en"];
 
-export default function LandingPage() {
+interface Props {
+  gallery: ReactNode;
+}
+
+export default function LandingPage({ gallery }: Props) {
   const [locale, setLocale] = useState<Locale>("ro");
   const supportProjectHref = "https://ko-fi.com/voloshinw";
 
@@ -95,29 +93,8 @@ export default function LandingPage() {
           </div>
         </div>
 
-        <div className="landing-gallery" aria-hidden="true">
-          <figure className="landing-gallery-card landing-gallery-card-left-outer">
-            <Image src={hall1Image} alt="" className="landing-gallery-image" />
-          </figure>
-          <figure className="landing-gallery-card landing-gallery-card-left-inner">
-            <Image src={hall2Image} alt="" className="landing-gallery-image" />
-          </figure>
+        {gallery}
 
-          <figure className="landing-gallery-central">
-            <Image src={centralImage} alt="" className="landing-gallery-image" priority />
-          </figure>
-
-          <figure className="landing-gallery-card landing-gallery-card-right-inner">
-            <Image src={hall3Image} alt="" className="landing-gallery-image" />
-          </figure>
-          <figure className="landing-gallery-card landing-gallery-card-right-outer">
-            <Image src={hall4Image} alt="" className="landing-gallery-image" />
-          </figure>
-        </div>
-
-        <footer className="mt-6 border-t border-[var(--glass-border)] pt-4">
-          <p className="text-xs leading-relaxed muted">{UI_STRINGS.footer_disclaimer[locale]}</p>
-        </footer>
       </section>
     </div>
   );
