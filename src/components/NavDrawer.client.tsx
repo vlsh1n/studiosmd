@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -66,11 +66,9 @@ function ActiveNavLink({
 
 export function NavDrawer({ locale }: NavDrawerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
   const drawerRef = useRef<HTMLElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => { setMounted(true); }, []);
 
   const navItems: NavItem[] = [
     { href: `/${locale}`, label: UI_STRINGS.nav_catalog[locale] },
