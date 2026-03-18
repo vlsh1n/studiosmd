@@ -4,8 +4,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import { UI_STRINGS } from "@/domain/ui-strings";
 import { type Locale } from "@/i18n";
 
-const TELEGRAM_HREF = "https://t.me/studiosmap";
-const SUPPORT_EMAIL = "admin@studiosmap.app";
+export const TELEGRAM_HREF = "https://t.me/studiosmap";
+export const SUPPORT_EMAIL = "admin@studiosmap.app";
 
 type Props = {
   locale: Locale;

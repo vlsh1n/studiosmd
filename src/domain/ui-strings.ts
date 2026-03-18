@@ -228,4 +228,34 @@ export const UI_STRINGS: UiStrings = {
     ro: "Preț la cerere",
     en: "Price on request",
   },
+  nav_menu_label: {
+    ru: "Меню навигации",
+    ro: "Meniu de navigare",
+    en: "Navigation menu",
+  },
+  nav_menu_open: {
+    ru: "Открыть меню",
+    ro: "Deschide meniu",
+    en: "Open menu",
+  },
+  nav_menu_close: {
+    ru: "Закрыть меню",
+    ro: "Închide meniu",
+    en: "Close menu",
+  },
+  nav_catalog: {
+    ru: "Каталог",
+    ro: "Catalog",
+    en: "Catalog",
+  },
+  nav_about: {
+    ru: "О проекте",
+    ro: "Despre proiect",
+    en: "About",
+  },
+  nav_faq: {
+    ru: "FAQ",
+    ro: "FAQ",
+    en: "FAQ",
+  },
 };

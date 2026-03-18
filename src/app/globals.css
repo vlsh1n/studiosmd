@@ -608,6 +608,46 @@
   }
 }
 
+/* Nav drawer */
+.nav-drawer {
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: min(22rem, 100vw);
+  background: var(--glass-bg-strong);
+  border-inline-start: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lift);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+}
+.nav-drawer[data-open="false"] {
+  transform: translateX(100%);
+}
+.nav-drawer[data-open="true"] {
+  transform: translateX(0);
+}
+
+.nav-drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 49;
+  background: rgba(28, 26, 23, 0.35);
+  transition: opacity 0.3s ease;
+}
+.nav-drawer-backdrop[data-open="false"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.nav-drawer-backdrop[data-open="true"] {
+  opacity: 1;
+}
+
 /* Keep Ko-fi overlay root out of app stacking contexts. */
 body > div[id^="kofi-widget-overlay-"] {
   position: static !important;
