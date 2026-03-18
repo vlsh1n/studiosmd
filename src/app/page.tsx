@@ -16,7 +16,7 @@ const websiteJsonLd = {
   name: SITE_NAME,
   url: ROOT_CANONICAL_URL,
   inLanguage: ["ro", "ru", "en"],
-  description: `Photography studio directory for ${DEFAULT_CITY}, Moldova — 21 studios`,
+  description: `Photography studio directory for ${DEFAULT_CITY}, Moldova`,
   potentialAction: {
     "@type": "SearchAction",
     target: {

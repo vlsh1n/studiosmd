@@ -223,16 +223,23 @@ export default async function CatalogPage({ params, searchParams }: Props) {
     rawSort === "price_asc" || rawSort === "price_desc" || rawSort === "random"
       ? rawSort
       : "random";
+  const isUnfilteredFirstPage =
+    page === 1 && !q && district_keys.length === 0 && facts.length === 0;
+
   let halls: HallListItem[];
+  let allStudios: Awaited<ReturnType<typeof listStudios>>;
   try {
-    halls = await listHalls({
-      q: q.length > 0 ? q : undefined,
-      district_keys,
-      facts,
-      sort: sort === "random" ? undefined : sort,
-      take: PAGE_SIZE + 1,
-      skip,
-    });
+    [halls, allStudios] = await Promise.all([
+      listHalls({
+        q: q.length > 0 ? q : undefined,
+        district_keys,
+        facts,
+        sort: sort === "random" ? undefined : sort,
+        take: PAGE_SIZE + 1,
+        skip,
+      }),
+      isUnfilteredFirstPage ? listStudios() : Promise.resolve([]),
+    ]);
   } catch (err) {
     console.error("[CatalogPage] listHalls failed:", err);
     throw err;
@@ -240,10 +247,7 @@ export default async function CatalogPage({ params, searchParams }: Props) {
   const hasNext = halls.length > PAGE_SIZE;
   const hasPrev = page > 1;
 
-  const isUnfilteredFirstPage =
-    page === 1 && !q && district_keys.length === 0 && facts.length === 0;
   const canonicalUrl = absUrl(localePath(locale));
-  const allStudios = isUnfilteredFirstPage ? await listStudios() : [];
   const itemListJsonLd = isUnfilteredFirstPage
     ? {
         "@context": "https://schema.org",

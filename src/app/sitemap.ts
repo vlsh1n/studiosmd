@@ -21,6 +21,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       id: true,
       slug: true,
       updatedAt: true,
+      halls: { select: { updatedAt: true } },
     },
     orderBy: {
       id: "asc",
@@ -58,9 +59,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       "x-default": absUrl(localePath(DEFAULT_LOCALE, studioPath)),
     };
 
+    const lastModified = studio.halls.reduce(
+      (max, hall) => (hall.updatedAt > max ? hall.updatedAt : max),
+      studio.updatedAt
+    );
+
     return LOCALES.map((locale) => ({
       url: absUrl(localePath(locale, studioPath)),
-      lastModified: studio.updatedAt,
+      lastModified,
       changeFrequency: "monthly" as const,
       priority: 0.6,
       alternates: {

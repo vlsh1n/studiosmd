@@ -34,7 +34,7 @@ model Studio {
   logo_url           String?
   working_hours      String?
   description        String?
-  updatedAt          DateTime    @updatedAt
+  updatedAt          DateTime    @updatedAt @map("updated_at")
   halls              Hall[]
 
   @@index([district_key], map: "Studio_district_key_idx")
@@ -58,6 +58,7 @@ model Hall {
   cyclorama        Boolean  @default(false)
   tags             String[]
   price_per_hour   Int?
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   studio Studio @relation(fields: [studioId], references: [id], onDelete: Cascade)
 
